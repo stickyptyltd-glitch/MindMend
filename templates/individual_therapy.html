@@ -249,16 +249,48 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/video-processing.js') }}"></script>
-<script src="{{ url_for('static', filename='js/biometric-integration.js') }}"></script>
-<script src="{{ url_for('static', filename='js/real-time-analysis.js') }}"></script>
+<!-- Future integration points for external libraries -->
+<!-- <script src="{{ url_for('static', filename='js/video-processing.js') }}"></script> -->
+<!-- <script src="{{ url_for('static', filename='js/biometric-integration.js') }}"></script> -->
+<!-- <script src="{{ url_for('static', filename='js/real-time-analysis.js') }}"></script> -->
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize components
-    const videoProcessor = new VideoProcessor();
-    const biometricIntegrator = new BiometricIntegrator();
-    const realTimeAnalyzer = new RealTimeAnalyzer();
+    // Video Analysis Integration
+    const videoProcessor = {
+        active: false,
+        isActive() { return this.active; },
+        async getCurrentFrame() { 
+            // Placeholder for future video frame capture
+            return null;
+        },
+        start() {
+            this.active = true;
+            console.log('Video analysis started');
+        },
+        stop() {
+            this.active = false;
+            console.log('Video analysis stopped');
+        }
+    };
+
+    // Biometric Integration  
+    const biometricIntegrator = {
+        connected: false,
+        isConnected() { return this.connected; },
+        getCurrentData() {
+            // Placeholder for future biometric data integration
+            return null;
+        },
+        connect() {
+            this.connected = true;
+            console.log('Biometric devices connected');
+        },
+        disconnect() {
+            this.connected = false;
+            console.log('Biometric devices disconnected');
+        }
+    };
 
     // Mood slider
     const moodSlider = document.getElementById('moodBefore');
@@ -299,45 +331,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function processTherapySession(formData) {
-        // Combine text, video, and biometric analysis
-        const analysisData = {
-            text: formData.input,
+        // Prepare therapy session data
+        const sessionData = {
+            message: formData.input,
             session_type: formData.session_type,
-            video_enabled: videoProcessor.isActive(),
-            biometric_enabled: biometricIntegrator.isConnected(),
-            mood_before: formData.mood_before,
-            session_goal: formData.session_goal
+            patient_name: formData.name,
+            mood_score: parseInt(formData.mood_before),
+            context: {
+                session_goal: formData.session_goal,
+                video_enabled: videoProcessor.isActive(),
+                biometric_enabled: biometricIntegrator.isConnected()
+            }
         };
 
         // Get current video frame if available
         if (videoProcessor.isActive()) {
-            analysisData.current_frame = await videoProcessor.getCurrentFrame();
+            sessionData.context.current_frame = await videoProcessor.getCurrentFrame();
         }
 
         // Get current biometric data if available
         if (biometricIntegrator.isConnected()) {
-            analysisData.biometric_data = biometricIntegrator.getCurrentData();
+            sessionData.context.biometric_data = biometricIntegrator.getCurrentData();
         }
 
-        // Send to AI analysis endpoint
-        const response = await fetch('/api/analyze-text', {
+        // Send to therapy session endpoint
+        const response = await fetch('/api/therapy-session', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(analysisData)
+            body: JSON.stringify(sessionData)
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const result = await response.json();
         displayAnalysisResults(result, formData);
     }
 
     function displayAnalysisResults(result, formData) {
-        // Display AI response
+        // Check if request was successful
+        if (!result.success) {
+            document.getElementById('aiResponse').innerHTML = `
+                <div class="alert alert-danger">
+                    <h6>Error:</h6>
+                    <p>${result.error || 'An error occurred during the session.'}</p>
+                    ${result.fallback_response ? `<hr><p><strong>Fallback Response:</strong> ${result.fallback_response}</p>` : ''}
+                </div>
+            `;
+            return;
+        }
+
+        // Display AI therapist response
         document.getElementById('aiResponse').innerHTML = `
             <div class="alert alert-info">
-                <h6>AI Therapist Response:</h6>
-                <p>${result.ai_response || 'Analysis complete. Please see detailed results below.'}</p>
+                <h6><i class="fas fa-robot me-2"></i>AI Therapist Response:</h6>
+                <p>${result.response}</p>
+                ${result.session_id ? `<small class="text-muted">Session ID: ${result.session_id}</small>` : ''}
             </div>
         `;
 
@@ -345,47 +397,53 @@ document.addEventListener('DOMContentLoaded', function() {
         const analysisResults = document.getElementById('analysisResults');
         let analysisHtml = '';
 
-        if (result.emotional_analysis) {
+        // Mood Analysis
+        if (result.mood_analysis) {
+            const mood = result.mood_analysis.mood || 'neutral';
+            const intensity = result.mood_analysis.intensity || 5;
+            const moodColor = mood === 'positive' ? 'success' : mood === 'negative' ? 'warning' : 'info';
+            
             analysisHtml += `
                 <div class="col-md-4">
                     <div class="card bg-dark border-0">
                         <div class="card-body text-center">
-                            <i class="fas fa-brain fa-2x text-primary mb-2"></i>
-                            <h6>Emotional State</h6>
-                            <p class="mb-0">${result.emotional_analysis.primary_emotion || 'Unknown'}</p>
-                            <small class="text-muted">Confidence: ${result.emotional_analysis.confidence || 0}%</small>
+                            <i class="fas fa-heart fa-2x text-${moodColor} mb-2"></i>
+                            <h6>Mood Analysis</h6>
+                            <p class="mb-0 text-${moodColor}">${mood.charAt(0).toUpperCase() + mood.slice(1)}</p>
+                            <small class="text-muted">Intensity: ${intensity}/10</small>
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        if (result.risk_assessment) {
-            const riskColor = result.risk_assessment.level === 'high' ? 'danger' : 
-                            result.risk_assessment.level === 'medium' ? 'warning' : 'success';
-            analysisHtml += `
-                <div class="col-md-4">
-                    <div class="card bg-dark border-0">
-                        <div class="card-body text-center">
-                            <i class="fas fa-shield-alt fa-2x text-${riskColor} mb-2"></i>
-                            <h6>Risk Level</h6>
-                            <p class="mb-0 text-${riskColor}">${result.risk_assessment.level || 'Low'}</p>
-                            <small class="text-muted">Score: ${result.risk_assessment.score || 0}</small>
-                        </div>
+        // Crisis Risk Level
+        const riskColor = result.crisis_level === 'high' ? 'danger' : 
+                        result.crisis_level === 'medium' ? 'warning' : 'success';
+        analysisHtml += `
+            <div class="col-md-4">
+                <div class="card bg-dark border-0">
+                    <div class="card-body text-center">
+                        <i class="fas fa-shield-alt fa-2x text-${riskColor} mb-2"></i>
+                        <h6>Crisis Level</h6>
+                        <p class="mb-0 text-${riskColor}">${result.crisis_level || 'Low'}</p>
+                        <small class="text-muted">Assessment: Complete</small>
                     </div>
+                </div>
                 </div>
             `;
         }
 
-        if (result.therapy_recommendations) {
+        // Recommendations
+        if (result.recommendations && result.recommendations.length > 0) {
             analysisHtml += `
                 <div class="col-md-4">
                     <div class="card bg-dark border-0">
                         <div class="card-body text-center">
                             <i class="fas fa-lightbulb fa-2x text-warning mb-2"></i>
                             <h6>Recommendations</h6>
-                            <p class="mb-0">${result.therapy_recommendations.primary || 'Continue current approach'}</p>
-                            <small class="text-muted">${result.therapy_recommendations.count || 0} total suggestions</small>
+                            <p class="mb-0">${result.recommendations[0] || 'Continue current approach'}</p>
+                            <small class="text-muted">${result.recommendations.length} total suggestions</small>
                         </div>
                     </div>
                 </div>
@@ -394,40 +452,108 @@ document.addEventListener('DOMContentLoaded', function() {
 
         analysisResults.innerHTML = analysisHtml;
 
-        // Display exercises
-        if (result.exercises && result.exercises.length > 0) {
-            displayExercises(result.exercises);
+        // Display recommendations as exercises
+        if (result.recommendations && result.recommendations.length > 0) {
+            displayRecommendations(result.recommendations);
         }
 
-        // Display alerts
-        if (result.alerts && result.alerts.length > 0) {
-            displayHealthAlerts(result.alerts);
+        // Display next steps
+        if (result.next_steps && result.next_steps.length > 0) {
+            displayNextSteps(result.next_steps);
         }
 
         // Show all sections
         document.getElementById('responseSection').style.display = 'block';
-        if (result.exercises && result.exercises.length > 0) {
+        if (result.recommendations && result.recommendations.length > 0) {
             document.getElementById('exercisesSection').style.display = 'block';
         }
-        if (result.alerts && result.alerts.length > 0) {
-            document.getElementById('alertsSection').style.display = 'block';
+        
+        // Show crisis alerts if high risk
+        if (result.crisis_level === 'high' || result.crisis_level === 'critical') {
+            displayCrisisAlert(result.crisis_level);
         }
     }
 
-    function displayExercises(exercises) {
+    function displayRecommendations(recommendations) {
         const exercisesList = document.getElementById('exercisesList');
-        let exercisesHtml = '';
+        let exercisesHtml = '<h6 class="mb-3"><i class="fas fa-lightbulb me-2"></i>Therapeutic Recommendations</h6>';
 
-        exercises.forEach((exercise, index) => {
+        recommendations.forEach((recommendation, index) => {
             exercisesHtml += `
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h6><i class="fas fa-play-circle me-2"></i>${exercise.title}</h6>
-                        <small class="text-muted">${exercise.duration_minutes} minutes • Difficulty: ${exercise.difficulty_level}/5</small>
-                    </div>
+                <div class="card mb-3 bg-dark border-warning">
                     <div class="card-body">
-                        <p>${exercise.description}</p>
-                        <div class="mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="badge bg-warning text-dark">${index + 1}</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0">${recommendation}</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-warning" onclick="markCompleted(${index})">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        exercisesList.innerHTML = exercisesHtml;
+    }
+
+    function displayNextSteps(nextSteps) {
+        // Add next steps to exercises section if it exists
+        const exercisesList = document.getElementById('exercisesList');
+        if (exercisesList && nextSteps.length > 0) {
+            let nextStepsHtml = '<h6 class="mt-4 mb-3"><i class="fas fa-arrow-right me-2"></i>Next Steps</h6>';
+            
+            nextSteps.forEach((step, index) => {
+                nextStepsHtml += `
+                    <div class="card mb-2 bg-dark border-info">
+                        <div class="card-body py-2">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-step-forward text-info"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <small>${step}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            exercisesList.innerHTML += nextStepsHtml;
+        }
+    }
+
+    function displayCrisisAlert(crisisLevel) {
+        const alertsSection = document.getElementById('alertsSection');
+        if (alertsSection) {
+            const alertColor = crisisLevel === 'critical' ? 'danger' : 'warning';
+            document.getElementById('healthAlerts').innerHTML = `
+                <div class="alert alert-${alertColor}">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Crisis Alert</h6>
+                    <p><strong>${crisisLevel.toUpperCase()} risk level detected.</strong></p>
+                    <p>Please consider reaching out for immediate support:</p>
+                    <ul>
+                        <li>National Suicide Prevention Lifeline: <strong>988</strong></li>
+                        <li>Crisis Text Line: <strong>Text HOME to 741741</strong></li>
+                        <li>Emergency Services: <strong>911</strong></li>
+                    </ul>
+                </div>
+            `;
+            alertsSection.style.display = 'block';
+        }
+    }
+
+    function markCompleted(index) {
+        event.target.innerHTML = '<i class="fas fa-check-circle"></i>';
+        event.target.className = 'btn btn-sm btn-success';
+        event.target.disabled = true;
                             <strong>Instructions:</strong>
                             <ol class="mt-2">
                                 ${exercise.instructions.map(step => `<li>${step}</li>`).join('')}
