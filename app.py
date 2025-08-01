@@ -101,6 +101,11 @@ def home():
     """Home page with therapy type selection"""
     return render_template("index.html")
 
+@app.route("/logos")
+def logo_showcase():
+    """Display logo options for selection"""
+    return render_template("logo_showcase.html")
+
 @app.route("/individual")
 def individual_therapy():
     """Individual therapy page"""
