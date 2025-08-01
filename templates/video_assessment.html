@@ -81,6 +81,15 @@
             </div>
         </div>
         <p class="text-muted">Comprehensive AI-powered video interview with emotion analysis, microexpression detection, and therapeutic assessment.</p>
+        
+        <!-- Camera Permission Notice -->
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Camera Access Required:</strong> This assessment requires camera access for facial analysis. 
+            If you haven't granted permissions, click "Start Assessment" and allow camera access when prompted. 
+            Alternatively, use "Test Mode" to explore the assessment without camera.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     </div>
 </div>
 
@@ -152,6 +161,9 @@
                             </button>
                             <button class="btn btn-warning" id="pauseAssessment" disabled>
                                 <i class="fas fa-pause me-1"></i>Pause
+                            </button>
+                            <button class="btn btn-secondary" id="testMode">
+                                <i class="fas fa-flask me-1"></i>Test Mode
                             </button>
                         </div>
                         
@@ -405,11 +417,75 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('pauseAssessment').addEventListener('click', pauseAssessment);
     document.getElementById('settingsBtn').addEventListener('click', showSettings);
     document.getElementById('saveSettings').addEventListener('click', saveSettings);
+    document.getElementById('testMode').addEventListener('click', startTestMode);
+    
+    // Test Mode functionality
+    async function startTestMode() {
+        // Check camera permissions first
+        try {
+            const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+            
+            if (permissionStatus.state === 'granted') {
+                alert('Camera permissions are already granted. You can use the regular assessment mode.');
+                return;
+            }
+            
+            if (permissionStatus.state === 'prompt') {
+                alert('Camera permissions have not been set. Click "Start Assessment" to request camera access, or continue with test mode without camera.');
+            } else {
+                alert('Camera permissions are denied. You can still use test mode to see how the assessment works without camera access.');
+            }
+        } catch (e) {
+            // Permissions API not supported
+            alert('Test mode allows you to experience the assessment without camera access. For full functionality, use "Start Assessment" instead.');
+        }
+        
+        // Start test mode without camera
+        startAssessmentWithoutCamera();
+    }
+    
+    async function startAssessmentWithoutCamera() {
+        assessmentActive = true;
+        currentPhase = 1;
+        
+        // Create a mock video element with test pattern
+        const videoElement = document.getElementById('assessmentVideo');
+        const canvas = document.createElement('canvas');
+        canvas.width = 640;
+        canvas.height = 480;
+        const ctx = canvas.getContext('2d');
+        
+        // Draw test pattern
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Test Mode - No Camera', canvas.width/2, canvas.height/2);
+        
+        // Convert to video stream
+        const stream = canvas.captureStream(30);
+        videoElement.srcObject = stream;
+        
+        // Update UI
+        document.getElementById('startAssessment').disabled = true;
+        document.getElementById('stopAssessment').disabled = false;
+        document.getElementById('pauseAssessment').disabled = false;
+        document.getElementById('assessmentStatus').textContent = 'Test Mode Active';
+        document.getElementById('assessmentStatus').className = 'badge bg-info';
+        
+        // Run assessment phases
+        runAssessmentPhases();
+        
+        // Use mock data for real-time analysis
+        startMockRealTimeAnalysis();
+    }
     
     async function startAssessment() {
         try {
             // Start video capture
-            await videoProcessor.startCapture('assessmentVideo');
+            const videoElement = document.getElementById('assessmentVideo');
+            await videoProcessor.startCapture(videoElement);
             
             assessmentActive = true;
             currentPhase = 1;
@@ -429,7 +505,30 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('Error starting assessment:', error);
-            alert('Unable to access camera. Please ensure camera permissions are granted.');
+            
+            // More detailed error handling
+            let errorMessage = 'Unable to access camera. ';
+            
+            if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                errorMessage += 'Please grant camera permissions and refresh the page.';
+            } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+                errorMessage += 'No camera device found. Please connect a camera.';
+            } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+                errorMessage += 'Camera is being used by another application.';
+            } else if (error.name === 'OverconstrainedError' || error.name === 'ConstraintNotSatisfiedError') {
+                errorMessage += 'Camera settings are not supported.';
+            } else {
+                errorMessage += error.message || 'Please check your browser settings.';
+            }
+            
+            alert(errorMessage);
+            
+            // Reset UI
+            document.getElementById('startAssessment').disabled = false;
+            document.getElementById('stopAssessment').disabled = true;
+            document.getElementById('pauseAssessment').disabled = true;
+            document.getElementById('assessmentStatus').textContent = 'Camera Error';
+            document.getElementById('assessmentStatus').className = 'badge bg-danger';
         }
     }
     
@@ -724,6 +823,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert.classList.remove('show');
             }, 3000);
         }
+    }
+    
+    // Mock real-time analysis for test mode
+    function startMockRealTimeAnalysis() {
+        const emotions = ['happy', 'neutral', 'sad', 'anxious', 'calm'];
+        const stressLevels = [0.2, 0.3, 0.4, 0.5, 0.6];
+        
+        const analysisInterval = setInterval(() => {
+            if (!assessmentActive) {
+                clearInterval(analysisInterval);
+                return;
+            }
+            
+            // Generate mock analysis data
+            const mockAnalysis = {
+                emotions: {
+                    [emotions[Math.floor(Math.random() * emotions.length)]]: Math.random() * 0.5 + 0.5,
+                    neutral: Math.random() * 0.3
+                },
+                stress_level: stressLevels[Math.floor(Math.random() * stressLevels.length)],
+                engagement_level: Math.random() * 0.4 + 0.6
+            };
+            
+            updateRealTimeDisplay(mockAnalysis);
+        }, 2000);
     }
     
     async function generateAssessmentResults() {
