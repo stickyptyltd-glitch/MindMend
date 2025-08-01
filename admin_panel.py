@@ -108,6 +108,13 @@ def require_admin_auth(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@admin_bp.route('/')
+def admin_index():
+    """Redirect to admin dashboard or login"""
+    if session.get('admin_authenticated'):
+        return redirect(url_for('admin.dashboard'))
+    return redirect(url_for('admin.login'))
+
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     """Admin login"""
