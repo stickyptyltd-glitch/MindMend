@@ -5,7 +5,6 @@ iOS and Android compatibility layer
 """
 
 from flask import Blueprint, jsonify, request, render_template
-from flask_cors import cross_origin
 import jwt
 from datetime import datetime, timedelta
 import os
@@ -26,7 +25,6 @@ class MobileAppIntegration:
         app.config['MOBILE_TOKEN_EXPIRY'] = 24 * 7  # 7 days
 
 @mobile_bp.route('/api/health')
-@cross_origin()
 def health_check():
     """Health check endpoint for mobile apps"""
     return jsonify({
@@ -43,7 +41,6 @@ def health_check():
     })
 
 @mobile_bp.route('/api/auth/mobile-login', methods=['POST'])
-@cross_origin()
 def mobile_login():
     """Mobile-specific authentication endpoint"""
     data = request.get_json()
@@ -82,7 +79,6 @@ def mobile_login():
     })
 
 @mobile_bp.route('/api/therapy/mobile-session', methods=['POST'])
-@cross_origin()
 def mobile_therapy_session():
     """Mobile-optimized therapy session endpoint"""
     auth_header = request.headers.get('Authorization')
@@ -127,7 +123,6 @@ def mobile_therapy_session():
     return jsonify(response)
 
 @mobile_bp.route('/api/payments/mobile-checkout', methods=['POST'])
-@cross_origin()
 def mobile_payment_checkout():
     """Mobile payment integration"""
     data = request.get_json()
@@ -152,7 +147,6 @@ def mobile_payment_checkout():
     })
 
 @mobile_bp.route('/api/biometric/sync', methods=['POST'])
-@cross_origin()
 def sync_biometric_data():
     """Sync biometric data from mobile devices"""
     data = request.get_json()

@@ -49,6 +49,22 @@ with app.app_context():
     from models.biometric_integrator import BiometricIntegrator
     from models.exercise_generator import ExerciseGenerator
     
+    # Import and register blueprints
+    from admin_panel import admin_bp
+    from counselor_dashboard import counselor_bp
+    from mobile_app import mobile_bp, MobileAppIntegration
+    from payment_integration import payment_bp
+    from security_enhancements import SecurityManager
+    
+    # Register blueprints
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(counselor_bp)
+    app.register_blueprint(payment_bp)
+    
+    # Initialize security and mobile integration
+    security_manager = SecurityManager(app)
+    mobile_integration = MobileAppIntegration(app)
+    
     # Create all database tables
     db.create_all()
 

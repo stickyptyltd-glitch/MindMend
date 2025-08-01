@@ -13,6 +13,19 @@ Mind Mend is a comprehensive AI-powered mental health platform built with Flask 
 
 Preferred communication style: Simple, everyday language.
 
+## Business Entity
+- **Company**: Sticky Pty Ltd (Australian company)
+- **Domain Strategy**: mindmend.com.au (primary), mindmend.healthcare (alternative)
+- **Target Market**: Australian mental health market with global expansion
+- **Business Model**: SaaS platform with tiered subscriptions and counselor employment
+
+## Admin Panel Features
+- **Dynamic API Key Management**: Configure payment gateways and AI services through web interface
+- **Platform Upgrades**: Level 3 and Enterprise features available for purchase
+- **Business Management**: Counselor employment system, financial dashboard, user management
+- **Security**: HIPAA compliance tools, audit logging, fraud protection
+- **Deployment Tools**: Production hosting recommendations and deployment guides
+
 # System Architecture
 
 ## Frontend Architecture

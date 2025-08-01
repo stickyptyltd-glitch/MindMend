@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counselor Dashboard - Mind Mend</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .counselor-sidebar {
+            background: linear-gradient(135deg, #16a085 0%, #f4d03f 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .counselor-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .earnings-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+        .session-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #16a085;
+        }
+        .metric-card {
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .metric-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #16a085;
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-nav a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            display: block;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 counselor-sidebar">
+                <div class="text-center p-4">
+                    <i class="fas fa-user-md fa-3x mb-3"></i>
+                    <h4>Counselor Portal</h4>
+                    <small>Dr. {{ data.counselor.name or 'Demo Counselor' }}</small>
+                </div>
+                
+                <ul class="sidebar-nav">
+                    <li><a href="{{ url_for('counselor.dashboard') }}" class="active">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.schedule') }}">
+                        <i class="fas fa-calendar me-2"></i>Schedule
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.client_management') }}">
+                        <i class="fas fa-users me-2"></i>Clients
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.earnings') }}">
+                        <i class="fas fa-dollar-sign me-2"></i>Earnings
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.professional_development') }}">
+                        <i class="fas fa-graduation-cap me-2"></i>Training
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.employment_opportunities') }}">
+                        <i class="fas fa-briefcase me-2"></i>Employment
+                    </a></li>
+                </ul>
+                
+                <div class="mt-auto p-3">
+                    <a href="{{ url_for('counselor.logout') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 counselor-content">
+                <div class="p-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Welcome back, Dr. {{ data.counselor.name or 'Demo Counselor' }}!</h2>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-info">Rating: {{ data.performance_metrics.client_satisfaction }}/5</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Earnings Overview -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="earnings-card">
+                                <h4><i class="fas fa-chart-line me-2"></i>Monthly Earnings</h4>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h3>${{ "{:,.2f}".format(data.earnings.net_earnings) }}</h3>
+                                        <small>Net Earnings</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h3>{{ data.earnings.sessions_completed }}</h3>
+                                        <small>Sessions Completed</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h3>{{ data.earnings.average_rating }}/5</h3>
+                                        <small>Average Rating</small>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <small><i class="fas fa-calendar me-1"></i>Next payout: {{ data.earnings.next_payout.split('T')[0] }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card h-100">
+                                <div class="metric-number">${{ "{:,.0f}".format(data.earnings.gross_earnings) }}</div>
+                                <div class="text-muted">Gross Monthly</div>
+                                <small class="text-success">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Platform fee: ${{ "{:,.0f}".format(data.earnings.platform_fee) }} (15%)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Metrics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-number">{{ data.performance_metrics.client_satisfaction }}</div>
+                                <div class="text-muted">Client Rating</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-number">{{ data.performance_metrics.session_completion_rate }}%</div>
+                                <div class="text-muted">Completion Rate</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-number">{{ data.performance_metrics.response_time }}</div>
+                                <div class="text-muted">Response Time</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-number">{{ data.performance_metrics.professional_development_hours }}</div>
+                                <div class="text-muted">Training Hours</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upcoming Sessions -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-clock me-2"></i>Upcoming Sessions</h5>
+                            {% for session in data.upcoming_sessions %}
+                            <div class="session-card">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">{{ session.client_name }}</h6>
+                                    <span class="badge bg-primary">${{ session.fee }}</span>
+                                </div>
+                                <p class="mb-1"><strong>{{ session.session_type }}</strong></p>
+                                <p class="mb-1">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ session.scheduled_time.split('T')[0] }}
+                                    <i class="fas fa-clock ms-3 me-1"></i>
+                                    {{ session.scheduled_time.split('T')[1][:5] }}
+                                </p>
+                                <p class="mb-0 text-muted">Duration: {{ session.duration }} minutes</p>
+                                <div class="mt-2">
+                                    <button class="btn btn-success btn-sm me-2">
+                                        <i class="fas fa-video me-1"></i>Join Session
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-notes-medical me-1"></i>View Notes
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-check-circle me-2"></i>Recent Sessions</h5>
+                            {% for session in data.recent_sessions %}
+                            <div class="session-card">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0">{{ session.client_name }}</h6>
+                                    <span class="badge bg-success">${{ session.fee }}</span>
+                                </div>
+                                <p class="mb-1"><strong>{{ session.session_type }}</strong></p>
+                                <p class="mb-1">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Completed: {{ session.completed_time.split('T')[0] }}
+                                </p>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="me-2">Rating:</span>
+                                    {% for i in range(session.rating) %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% endfor %}
+                                    {% for i in range(5 - session.rating) %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endfor %}
+                                </div>
+                                <p class="mb-0 text-muted small">{{ session.notes }}</p>
+                            </div>
+                            {% endfor %}
+                            
+                            <div class="session-card text-center">
+                                <i class="fas fa-briefcase fa-2x text-muted mb-2"></i>
+                                <h6>Employment Opportunities</h6>
+                                <p class="text-muted small">Explore full-time and contract positions</p>
+                                <a href="{{ url_for('counselor.employment_opportunities') }}" class="btn btn-outline-primary btn-sm">
+                                    View Opportunities
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
