@@ -19,4 +19,7 @@ dependencies = [
     "cryptography>=45.0.5",
     "stripe>=12.4.0",
     "reportlab>=4.4.3",
+    "trafilatura>=2.0.0",
+    "numpy>=2.3.2",
+    "scikit-learn>=1.7.1",
 ]

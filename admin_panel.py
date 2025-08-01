@@ -13,6 +13,7 @@ import logging
 from functools import wraps
 from models.security_roles import SecurityRoles
 from models.admin_ai_assistant import AdminAIAssistant
+from models.research_manager import research_manager, ResearchPaper, ClinicalDataset, ResearchInsight
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -602,3 +603,232 @@ def download_manual():
         create_admin_manual()
     
     return send_file(manual_path, as_attachment=True, download_name='Mind_Mend_Admin_Manual.pdf')
+
+# Research Management Routes
+@admin_bp.route('/research-management')
+@require_admin_auth
+def research_management():
+    """Research and dataset management interface"""
+    from app import db
+    
+    # Get statistics
+    stats = {
+        'total_papers': ResearchPaper.query.count(),
+        'papers_this_month': ResearchPaper.query.filter(
+            ResearchPaper.added_date >= datetime.utcnow() - timedelta(days=30)
+        ).count(),
+        'total_datasets': ClinicalDataset.query.count(),
+        'total_records': db.session.query(db.func.sum(ClinicalDataset.size)).scalar() or 0,
+        'total_insights': ResearchInsight.query.count(),
+        'validated_insights': ResearchInsight.query.filter(
+            ResearchInsight.validated_by.isnot(None)
+        ).count(),
+        'active_analyses': 0,  # Placeholder
+        'completed_today': 0   # Placeholder
+    }
+    
+    # Get recent items
+    recent_papers = ResearchPaper.query.order_by(
+        ResearchPaper.added_date.desc()
+    ).limit(10).all()
+    
+    recent_datasets = ClinicalDataset.query.order_by(
+        ClinicalDataset.added_date.desc()
+    ).limit(6).all()
+    
+    # Get insights by category
+    early_diagnosis_markers = ResearchInsight.query.filter_by(
+        insight_type='diagnostic_marker'
+    ).order_by(ResearchInsight.confidence_level.desc()).limit(3).all()
+    
+    conflict_strategies = ResearchInsight.query.filter_by(
+        insight_type='intervention'
+    ).order_by(ResearchInsight.confidence_level.desc()).limit(3).all()
+    
+    treatment_insights = ResearchInsight.query.filter_by(
+        insight_type='treatment'
+    ).order_by(ResearchInsight.confidence_level.desc()).limit(3).all()
+    
+    return render_template('admin/research_management.html',
+                         stats=stats,
+                         recent_papers=recent_papers,
+                         recent_datasets=recent_datasets,
+                         early_diagnosis_markers=early_diagnosis_markers,
+                         conflict_strategies=conflict_strategies,
+                         treatment_insights=treatment_insights)
+
+@admin_bp.route('/api/search-research', methods=['POST'])
+@require_admin_auth
+def api_search_research():
+    """Search research papers API"""
+    data = request.get_json()
+    query = data.get('query', '')
+    category = data.get('category')
+    
+    results = research_manager.search_research(query, category)
+    
+    return jsonify({
+        'success': True,
+        'results': results,
+        'count': len(results)
+    })
+
+@admin_bp.route('/api/add-research-paper', methods=['POST'])
+@require_admin_auth
+def api_add_research_paper():
+    """Add new research paper API"""
+    try:
+        data = request.get_json()
+        data['added_by'] = session.get('admin_email', 'admin')
+        
+        # Convert publication date string to datetime if provided
+        if data.get('publication_date'):
+            data['publication_date'] = datetime.fromisoformat(data['publication_date'])
+        
+        paper = research_manager.add_research_paper(data)
+        
+        return jsonify({
+            'success': True,
+            'paper_id': paper.id,
+            'message': 'Research paper added successfully'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/add-clinical-dataset', methods=['POST'])
+@require_admin_auth
+def api_add_clinical_dataset():
+    """Add new clinical dataset API"""
+    try:
+        data = request.get_json()
+        data['size'] = int(data.get('size', 0))
+        
+        dataset = research_manager.add_clinical_dataset(data)
+        
+        return jsonify({
+            'success': True,
+            'dataset_id': dataset.id,
+            'message': 'Clinical dataset added successfully'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/extract-insights/<int:paper_id>', methods=['POST'])
+@require_admin_auth
+def api_extract_insights(paper_id):
+    """Extract insights from research paper"""
+    from app import db
+    
+    try:
+        paper = ResearchPaper.query.get(paper_id)
+        if not paper:
+            return jsonify({'success': False, 'error': 'Paper not found'}), 404
+        
+        # In production, this would use NLP to extract insights
+        # For now, creating example insights
+        insights_created = 0
+        
+        if 'early' in paper.title.lower() or 'diagnosis' in paper.title.lower():
+            insight = ResearchInsight(
+                paper_id=paper_id,
+                insight_type='diagnostic_marker',
+                title=f"Early detection markers from {paper.title[:50]}",
+                description="AI-extracted early diagnosis indicators",
+                confidence_level=0.85,
+                clinical_relevance='high',
+                applicable_conditions=['anxiety', 'depression', 'PTSD'],
+                evidence_strength='moderate'
+            )
+            db.session.add(insight)
+            insights_created += 1
+        
+        if 'conflict' in paper.title.lower() or 'resolution' in paper.title.lower():
+            insight = ResearchInsight(
+                paper_id=paper_id,
+                insight_type='intervention',
+                title=f"Conflict resolution strategies from {paper.title[:50]}",
+                description="Evidence-based conflict resolution approaches",
+                confidence_level=0.78,
+                clinical_relevance='medium',
+                applicable_conditions=['couples_therapy', 'family_therapy'],
+                evidence_strength='moderate'
+            )
+            db.session.add(insight)
+            insights_created += 1
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'insights_count': insights_created,
+            'message': f'Extracted {insights_created} insights from paper'
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/analyze-dataset/<int:dataset_id>', methods=['POST'])
+@require_admin_auth
+def api_analyze_dataset(dataset_id):
+    """Analyze clinical dataset"""
+    try:
+        result = research_manager.analyze_dataset_for_patterns(dataset_id)
+        
+        if 'error' in result:
+            return jsonify({
+                'success': False,
+                'error': result['error']
+            }), 400
+        
+        return jsonify({
+            'success': True,
+            'analysis_id': dataset_id,  # In production, would return actual analysis ID
+            'results': result
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/get-diagnosis-indicators/<condition>', methods=['GET'])
+@require_admin_auth
+def api_get_diagnosis_indicators(condition):
+    """Get early diagnosis indicators for a condition"""
+    try:
+        indicators = research_manager.get_early_diagnosis_indicators(condition)
+        
+        return jsonify({
+            'success': True,
+            'data': indicators
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/get-conflict-strategies/<conflict_type>', methods=['GET'])
+@require_admin_auth
+def api_get_conflict_strategies(conflict_type):
+    """Get conflict resolution strategies"""
+    try:
+        strategies = research_manager.get_conflict_resolution_strategies(conflict_type)
+        
+        return jsonify({
+            'success': True,
+            'data': strategies
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400

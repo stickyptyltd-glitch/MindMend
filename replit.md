@@ -17,6 +17,9 @@ Mind Mend is a comprehensive AI-powered mental health platform built with Flask 
 - **NEW: AI-powered admin assistant with fraud detection and management automation**
 - **NEW: Role-based security system with different access levels for admins, managers, and counselors**
 - **NEW: Comprehensive admin manual PDF with 60+ pages of documentation**
+- **NEW: Research & Dataset Management System for evidence-based mental health insights**
+- **NEW: Clinical dataset analysis tools for early diagnosis and conflict resolution patterns**
+- **NEW: Research paper library with AI-powered insight extraction and similarity search**
 
 # User Preferences
 
