@@ -2,8 +2,11 @@
 
 Mind Mend is a comprehensive AI-powered mental health platform built with Flask that provides therapeutic support through multiple modalities. The application integrates video analysis, biometric monitoring, and AI-driven therapy sessions to offer personalized mental health care. It supports individual, couple, and group therapy sessions with real-time emotion detection, crisis intervention, and automated exercise generation.
 
-**Current Version: Level 2**
-- Real OpenAI GPT-4o integration for authentic therapeutic responses
+**Current Version: Level 2 Enhanced**
+- Real OpenAI GPT-4o integration with expert AI therapists (Dr. Sarah Chen, Dr. Michael Rivera, Dr. Lisa Thompson)
+- Enhanced AI knowledge base with specialized training in CBT, DBT, ACT, MBSR, EFT, Gottman Method
+- Comprehensive therapeutic activities library with 40+ evidence-based exercises
+- Couples counseling with dual login support (same or separate devices)
 - Session-specific AI prompts for individual, couple, and group therapy
 - Premium human counselor hooks with payment gateway preparation
 - Advanced video assessment placeholders with microexpression analysis hooks
