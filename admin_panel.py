@@ -11,18 +11,31 @@ import json
 import os
 import logging
 from functools import wraps
+from models.security_roles import SecurityRoles
+from models.admin_ai_assistant import AdminAIAssistant
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 class AdminManager:
     def __init__(self):
-        # Default admin credentials (change in production)
+        # Initialize AI assistant
+        self.ai_assistant = AdminAIAssistant()
+        
+        # Default admin credentials with role-based security
         self.admin_users = {
             'admin@sticky.com.au': {
                 'password_hash': generate_password_hash('StickyAdmin2025!'),
                 'role': 'super_admin',
                 'name': 'Sticky Admin',
-                'created_at': datetime.utcnow().isoformat()
+                'created_at': datetime.utcnow().isoformat(),
+                'require_2fa': True
+            },
+            'manager@sticky.com.au': {
+                'password_hash': generate_password_hash('Manager2025!'),
+                'role': 'manager',
+                'name': 'Platform Manager',
+                'created_at': datetime.utcnow().isoformat(),
+                'require_2fa': False
             }
         }
         
@@ -475,3 +488,106 @@ def test_api_connections(api_keys):
         results['paypal'] = {'status': 'not_configured', 'message': 'Credentials not set'}
     
     return results
+
+# AI Fraud Detection Routes
+@admin_bp.route('/ai-assistant')
+@require_admin_auth
+@SecurityRoles.requires_permission('fraud_detection')
+def ai_assistant():
+    """AI Assistant for fraud detection and management"""
+    # Get recent system activity
+    recent_activity = {
+        'payment': {
+            'transaction_count': 5,
+            'amount': 99.99,
+            'ip_address': request.remote_addr
+        },
+        'account': {
+            'email': session.get('admin_email', ''),
+            'failed_login_attempts': 0,
+            'ip_address': request.remote_addr
+        },
+        'usage': {
+            'api_calls_per_minute': 10,
+            'page_views_per_minute': 20
+        }
+    }
+    
+    # Get fraud risk assessment
+    fraud_assessment = admin_manager.ai_assistant.analyze_fraud_risk(recent_activity)
+    
+    # Get management recommendations
+    recommendations = admin_manager.ai_assistant.get_management_recommendations('security_audit')
+    
+    # Get system insights
+    analytics_data = {
+        'revenue': {'monthly': 50000, 'growth_rate': 15},
+        'users': {'churn_rate': 5, 'engagement_score': 70},
+        'platform': {'uptime_percentage': 99.95, 'error_rate': 0.5}
+    }
+    insights = admin_manager.ai_assistant.generate_admin_insights(analytics_data)
+    
+    return render_template('admin/ai_assistant.html', 
+                         fraud_assessment=fraud_assessment,
+                         recommendations=recommendations,
+                         insights=insights)
+
+@admin_bp.route('/api/fraud-check', methods=['POST'])
+@require_admin_auth
+@SecurityRoles.requires_permission('fraud_detection')
+def api_fraud_check():
+    """Real-time fraud detection API"""
+    data = request.get_json()
+    
+    # Analyze fraud risk
+    risk_assessment = admin_manager.ai_assistant.analyze_fraud_risk(data)
+    
+    # Log security event
+    SecurityRoles.log_security_event('fraud_check', {
+        'user': session.get('admin_email', 'system'),
+        'risk_level': risk_assessment['risk_level'],
+        'risk_score': risk_assessment['risk_score']
+    })
+    
+    return jsonify(risk_assessment)
+
+@admin_bp.route('/api/ai-recommendations', methods=['POST'])
+@require_admin_auth
+def api_ai_recommendations():
+    """Get AI recommendations for specific context"""
+    data = request.get_json()
+    context = data.get('context', 'general')
+    
+    recommendations = admin_manager.ai_assistant.get_management_recommendations(context)
+    
+    return jsonify(recommendations)
+
+@admin_bp.route('/security-audit')
+@require_admin_auth
+@SecurityRoles.requires_role('admin')
+def security_audit():
+    """View security audit logs"""
+    # Get audit logs with filters
+    filters = {
+        'date_from': datetime.utcnow() - timedelta(days=7),
+        'date_to': datetime.utcnow()
+    }
+    
+    audit_logs = SecurityRoles.get_security_audit_log(filters)
+    
+    return render_template('admin/security_audit.html', audit_logs=audit_logs)
+
+@admin_bp.route('/download-manual')
+@require_admin_auth
+def download_manual():
+    """Download the admin manual PDF"""
+    from flask import send_file
+    import os
+    
+    # Generate the manual if it doesn't exist
+    manual_path = 'Mind_Mend_Admin_Manual.pdf'
+    if not os.path.exists(manual_path):
+        from create_admin_manual import create_admin_manual
+        create_admin_manual()
+    
+    return send_file(manual_path, as_attachment=True, download_name='Mind_Mend_Admin_Manual.pdf')

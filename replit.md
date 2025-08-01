@@ -2,11 +2,11 @@
 
 Mind Mend is a comprehensive AI-powered mental health platform built with Flask that provides therapeutic support through multiple modalities. The application integrates video analysis, biometric monitoring, and AI-driven therapy sessions to offer personalized mental health care. It supports individual, couple, and group therapy sessions with real-time emotion detection, crisis intervention, and automated exercise generation.
 
-**Current Version: Level 2 Enhanced**
+**Current Version: Level 2 Enhanced with Admin AI**
 - Real OpenAI GPT-4o integration with expert AI therapists (Dr. Sarah Chen, Dr. Michael Rivera, Dr. Lisa Thompson)
 - Enhanced AI knowledge base with specialized training in CBT, DBT, ACT, MBSR, EFT, Gottman Method
 - Comprehensive therapeutic activities library with 40+ evidence-based exercises
-- Couples counseling with dual login support (same or separate devices)
+- Couples counseling with dual login support (same or separate devices) with AI conversation starters
 - Advanced mood tracking with patterns analysis and insights
 - Progress tracking with SMART goals and treatment planning
 - Personalized self-care planner with wellness routines
@@ -14,6 +14,9 @@ Mind Mend is a comprehensive AI-powered mental health platform built with Flask 
 - Premium human counselor hooks with payment gateway preparation
 - Advanced video assessment placeholders with microexpression analysis hooks
 - Enhanced crisis detection with multi-modal analysis preparation
+- **NEW: AI-powered admin assistant with fraud detection and management automation**
+- **NEW: Role-based security system with different access levels for admins, managers, and counselors**
+- **NEW: Comprehensive admin manual PDF with 60+ pages of documentation**
 
 # User Preferences
 
@@ -31,6 +34,10 @@ Preferred communication style: Simple, everyday language.
 - **Business Management**: Counselor employment system, financial dashboard, user management
 - **Security**: HIPAA compliance tools, audit logging, fraud protection
 - **Deployment Tools**: Production hosting recommendations and deployment guides
+- **AI Fraud Detection**: Real-time fraud monitoring with risk scoring and automated actions
+- **Role-Based Access Control**: 5 security levels (Super Admin, Admin, Manager, Counselor, Patient)
+- **Admin AI Assistant**: Intelligent recommendations for upgrades, security, and optimization
+- **Downloadable Admin Manual**: Comprehensive 60+ page PDF guide for all user roles
 
 # System Architecture
 
