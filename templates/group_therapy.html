@@ -1,0 +1,643 @@
+{% extends "base.html" %}
+
+{% block title %}Group Therapy - Mind Mend{% endblock %}
+
+{% block head %}
+<style>
+    .participant-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    .participant-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .participant-active {
+        border: 2px solid var(--bs-primary);
+    }
+    .participant-speaking {
+        border: 2px solid var(--bs-success);
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(var(--bs-success-rgb), 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(var(--bs-success-rgb), 0); }
+        100% { box-shadow: 0 0 0 0 rgba(var(--bs-success-rgb), 0); }
+    }
+    .group-dynamics-chart {
+        height: 200px;
+    }
+    .conversation-flow {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-users me-2"></i>Group Therapy Session</h2>
+            <div class="d-flex gap-2">
+                <span class="badge bg-success">Session Active</span>
+                <button class="btn btn-outline-primary" id="joinSession">
+                    <i class="fas fa-sign-in-alt me-1"></i>Join Session
+                </button>
+                <button class="btn btn-outline-info" id="groupAnalytics">
+                    <i class="fas fa-chart-network me-1"></i>Group Analytics
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Group Overview -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-users me-2"></i>Active Participants</h5>
+                <small class="text-muted">6 members online • Session: "Managing Anxiety Together"</small>
+            </div>
+            <div class="card-body">
+                <div class="row g-3" id="participantsList">
+                    <!-- Participants will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-chart-pie me-2"></i>Group Dynamics</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="h4 mb-1" id="groupCohesion">85%</div>
+                    <div class="text-muted">Group Cohesion</div>
+                </div>
+                <div class="row g-2 text-center">
+                    <div class="col-6">
+                        <div class="h6 mb-0" id="participation">92%</div>
+                        <small class="text-muted">Participation</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h6 mb-0" id="supportLevel">High</div>
+                        <small class="text-muted">Support Level</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h6 mb-0" id="conflictLevel">Low</div>
+                        <small class="text-muted">Conflict</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h6 mb-0" id="emotionalSafety">98%</div>
+                        <small class="text-muted">Safety</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Session Interface -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-comments me-2"></i>Group Discussion</h5>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary" id="raiseHand">
+                        <i class="fas fa-hand-paper me-1"></i>Raise Hand
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" id="shareFeeling">
+                        <i class="fas fa-heart me-1"></i>Share Feeling
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Conversation Flow -->
+                <div class="conversation-flow mb-3" id="conversationFlow">
+                    <!-- Messages will appear here -->
+                </div>
+
+                <!-- Input Area -->
+                <form id="groupMessageForm">
+                    <div class="mb-3">
+                        <label for="participantName" class="form-label">Your Name</label>
+                        <input type="text" class="form-control" id="participantName" placeholder="Enter your name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="messageInput" class="form-label">Share with the group</label>
+                        <textarea class="form-control" id="messageInput" rows="3" 
+                                placeholder="Share your thoughts, feelings, or experiences..."></textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="anonymousMode">
+                                <i class="fas fa-user-secret me-1"></i>Anonymous
+                            </button>
+                            <button type="button" class="btn btn-outline-info btn-sm" id="requestSupport">
+                                <i class="fas fa-hands-helping me-1"></i>Request Support
+                            </button>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane me-2"></i>Share
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-robot me-2"></i>AI Group Facilitator</h6>
+            </div>
+            <div class="card-body">
+                <div id="aiFacilitatorFeedback">
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Session Insight:</strong> Great engagement from everyone! I notice themes of resilience and mutual support emerging.
+                    </div>
+                </div>
+
+                <h6 class="mt-4">Suggested Activities</h6>
+                <div id="groupActivities">
+                    <div class="card bg-dark border-0 mb-2">
+                        <div class="card-body py-2">
+                            <h6 class="card-title mb-1">Gratitude Circle</h6>
+                            <p class="card-text small">Share something you're grateful for</p>
+                            <button class="btn btn-primary btn-sm" onclick="startGroupActivity('gratitude')">
+                                <i class="fas fa-play me-1"></i>Start
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card bg-dark border-0 mb-2">
+                        <div class="card-body py-2">
+                            <h6 class="card-title mb-1">Breathing Together</h6>
+                            <p class="card-text small">Synchronized group breathing exercise</p>
+                            <button class="btn btn-success btn-sm" onclick="startGroupActivity('breathing')">
+                                <i class="fas fa-play me-1"></i>Start
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="mt-4">Support Requests</h6>
+                <div id="supportRequests">
+                    <small class="text-muted">No current support requests</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Group Analytics Modal -->
+<div class="modal fade" id="analyticsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-chart-bar me-2"></i>Group Analytics</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6>Participation Patterns</h6>
+                        <canvas id="participationChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Emotional Trends</h6>
+                        <canvas id="emotionalTrendsChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                <hr>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6>Support Network</h6>
+                        <div id="supportNetwork">
+                            <!-- Network visualization would go here -->
+                            <p class="text-muted">Visual representation of group connections</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Session Insights</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>High engagement across all members</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Effective peer support demonstrated</li>
+                            <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>One member showing withdrawal</li>
+                            <li><i class="fas fa-lightbulb text-info me-2"></i>Recommend follow-up individual session</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Group Activity Modal -->
+<div class="modal fade" id="activityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activityTitle">Group Activity</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="activityContent">
+                    <!-- Activity content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Leave Activity</button>
+                <button type="button" class="btn btn-primary" id="participateBtn">Participate</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/real-time-analysis.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize group session
+    initializeGroupSession();
+    
+    // Form handlers
+    const messageForm = document.getElementById('groupMessageForm');
+    messageForm.addEventListener('submit', handleGroupMessage);
+    
+    // Button handlers
+    document.getElementById('joinSession').addEventListener('click', joinGroupSession);
+    document.getElementById('groupAnalytics').addEventListener('click', showGroupAnalytics);
+    document.getElementById('raiseHand').addEventListener('click', raiseHand);
+    document.getElementById('shareFeeling').addEventListener('click', shareFeeling);
+    
+    function initializeGroupSession() {
+        // Load participants
+        loadParticipants();
+        
+        // Load conversation history
+        loadConversationHistory();
+        
+        // Start real-time updates
+        setInterval(updateGroupDynamics, 10000);
+    }
+    
+    function loadParticipants() {
+        const participants = [
+            { id: 1, name: 'Sarah M.', status: 'active', emotion: 'calm', speaking: false },
+            { id: 2, name: 'John D.', status: 'active', emotion: 'anxious', speaking: false },
+            { id: 3, name: 'Maya K.', status: 'active', emotion: 'hopeful', speaking: true },
+            { id: 4, name: 'Alex R.', status: 'listening', emotion: 'supportive', speaking: false },
+            { id: 5, name: 'Chris L.', status: 'active', emotion: 'thoughtful', speaking: false },
+            { id: 6, name: 'Jordan P.', status: 'active', emotion: 'engaged', speaking: false }
+        ];
+        
+        const participantsList = document.getElementById('participantsList');
+        let participantsHtml = '';
+        
+        participants.forEach(participant => {
+            const cardClass = participant.speaking ? 'participant-card participant-speaking' : 
+                            participant.status === 'active' ? 'participant-card participant-active' : 
+                            'participant-card';
+            
+            participantsHtml += `
+                <div class="col-md-4 col-sm-6">
+                    <div class="card ${cardClass}" data-participant-id="${participant.id}">
+                        <div class="card-body text-center py-2">
+                            <div class="d-flex align-items-center justify-content-center mb-2">
+                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2" 
+                                     style="width: 32px; height: 32px;">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">${participant.name}</div>
+                                    <small class="text-muted">${participant.emotion}</small>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center gap-1">
+                                <span class="badge bg-${participant.status === 'active' ? 'success' : 'secondary'} badge-sm">
+                                    ${participant.status}
+                                </span>
+                                ${participant.speaking ? '<span class="badge bg-info badge-sm">Speaking</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        participantsList.innerHTML = participantsHtml;
+    }
+    
+    function loadConversationHistory() {
+        const messages = [
+            {
+                participant: 'Dr. AI Facilitator',
+                message: 'Welcome everyone to our group session on managing anxiety. Let\'s start by sharing how everyone is feeling today.',
+                timestamp: '2:00 PM',
+                type: 'facilitator'
+            },
+            {
+                participant: 'Sarah M.',
+                message: 'I\'ve been feeling overwhelmed with work lately, but being here with everyone helps.',
+                timestamp: '2:02 PM',
+                type: 'participant',
+                emotion: 'anxious'
+            },
+            {
+                participant: 'Maya K.',
+                message: 'I totally understand, Sarah. I\'ve found that the breathing exercises we learned last week really help me.',
+                timestamp: '2:03 PM',
+                type: 'participant',
+                emotion: 'supportive'
+            }
+        ];
+        
+        const conversationFlow = document.getElementById('conversationFlow');
+        let messagesHtml = '';
+        
+        messages.forEach(msg => {
+            const messageClass = msg.type === 'facilitator' ? 'alert alert-info' : 'card mb-2';
+            const emotionBadge = msg.emotion ? `<span class="badge bg-${getEmotionColor(msg.emotion)} ms-2">${msg.emotion}</span>` : '';
+            
+            messagesHtml += `
+                <div class="${messageClass}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>${msg.participant}</strong>${emotionBadge}
+                            <p class="mb-1 mt-1">${msg.message}</p>
+                        </div>
+                        <small class="text-muted">${msg.timestamp}</small>
+                    </div>
+                </div>
+            `;
+        });
+        
+        conversationFlow.innerHTML = messagesHtml;
+    }
+    
+    function getEmotionColor(emotion) {
+        const emotionColors = {
+            'anxious': 'warning',
+            'supportive': 'success',
+            'calm': 'info',
+            'hopeful': 'primary',
+            'thoughtful': 'secondary'
+        };
+        return emotionColors[emotion] || 'secondary';
+    }
+    
+    async function handleGroupMessage(e) {
+        e.preventDefault();
+        
+        const participantName = document.getElementById('participantName').value;
+        const messageText = document.getElementById('messageInput').value;
+        
+        if (!participantName || !messageText) {
+            alert('Please enter your name and message');
+            return;
+        }
+        
+        // Add message to conversation
+        addMessageToConversation(participantName, messageText);
+        
+        // Analyze message with AI
+        try {
+            const response = await fetch('/api/analyze-text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: messageText,
+                    session_type: 'group',
+                    participant_name: participantName,
+                    group_context: true
+                })
+            });
+            
+            const result = await response.json();
+            
+            // Update AI facilitator feedback
+            updateAIFacilitatorFeedback(result);
+            
+            // Check for support needs
+            if (result.support_needed) {
+                addSupportRequest(participantName, result.support_type);
+            }
+            
+        } catch (error) {
+            console.error('Error analyzing group message:', error);
+        }
+        
+        // Clear form
+        document.getElementById('messageInput').value = '';
+    }
+    
+    function addMessageToConversation(participant, message) {
+        const conversationFlow = document.getElementById('conversationFlow');
+        const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const messageHtml = `
+            <div class="card mb-2">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>${participant}</strong>
+                            <p class="mb-1 mt-1">${message}</p>
+                        </div>
+                        <small class="text-muted">${timestamp}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        conversationFlow.insertAdjacentHTML('beforeend', messageHtml);
+        conversationFlow.scrollTop = conversationFlow.scrollHeight;
+    }
+    
+    function updateAIFacilitatorFeedback(analysisResult) {
+        const feedback = document.getElementById('aiFacilitatorFeedback');
+        
+        let feedbackHtml = '';
+        
+        if (analysisResult.group_insight) {
+            feedbackHtml += `
+                <div class="alert alert-info">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>Group Insight:</strong> ${analysisResult.group_insight}
+                </div>
+            `;
+        }
+        
+        if (analysisResult.facilitation_suggestion) {
+            feedbackHtml += `
+                <div class="alert alert-success">
+                    <i class="fas fa-comments me-2"></i>
+                    <strong>Facilitation Tip:</strong> ${analysisResult.facilitation_suggestion}
+                </div>
+            `;
+        }
+        
+        if (feedbackHtml) {
+            feedback.innerHTML = feedbackHtml;
+        }
+    }
+    
+    function addSupportRequest(participant, supportType) {
+        const supportRequests = document.getElementById('supportRequests');
+        
+        const requestHtml = `
+            <div class="alert alert-warning py-2 mb-2">
+                <strong>${participant}</strong> requested ${supportType} support
+                <button class="btn btn-sm btn-outline-primary ms-2" onclick="offerSupport('${participant}')">
+                    <i class="fas fa-hands-helping me-1"></i>Offer Support
+                </button>
+            </div>
+        `;
+        
+        supportRequests.innerHTML = requestHtml;
+    }
+    
+    function updateGroupDynamics() {
+        // Simulate dynamic updates (in real app, this would come from AI analysis)
+        const cohesion = Math.floor(Math.random() * 15) + 80;
+        const participation = Math.floor(Math.random() * 10) + 88;
+        
+        document.getElementById('groupCohesion').textContent = cohesion + '%';
+        document.getElementById('participation').textContent = participation + '%';
+    }
+    
+    function joinGroupSession() {
+        const name = prompt('Enter your name to join the session:');
+        if (name) {
+            document.getElementById('participantName').value = name;
+            alert('Welcome to the group session, ' + name + '!');
+        }
+    }
+    
+    function showGroupAnalytics() {
+        const modal = new bootstrap.Modal(document.getElementById('analyticsModal'));
+        modal.show();
+        
+        // Load analytics charts
+        setTimeout(loadAnalyticsCharts, 300);
+    }
+    
+    function loadAnalyticsCharts() {
+        // Participation Chart
+        const ctx1 = document.getElementById('participationChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sarah M.', 'John D.', 'Maya K.', 'Alex R.', 'Chris L.', 'Jordan P.'],
+                datasets: [{
+                    data: [22, 18, 25, 15, 12, 8],
+                    backgroundColor: [
+                        '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Emotional Trends Chart
+        const ctx2 = document.getElementById('emotionalTrendsChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Start', '15min', '30min', '45min', 'Current'],
+                datasets: [{
+                    label: 'Average Mood',
+                    data: [3, 4, 5, 6, 7],
+                    borderColor: '#36a2eb',
+                    tension: 0.4
+                }, {
+                    label: 'Anxiety Level',
+                    data: [7, 6, 5, 4, 3],
+                    borderColor: '#ff6384',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                }
+            }
+        });
+    }
+    
+    function raiseHand() {
+        alert('Your hand has been raised. The facilitator will acknowledge you shortly.');
+    }
+    
+    function shareFeeling() {
+        const feeling = prompt('How are you feeling right now?');
+        if (feeling) {
+            addMessageToConversation('You', `I'm feeling ${feeling}`);
+        }
+    }
+    
+    // Global functions for group activities
+    window.startGroupActivity = function(activityType) {
+        const modal = new bootstrap.Modal(document.getElementById('activityModal'));
+        const title = document.getElementById('activityTitle');
+        const content = document.getElementById('activityContent');
+        
+        if (activityType === 'gratitude') {
+            title.textContent = 'Gratitude Circle';
+            content.innerHTML = `
+                <p>Let's go around the circle and each share something we're grateful for today.</p>
+                <div class="alert alert-info">
+                    <strong>Current turn:</strong> Maya K. is sharing their gratitude...
+                </div>
+                <p>When it's your turn, click "Participate" to share.</p>
+            `;
+        } else if (activityType === 'breathing') {
+            title.textContent = 'Group Breathing Exercise';
+            content.innerHTML = `
+                <p>Let's breathe together as a group. Follow the visual guide:</p>
+                <div class="text-center my-4">
+                    <div class="breathing-circle" style="width: 100px; height: 100px; background: var(--bs-primary); border-radius: 50%; margin: 0 auto; animation: breathe 4s infinite;">
+                    </div>
+                </div>
+                <p class="text-center">Inhale for 4 counts, hold for 4, exhale for 4</p>
+                <style>
+                @keyframes breathe {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.2); }
+                }
+                </style>
+            `;
+        }
+        
+        modal.show();
+    };
+    
+    window.offerSupport = function(participant) {
+        const supportMessage = prompt(`What support would you like to offer ${participant}?`);
+        if (supportMessage) {
+            addMessageToConversation('You', `@${participant} ${supportMessage}`);
+        }
+    };
+});
+</script>
+{% endblock %}

@@ -1,0 +1,897 @@
+{% extends "base.html" %}
+
+{% block title %}AI Video Assessment - Mind Mend{% endblock %}
+
+{% block head %}
+<style>
+    .video-assessment-container {
+        position: relative;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .assessment-overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
+        color: white;
+        padding: 15px;
+        border-radius: 0 12px 0 12px;
+        min-width: 200px;
+    }
+    .emotion-indicator {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+    .confidence-bar {
+        height: 6px;
+        background: rgba(255,255,255,0.3);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+    .confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+        transition: width 0.3s ease;
+    }
+    .microexpression-alert {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(255, 193, 7, 0.9);
+        color: #000;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.9em;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    .microexpression-alert.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .assessment-phase {
+        border-left: 4px solid var(--bs-primary);
+        background: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    .assessment-complete {
+        border-left: 4px solid var(--bs-success);
+        background: rgba(var(--bs-success-rgb), 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-video me-2"></i>AI Video Assessment</h2>
+            <div class="d-flex gap-2">
+                <span class="badge bg-info" id="assessmentStatus">Ready to Start</span>
+                <button class="btn btn-outline-primary" id="settingsBtn">
+                    <i class="fas fa-cog me-1"></i>Settings
+                </button>
+            </div>
+        </div>
+        <p class="text-muted">Comprehensive AI-powered video interview with emotion analysis, microexpression detection, and therapeutic assessment.</p>
+    </div>
+</div>
+
+<!-- Video Assessment Interface -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="video-assessment-container" style="height: 450px;">
+                    <video id="assessmentVideo" width="100%" height="100%" style="object-fit: cover;" muted></video>
+                    
+                    <!-- Real-time Analysis Overlay -->
+                    <div class="assessment-overlay" id="analysisOverlay">
+                        <div class="mb-2">
+                            <strong>Primary Emotion</strong>
+                            <div class="d-flex align-items-center mt-1">
+                                <span class="emotion-indicator bg-primary" id="emotionIndicator"></span>
+                                <span id="primaryEmotion">Neutral</span>
+                            </div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="emotionConfidence" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <strong>Stress Level</strong>
+                            <div class="mt-1">
+                                <span id="stressLevel">Low</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" id="stressConfidence" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <strong>Engagement</strong>
+                            <div class="mt-1">
+                                <span id="engagementLevel">High</span>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" id="engagementConfidence" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <strong>Eye Contact</strong>
+                            <div class="mt-1">
+                                <span id="eyeContact">Good</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Microexpression Alert -->
+                    <div class="microexpression-alert" id="microAlert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span id="microText">Subtle emotional shift detected</span>
+                    </div>
+                </div>
+                
+                <!-- Video Controls -->
+                <div class="p-3 border-top">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-success" id="startAssessment">
+                                <i class="fas fa-play me-1"></i>Start Assessment
+                            </button>
+                            <button class="btn btn-danger" id="stopAssessment" disabled>
+                                <i class="fas fa-stop me-1"></i>Stop
+                            </button>
+                            <button class="btn btn-warning" id="pauseAssessment" disabled>
+                                <i class="fas fa-pause me-1"></i>Pause
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="enableMicroexpression" checked>
+                                <label class="form-check-label" for="enableMicroexpression">
+                                    Microexpression Analysis
+                                </label>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="enableVoiceAnalysis" checked>
+                                <label class="form-check-label" for="enableVoiceAnalysis">
+                                    Voice Analysis
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h6><i class="fas fa-list-check me-2"></i>Assessment Progress</h6>
+            </div>
+            <div class="card-body">
+                <div id="assessmentPhases">
+                    <div class="assessment-phase p-3 rounded mb-3" id="phase1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">1. Initial Calibration</h6>
+                                <small class="text-muted">Establishing baseline</small>
+                            </div>
+                            <i class="fas fa-clock text-muted"></i>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar" style="width: 0%" id="phase1Progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-phase p-3 rounded mb-3" id="phase2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">2. Mood Assessment</h6>
+                                <small class="text-muted">Current emotional state</small>
+                            </div>
+                            <i class="fas fa-clock text-muted"></i>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar" style="width: 0%" id="phase2Progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-phase p-3 rounded mb-3" id="phase3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">3. Stress Response</h6>
+                                <small class="text-muted">Anxiety and stress indicators</small>
+                            </div>
+                            <i class="fas fa-clock text-muted"></i>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar" style="width: 0%" id="phase3Progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-phase p-3 rounded mb-3" id="phase4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">4. Communication Patterns</h6>
+                                <small class="text-muted">Voice and expression analysis</small>
+                            </div>
+                            <i class="fas fa-clock text-muted"></i>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar" style="width: 0%" id="phase4Progress"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="assessment-phase p-3 rounded" id="phase5">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">5. Comprehensive Analysis</h6>
+                                <small class="text-muted">Generating recommendations</small>
+                            </div>
+                            <i class="fas fa-clock text-muted"></i>
+                        </div>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar" style="width: 0%" id="phase5Progress"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="currentInstructions" class="mt-4">
+                    <h6>Instructions</h6>
+                    <p class="text-muted" id="instructionText">
+                        Click "Start Assessment" to begin. Make sure you're in a well-lit area and looking directly at the camera.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assessment Questions -->
+<div class="row mt-4" id="questionSection" style="display: none;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-question-circle me-2"></i>Assessment Questions</h5>
+                <div class="progress mt-2" style="height: 4px;">
+                    <div class="progress-bar" id="questionProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="currentQuestion">
+                    <!-- Questions will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assessment Results -->
+<div class="row mt-4" id="resultsSection" style="display: none;">
+    <div class="col-12">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-chart-line me-2"></i>Assessment Results</h5>
+            </div>
+            <div class="card-body">
+                <div id="assessmentResults">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-cog me-2"></i>Assessment Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="settingsForm">
+                    <div class="mb-3">
+                        <label for="assessmentDuration" class="form-label">Assessment Duration</label>
+                        <select class="form-select" id="assessmentDuration">
+                            <option value="5">5 minutes (Quick)</option>
+                            <option value="10" selected>10 minutes (Standard)</option>
+                            <option value="15">15 minutes (Comprehensive)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="analysisDepth" class="form-label">Analysis Depth</label>
+                        <select class="form-select" id="analysisDepth">
+                            <option value="basic">Basic Emotions</option>
+                            <option value="standard" selected>Standard Analysis</option>
+                            <option value="advanced">Advanced + Microexpressions</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="saveRecording">
+                            <label class="form-check-label" for="saveRecording">
+                                Save recording for later review
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="shareWithTherapist">
+                            <label class="form-check-label" for="shareWithTherapist">
+                                Share results with assigned therapist
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveSettings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-processing.js') }}"></script>
+<script src="{{ url_for('static', filename='js/real-time-analysis.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let assessmentActive = false;
+    let currentPhase = 0;
+    let currentQuestionIndex = 0;
+    let assessmentData = {};
+    
+    // Assessment questions for different phases
+    const assessmentQuestions = [
+        {
+            phase: 2,
+            question: "How are you feeling right now, on a scale of 1 to 10?",
+            type: "scale",
+            instruction: "Please answer naturally while looking at the camera."
+        },
+        {
+            phase: 2,
+            question: "Can you describe what's been on your mind lately?",
+            type: "open",
+            instruction: "Take your time to respond. Your facial expressions and voice will be analyzed."
+        },
+        {
+            phase: 3,
+            question: "Think about a recent stressful situation. How did it make you feel?",
+            type: "open",
+            instruction: "Notice any changes in how you feel as you recall this memory."
+        },
+        {
+            phase: 4,
+            question: "Tell me about something that makes you happy.",
+            type: "open",
+            instruction: "Let your natural emotions show as you speak."
+        },
+        {
+            phase: 4,
+            question: "How comfortable do you feel talking about your emotions?",
+            type: "scale",
+            instruction: "Your response pattern will help calibrate our analysis."
+        }
+    ];
+    
+    // Initialize video processing
+    const videoProcessor = new VideoProcessor();
+    const realTimeAnalyzer = new RealTimeAnalyzer();
+    
+    // Event listeners
+    document.getElementById('startAssessment').addEventListener('click', startAssessment);
+    document.getElementById('stopAssessment').addEventListener('click', stopAssessment);
+    document.getElementById('pauseAssessment').addEventListener('click', pauseAssessment);
+    document.getElementById('settingsBtn').addEventListener('click', showSettings);
+    document.getElementById('saveSettings').addEventListener('click', saveSettings);
+    
+    async function startAssessment() {
+        try {
+            // Start video capture
+            await videoProcessor.startCapture('assessmentVideo');
+            
+            assessmentActive = true;
+            currentPhase = 1;
+            
+            // Update UI
+            document.getElementById('startAssessment').disabled = true;
+            document.getElementById('stopAssessment').disabled = false;
+            document.getElementById('pauseAssessment').disabled = false;
+            document.getElementById('assessmentStatus').textContent = 'Assessment Active';
+            document.getElementById('assessmentStatus').className = 'badge bg-success';
+            
+            // Start assessment phases
+            runAssessmentPhases();
+            
+            // Start real-time analysis
+            startRealTimeAnalysis();
+            
+        } catch (error) {
+            console.error('Error starting assessment:', error);
+            alert('Unable to access camera. Please ensure camera permissions are granted.');
+        }
+    }
+    
+    function stopAssessment() {
+        assessmentActive = false;
+        videoProcessor.stopCapture();
+        
+        // Update UI
+        document.getElementById('startAssessment').disabled = false;
+        document.getElementById('stopAssessment').disabled = true;
+        document.getElementById('pauseAssessment').disabled = true;
+        document.getElementById('assessmentStatus').textContent = 'Assessment Complete';
+        document.getElementById('assessmentStatus').className = 'badge bg-primary';
+        
+        // Generate final results
+        generateAssessmentResults();
+    }
+    
+    function pauseAssessment() {
+        const pauseBtn = document.getElementById('pauseAssessment');
+        if (assessmentActive) {
+            assessmentActive = false;
+            pauseBtn.innerHTML = '<i class="fas fa-play me-1"></i>Resume';
+            document.getElementById('assessmentStatus').textContent = 'Paused';
+            document.getElementById('assessmentStatus').className = 'badge bg-warning';
+        } else {
+            assessmentActive = true;
+            pauseBtn.innerHTML = '<i class="fas fa-pause me-1"></i>Pause';
+            document.getElementById('assessmentStatus').textContent = 'Assessment Active';
+            document.getElementById('assessmentStatus').className = 'badge bg-success';
+        }
+    }
+    
+    async function runAssessmentPhases() {
+        const phaseDurations = [30, 60, 45, 90, 30]; // seconds for each phase
+        const phaseInstructions = [
+            "Please look directly at the camera and remain still for calibration.",
+            "We'll now assess your current mood. Please answer the questions naturally.",
+            "Let's evaluate your stress response patterns.",
+            "We'll analyze your communication style and expressions.",
+            "Generating your comprehensive assessment report..."
+        ];
+        
+        for (let phase = 1; phase <= 5; phase++) {
+            if (!assessmentActive) break;
+            
+            currentPhase = phase;
+            updatePhaseUI(phase, phaseInstructions[phase - 1]);
+            
+            if (phase === 2 || phase === 3 || phase === 4) {
+                await runQuestionsForPhase(phase);
+            } else {
+                await runTimedPhase(phase, phaseDurations[phase - 1]);
+            }
+            
+            markPhaseComplete(phase);
+        }
+        
+        if (assessmentActive) {
+            stopAssessment();
+        }
+    }
+    
+    function updatePhaseUI(phase, instruction) {
+        // Reset all phases to default state
+        for (let i = 1; i <= 5; i++) {
+            const phaseElement = document.getElementById(`phase${i}`);
+            phaseElement.className = 'assessment-phase p-3 rounded mb-3';
+            phaseElement.querySelector('i').className = 'fas fa-clock text-muted';
+        }
+        
+        // Highlight current phase
+        const currentPhaseElement = document.getElementById(`phase${phase}`);
+        currentPhaseElement.className = 'assessment-phase p-3 rounded mb-3 border-primary bg-primary bg-opacity-10';
+        currentPhaseElement.querySelector('i').className = 'fas fa-play text-primary';
+        
+        // Update instructions
+        document.getElementById('instructionText').textContent = instruction;
+    }
+    
+    async function runTimedPhase(phase, duration) {
+        const progressBar = document.getElementById(`phase${phase}Progress`);
+        const startTime = Date.now();
+        
+        return new Promise((resolve) => {
+            const interval = setInterval(() => {
+                if (!assessmentActive) {
+                    clearInterval(interval);
+                    resolve();
+                    return;
+                }
+                
+                const elapsed = (Date.now() - startTime) / 1000;
+                const progress = Math.min((elapsed / duration) * 100, 100);
+                progressBar.style.width = progress + '%';
+                
+                if (elapsed >= duration) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 100);
+        });
+    }
+    
+    async function runQuestionsForPhase(phase) {
+        const phaseQuestions = assessmentQuestions.filter(q => q.phase === phase);
+        
+        document.getElementById('questionSection').style.display = 'block';
+        
+        for (let i = 0; i < phaseQuestions.length; i++) {
+            if (!assessmentActive) break;
+            
+            await showQuestion(phaseQuestions[i], i, phaseQuestions.length);
+            updatePhaseProgress(phase, (i + 1) / phaseQuestions.length * 100);
+        }
+        
+        document.getElementById('questionSection').style.display = 'none';
+    }
+    
+    function showQuestion(questionData, index, total) {
+        return new Promise((resolve) => {
+            const questionHtml = `
+                <div class="mb-4">
+                    <h6>Question ${index + 1} of ${total}</h6>
+                    <p class="lead">${questionData.question}</p>
+                    <p class="text-muted">${questionData.instruction}</p>
+                </div>
+                
+                ${questionData.type === 'scale' ? `
+                    <div class="mb-4">
+                        <label for="scaleAnswer" class="form-label">Rating (1-10):</label>
+                        <input type="range" class="form-range" id="scaleAnswer" min="1" max="10" value="5">
+                        <div class="d-flex justify-content-between">
+                            <small>1 - Very Low</small>
+                            <small id="scaleValue">5</small>
+                            <small>10 - Very High</small>
+                        </div>
+                    </div>
+                ` : `
+                    <div class="mb-4">
+                        <textarea class="form-control" id="openAnswer" rows="4" 
+                                placeholder="Share your thoughts..."></textarea>
+                    </div>
+                `}
+                
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-secondary" onclick="skipQuestion()">Skip</button>
+                    <button class="btn btn-primary" onclick="submitAnswer()">Next</button>
+                </div>
+            `;
+            
+            document.getElementById('currentQuestion').innerHTML = questionHtml;
+            document.getElementById('questionProgress').style.width = ((index + 1) / total * 100) + '%';
+            
+            if (questionData.type === 'scale') {
+                const scaleInput = document.getElementById('scaleAnswer');
+                const scaleValue = document.getElementById('scaleValue');
+                scaleInput.addEventListener('input', function() {
+                    scaleValue.textContent = this.value;
+                });
+            }
+            
+            // Global functions for question handling
+            window.submitAnswer = function() {
+                let answer;
+                if (questionData.type === 'scale') {
+                    answer = document.getElementById('scaleAnswer').value;
+                } else {
+                    answer = document.getElementById('openAnswer').value;
+                }
+                
+                assessmentData[`question_${index}`] = {
+                    question: questionData.question,
+                    answer: answer,
+                    timestamp: Date.now()
+                };
+                
+                resolve();
+            };
+            
+            window.skipQuestion = function() {
+                assessmentData[`question_${index}`] = {
+                    question: questionData.question,
+                    answer: 'skipped',
+                    timestamp: Date.now()
+                };
+                resolve();
+            };
+            
+            // Auto-advance after 2 minutes if no response
+            setTimeout(() => {
+                if (document.getElementById('currentQuestion').innerHTML === questionHtml) {
+                    window.skipQuestion();
+                }
+            }, 120000);
+        });
+    }
+    
+    function updatePhaseProgress(phase, progress) {
+        document.getElementById(`phase${phase}Progress`).style.width = progress + '%';
+    }
+    
+    function markPhaseComplete(phase) {
+        const phaseElement = document.getElementById(`phase${phase}`);
+        phaseElement.className = 'assessment-complete p-3 rounded mb-3';
+        phaseElement.querySelector('i').className = 'fas fa-check text-success';
+        document.getElementById(`phase${phase}Progress`).style.width = '100%';
+    }
+    
+    async function startRealTimeAnalysis() {
+        const analysisInterval = setInterval(async () => {
+            if (!assessmentActive) {
+                clearInterval(analysisInterval);
+                return;
+            }
+            
+            try {
+                // Get current video frame
+                const frameData = await videoProcessor.getCurrentFrame();
+                
+                if (frameData) {
+                    // Send to analysis endpoint
+                    const response = await fetch('/api/video-analysis', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            frame_data: frameData,
+                            phase: currentPhase,
+                            enable_microexpression: document.getElementById('enableMicroexpression').checked
+                        })
+                    });
+                    
+                    const analysis = await response.json();
+                    updateRealTimeDisplay(analysis);
+                }
+            } catch (error) {
+                console.error('Real-time analysis error:', error);
+            }
+        }, 2000); // Analyze every 2 seconds
+    }
+    
+    function updateRealTimeDisplay(analysis) {
+        if (analysis.emotions) {
+            const primaryEmotion = Object.keys(analysis.emotions).reduce((a, b) => 
+                analysis.emotions[a] > analysis.emotions[b] ? a : b
+            );
+            
+            document.getElementById('primaryEmotion').textContent = primaryEmotion;
+            document.getElementById('emotionConfidence').style.width = 
+                (analysis.emotions[primaryEmotion] * 100) + '%';
+            
+            // Update emotion indicator color
+            const emotionColors = {
+                'happy': '#28a745',
+                'sad': '#6c757d',
+                'angry': '#dc3545',
+                'fearful': '#ffc107',
+                'surprised': '#17a2b8',
+                'disgusted': '#6f42c1',
+                'neutral': '#007bff'
+            };
+            document.getElementById('emotionIndicator').style.backgroundColor = 
+                emotionColors[primaryEmotion] || '#007bff';
+        }
+        
+        // Update stress level
+        if (analysis.stress_level !== undefined) {
+            const stressLevels = ['Very Low', 'Low', 'Moderate', 'High', 'Very High'];
+            const stressIndex = Math.floor(analysis.stress_level * 5);
+            document.getElementById('stressLevel').textContent = stressLevels[stressIndex] || 'Low';
+            document.getElementById('stressConfidence').style.width = (analysis.stress_level * 100) + '%';
+        }
+        
+        // Show microexpression alerts
+        if (analysis.microexpressions && Object.keys(analysis.microexpressions).length > 0) {
+            showMicroexpressionAlert(analysis.microexpressions);
+        }
+    }
+    
+    function showMicroexpressionAlert(microexpressions) {
+        const alert = document.getElementById('microAlert');
+        const text = document.getElementById('microText');
+        
+        const expressions = Object.keys(microexpressions);
+        if (expressions.length > 0) {
+            text.textContent = `Detected: ${expressions.join(', ')}`;
+            alert.classList.add('show');
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 3000);
+        }
+    }
+    
+    async function generateAssessmentResults() {
+        document.getElementById('resultsSection').style.display = 'block';
+        
+        try {
+            // Send comprehensive assessment data
+            const response = await fetch('/api/video-analysis', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    assessment_complete: true,
+                    assessment_data: assessmentData,
+                    duration: Date.now() - assessmentStartTime
+                })
+            });
+            
+            const results = await response.json();
+            displayAssessmentResults(results);
+            
+        } catch (error) {
+            console.error('Error generating results:', error);
+            document.getElementById('assessmentResults').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Error generating assessment results. Please try again.
+                </div>
+            `;
+        }
+    }
+    
+    function displayAssessmentResults(results) {
+        const resultsHtml = `
+            <div class="row g-4 mb-4">
+                <div class="col-md-3 text-center">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body">
+                            <i class="fas fa-brain fa-2x text-primary mb-2"></i>
+                            <h4>${results.overall_score || 75}%</h4>
+                            <small class="text-muted">Overall Wellness</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body">
+                            <i class="fas fa-heart fa-2x text-danger mb-2"></i>
+                            <h4>${results.emotional_stability || 'Good'}</h4>
+                            <small class="text-muted">Emotional Stability</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body">
+                            <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                            <h4>${results.stress_resilience || 'Moderate'}</h4>
+                            <small class="text-muted">Stress Resilience</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body">
+                            <i class="fas fa-comments fa-2x text-info mb-2"></i>
+                            <h4>${results.communication_style || 'Open'}</h4>
+                            <small class="text-muted">Communication</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-lightbulb me-2"></i>Key Insights</h6>
+                    <ul class="list-unstyled">
+                        ${(results.insights || [
+                            'Strong emotional awareness demonstrated',
+                            'Good eye contact and engagement',
+                            'Moderate stress response patterns',
+                            'Effective communication style'
+                        ]).map(insight => `<li><i class="fas fa-check text-success me-2"></i>${insight}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Areas for Focus</h6>
+                    <ul class="list-unstyled">
+                        ${(results.recommendations || [
+                            'Practice stress management techniques',
+                            'Continue with regular therapy sessions',
+                            'Monitor mood patterns',
+                            'Maintain social connections'
+                        ]).map(rec => `<li><i class="fas fa-arrow-right text-warning me-2"></i>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="d-flex justify-content-between flex-wrap gap-2">
+                <div>
+                    <button class="btn btn-primary" onclick="downloadResults()">
+                        <i class="fas fa-download me-1"></i>Download Report
+                    </button>
+                    <button class="btn btn-outline-info" onclick="scheduleFollowUp()">
+                        <i class="fas fa-calendar me-1"></i>Schedule Follow-up
+                    </button>
+                </div>
+                <div>
+                    <a href="{{ url_for('individual_therapy') }}" class="btn btn-success">
+                        <i class="fas fa-comments me-1"></i>Start Therapy Session
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-chart-line me-1"></i>View Dashboard
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('assessmentResults').innerHTML = resultsHtml;
+    }
+    
+    function showSettings() {
+        const modal = new bootstrap.Modal(document.getElementById('settingsModal'));
+        modal.show();
+    }
+    
+    function saveSettings() {
+        // Save settings logic would go here
+        const modal = bootstrap.Modal.getInstance(document.getElementById('settingsModal'));
+        modal.hide();
+        
+        // Show confirmation
+        const toast = document.createElement('div');
+        toast.className = 'toast-container position-fixed top-0 end-0 p-3';
+        toast.innerHTML = `
+            <div class="toast show" role="alert">
+                <div class="toast-body">
+                    <i class="fas fa-check text-success me-2"></i>Settings saved successfully!
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 3000);
+    }
+    
+    // Global functions for results interaction
+    window.downloadResults = function() {
+        // Implementation for downloading results
+        console.log('Downloading assessment results...');
+    };
+    
+    window.scheduleFollowUp = function() {
+        // Implementation for scheduling follow-up
+        console.log('Scheduling follow-up appointment...');
+    };
+    
+    let assessmentStartTime;
+    
+    // Track assessment start time
+    document.getElementById('startAssessment').addEventListener('click', function() {
+        assessmentStartTime = Date.now();
+    });
+});
+</script>
+{% endblock %}

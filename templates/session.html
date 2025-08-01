@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Therapy Session - Mind Mend{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-comments me-2"></i>Therapy Session</h3>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+
+                {% if not ai_response %}
+                <!-- Session Input Form -->
+                <form method="post" id="sessionForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Your Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="session_type" class="form-label">Session Type</label>
+                        <select class="form-select" id="session_type" name="session_type">
+                            <option value="individual">Individual Therapy</option>
+                            <option value="couple">Couple Therapy</option>
+                            <option value="group">Group Therapy</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="user_input" class="form-label">What's on your mind?</label>
+                        <textarea class="form-control" id="user_input" name="user_input" rows="5" 
+                                placeholder="Share your thoughts, feelings, or concerns..." required></textarea>
+                        <div class="form-text">Your input will be analyzed by AI for personalized support.</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <!-- Session Results -->
+                <div class="session-results">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-user me-2"></i>Session Summary</h5>
+                        <p><strong>Name:</strong> {{ name }}</p>
+                        <p><strong>Session Type:</strong> {{ session_type.title() }}</p>
+                    </div>
+
+                    <!-- User Input -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6><i class="fas fa-comment me-2"></i>Your Message</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ user_input }}</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Response -->
+                    <div class="card mb-3 border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h6><i class="fas fa-robot me-2"></i>AI Therapist Response</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ ai_response }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Alerts Section -->
+                    {% if alerts %}
+                    <div class="card mb-3 border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Health & Safety Alerts</h6>
+                        </div>
+                        <div class="card-body">
+                            {% for alert in alerts %}
+                            <div class="alert alert-{{ 'danger' if alert.severity == 'critical' else 'warning' if alert.severity == 'high' else 'info' }} mb-2">
+                                <strong>{{ alert.message }}</strong>
+                                {% if alert.resources %}
+                                <div class="mt-2">
+                                    <small><strong>Resources:</strong></small>
+                                    <ul class="mb-0">
+                                        {% for resource in alert.resources %}
+                                        <li><small>{{ resource.name }}: {{ resource.contact }}</small></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ url_for('session') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>New Session
+                        </a>
+                        <a href="{{ url_for('video_assessment') }}" class="btn btn-info">
+                            <i class="fas fa-video me-2"></i>Video Assessment
+                        </a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-chart-line me-2"></i>View Progress
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Real-time Analysis Panel (Hidden by default) -->
+<div class="row mt-4" id="realTimePanel" style="display: none;">
+    <div class="col-lg-8 mx-auto">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h6><i class="fas fa-analytics me-2"></i>Real-time Analysis</h6>
+            </div>
+            <div class="card-body">
+                <div id="realTimeResults">
+                    <!-- Real-time analysis results will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userInput = document.getElementById('user_input');
+    const realTimePanel = document.getElementById('realTimePanel');
+    const realTimeResults = document.getElementById('realTimeResults');
+    let analysisTimeout;
+
+    // Real-time text analysis
+    if (userInput) {
+        userInput.addEventListener('input', function() {
+            clearTimeout(analysisTimeout);
+            
+            const text = this.value.trim();
+            if (text.length > 50) { // Only analyze if sufficient text
+                analysisTimeout = setTimeout(() => {
+                    analyzeText(text);
+                }, 1000); // Debounce for 1 second
+            }
+        });
+    }
+
+    function analyzeText(text) {
+        fetch('/api/analyze-text', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: text,
+                session_type: document.getElementById('session_type')?.value || 'individual'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Analysis error:', data.error);
+                return;
+            }
+            displayRealTimeAnalysis(data);
+            realTimePanel.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Analysis error:', error);
+        });
+    }
+
+    function displayRealTimeAnalysis(data) {
+        let html = '';
+        
+        // AI Response Preview
+        if (data.ai_response && typeof data.ai_response === 'object') {
+            html += '<div class="mb-3">';
+            html += '<h6><i class="fas fa-brain me-2"></i>AI Insights</h6>';
+            html += `<p><strong>Emotional State:</strong> ${data.ai_response.emotional_state || 'Analyzing...'}</p>`;
+            if (data.ai_response.key_themes && data.ai_response.key_themes.length > 0) {
+                html += '<p><strong>Key Themes:</strong> ' + data.ai_response.key_themes.join(', ') + '</p>';
+            }
+            html += '</div>';
+        }
+
+        // Alerts
+        if (data.alerts && data.alerts.length > 0) {
+            html += '<div class="mb-3">';
+            html += '<h6><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Alerts</h6>';
+            data.alerts.forEach(alert => {
+                const alertClass = alert.severity === 'critical' ? 'danger' : 
+                                 alert.severity === 'high' ? 'warning' : 'info';
+                html += `<div class="alert alert-${alertClass} py-2 mb-2">${alert.message}</div>`;
+            });
+            html += '</div>';
+        }
+
+        // Exercises
+        if (data.exercises && data.exercises.length > 0) {
+            html += '<div class="mb-3">';
+            html += '<h6><i class="fas fa-dumbbell me-2"></i>Suggested Exercises</h6>';
+            data.exercises.slice(0, 2).forEach(exercise => {
+                html += `<div class="card card-body py-2 mb-2">`;
+                html += `<strong>${exercise.title}</strong> - ${exercise.description}`;
+                html += `</div>`;
+            });
+            html += '</div>';
+        }
+
+        realTimeResults.innerHTML = html || '<p class="text-muted">Analyzing your input...</p>';
+    }
+
+    // Form enhancement
+    const sessionForm = document.getElementById('sessionForm');
+    if (sessionForm) {
+        sessionForm.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            submitBtn.disabled = true;
+        });
+    }
+});
+</script>
+{% endblock %}

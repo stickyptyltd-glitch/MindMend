@@ -1,0 +1,488 @@
+{% extends "base.html" %}
+
+{% block title %}Individual Therapy - Mind Mend{% endblock %}
+
+{% block head %}
+<style>
+    .video-container {
+        position: relative;
+        background: #000;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .emotion-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 0.8em;
+    }
+    .biometric-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+    .status-normal { background-color: #28a745; }
+    .status-elevated { background-color: #ffc107; }
+    .status-high { background-color: #dc3545; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-user me-2"></i>Individual Therapy Session</h2>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary" id="toggleVideo" disabled>
+                    <i class="fas fa-video me-1"></i>Enable Video
+                </button>
+                <button class="btn btn-outline-success" id="toggleBiometric" disabled>
+                    <i class="fas fa-heartbeat me-1"></i>Connect Wearable
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Video and Emotion Analysis -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5><i class="fas fa-video me-2"></i>Video Analysis</h5>
+                <small class="text-muted">AI-powered emotion and microexpression detection</small>
+            </div>
+            <div class="card-body">
+                <div class="video-container mb-3" style="height: 300px;">
+                    <video id="videoElement" width="100%" height="100%" style="object-fit: cover;" muted></video>
+                    <div class="emotion-overlay" id="emotionOverlay">
+                        <div>Emotion: <span id="currentEmotion">Not detected</span></div>
+                        <div>Confidence: <span id="emotionConfidence">0%</span></div>
+                    </div>
+                </div>
+                
+                <!-- Emotion Chart -->
+                <canvas id="emotionChart" width="400" height="200"></canvas>
+                
+                <!-- Video Controls -->
+                <div class="mt-3">
+                    <button class="btn btn-primary btn-sm" id="startVideo">
+                        <i class="fas fa-play me-1"></i>Start Video
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="stopVideo" disabled>
+                        <i class="fas fa-stop me-1"></i>Stop Video
+                    </button>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input" type="checkbox" id="enableMicroexpression">
+                        <label class="form-check-label" for="enableMicroexpression">
+                            Enable Microexpression Analysis
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biometric Monitoring -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5><i class="fas fa-heartbeat me-2"></i>Biometric Monitoring</h5>
+                <small class="text-muted">Real-time health data integration</small>
+            </div>
+            <div class="card-body">
+                <!-- Biometric Status -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="card bg-dark border-0">
+                            <div class="card-body text-center py-2">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <span class="biometric-indicator status-normal" id="hrStatus"></span>
+                                    <div>
+                                        <div class="h4 mb-0" id="heartRate">--</div>
+                                        <small class="text-muted">Heart Rate</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-dark border-0">
+                            <div class="card-body text-center py-2">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <span class="biometric-indicator status-normal" id="stressStatus"></span>
+                                    <div>
+                                        <div class="h4 mb-0" id="stressLevel">--</div>
+                                        <small class="text-muted">Stress Level</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biometric Chart -->
+                <canvas id="biometricChart" width="400" height="150"></canvas>
+
+                <!-- Biometric Recommendations -->
+                <div class="mt-3" id="biometricRecommendations">
+                    <h6>Current Recommendations:</h6>
+                    <ul class="list-unstyled" id="recommendationsList">
+                        <li class="text-muted">Connect a wearable device to see recommendations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Therapy Session Interface -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-comments me-2"></i>Therapy Session</h5>
+            </div>
+            <div class="card-body">
+                <form id="therapyForm">
+                    <div class="mb-3">
+                        <label for="patientName" class="form-label">Your Name</label>
+                        <input type="text" class="form-control" id="patientName" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="sessionInput" class="form-label">What would you like to discuss today?</label>
+                        <textarea class="form-control" id="sessionInput" rows="4" 
+                                placeholder="Share your thoughts, feelings, or concerns..." required></textarea>
+                        <div class="form-text">
+                            Your input will be analyzed with AI along with video and biometric data for comprehensive support.
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="moodBefore" class="form-label">Mood Before Session (1-10)</label>
+                            <input type="range" class="form-range" id="moodBefore" min="1" max="10" value="5">
+                            <div class="d-flex justify-content-between">
+                                <small>Very Low</small>
+                                <small id="moodBeforeValue">5</small>
+                                <small>Very High</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sessionGoal" class="form-label">Session Goal</label>
+                            <select class="form-select" id="sessionGoal">
+                                <option value="general">General Support</option>
+                                <option value="anxiety">Anxiety Relief</option>
+                                <option value="depression">Depression Support</option>
+                                <option value="stress">Stress Management</option>
+                                <option value="trauma">Trauma Processing</option>
+                                <option value="relationships">Relationship Issues</option>
+                                <option value="self_esteem">Self-Esteem</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Start AI Analysis
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Response and Analysis -->
+<div class="row mt-4" id="responseSection" style="display: none;">
+    <div class="col-12">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5><i class="fas fa-robot me-2"></i>AI Therapist Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div id="aiResponse"></div>
+                
+                <!-- Multi-modal Analysis Results -->
+                <div class="row g-3 mt-3" id="analysisResults">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Personalized Exercises -->
+<div class="row mt-4" id="exercisesSection" style="display: none;">
+    <div class="col-12">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-dumbbell me-2"></i>Personalized Exercises</h5>
+            </div>
+            <div class="card-body">
+                <div id="exercisesList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Health Alerts -->
+<div class="row mt-4" id="alertsSection" style="display: none;">
+    <div class="col-12">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Health & Safety Alerts</h5>
+            </div>
+            <div class="card-body">
+                <div id="healthAlerts"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-processing.js') }}"></script>
+<script src="{{ url_for('static', filename='js/biometric-integration.js') }}"></script>
+<script src="{{ url_for('static', filename='js/real-time-analysis.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize components
+    const videoProcessor = new VideoProcessor();
+    const biometricIntegrator = new BiometricIntegrator();
+    const realTimeAnalyzer = new RealTimeAnalyzer();
+
+    // Mood slider
+    const moodSlider = document.getElementById('moodBefore');
+    const moodValue = document.getElementById('moodBeforeValue');
+    moodSlider.addEventListener('input', function() {
+        moodValue.textContent = this.value;
+    });
+
+    // Form submission
+    const therapyForm = document.getElementById('therapyForm');
+    therapyForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            name: document.getElementById('patientName').value,
+            input: document.getElementById('sessionInput').value,
+            mood_before: document.getElementById('moodBefore').value,
+            session_goal: document.getElementById('sessionGoal').value,
+            session_type: 'individual'
+        };
+
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+        submitBtn.disabled = true;
+
+        try {
+            // Start comprehensive analysis
+            await processTherapySession(formData);
+        } catch (error) {
+            console.error('Therapy session error:', error);
+            alert('An error occurred during analysis. Please try again.');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    async function processTherapySession(formData) {
+        // Combine text, video, and biometric analysis
+        const analysisData = {
+            text: formData.input,
+            session_type: formData.session_type,
+            video_enabled: videoProcessor.isActive(),
+            biometric_enabled: biometricIntegrator.isConnected(),
+            mood_before: formData.mood_before,
+            session_goal: formData.session_goal
+        };
+
+        // Get current video frame if available
+        if (videoProcessor.isActive()) {
+            analysisData.current_frame = await videoProcessor.getCurrentFrame();
+        }
+
+        // Get current biometric data if available
+        if (biometricIntegrator.isConnected()) {
+            analysisData.biometric_data = biometricIntegrator.getCurrentData();
+        }
+
+        // Send to AI analysis endpoint
+        const response = await fetch('/api/analyze-text', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(analysisData)
+        });
+
+        const result = await response.json();
+        displayAnalysisResults(result, formData);
+    }
+
+    function displayAnalysisResults(result, formData) {
+        // Display AI response
+        document.getElementById('aiResponse').innerHTML = `
+            <div class="alert alert-info">
+                <h6>AI Therapist Response:</h6>
+                <p>${result.ai_response || 'Analysis complete. Please see detailed results below.'}</p>
+            </div>
+        `;
+
+        // Display multi-modal analysis
+        const analysisResults = document.getElementById('analysisResults');
+        let analysisHtml = '';
+
+        if (result.emotional_analysis) {
+            analysisHtml += `
+                <div class="col-md-4">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-brain fa-2x text-primary mb-2"></i>
+                            <h6>Emotional State</h6>
+                            <p class="mb-0">${result.emotional_analysis.primary_emotion || 'Unknown'}</p>
+                            <small class="text-muted">Confidence: ${result.emotional_analysis.confidence || 0}%</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (result.risk_assessment) {
+            const riskColor = result.risk_assessment.level === 'high' ? 'danger' : 
+                            result.risk_assessment.level === 'medium' ? 'warning' : 'success';
+            analysisHtml += `
+                <div class="col-md-4">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt fa-2x text-${riskColor} mb-2"></i>
+                            <h6>Risk Level</h6>
+                            <p class="mb-0 text-${riskColor}">${result.risk_assessment.level || 'Low'}</p>
+                            <small class="text-muted">Score: ${result.risk_assessment.score || 0}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        if (result.therapy_recommendations) {
+            analysisHtml += `
+                <div class="col-md-4">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-lightbulb fa-2x text-warning mb-2"></i>
+                            <h6>Recommendations</h6>
+                            <p class="mb-0">${result.therapy_recommendations.primary || 'Continue current approach'}</p>
+                            <small class="text-muted">${result.therapy_recommendations.count || 0} total suggestions</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        analysisResults.innerHTML = analysisHtml;
+
+        // Display exercises
+        if (result.exercises && result.exercises.length > 0) {
+            displayExercises(result.exercises);
+        }
+
+        // Display alerts
+        if (result.alerts && result.alerts.length > 0) {
+            displayHealthAlerts(result.alerts);
+        }
+
+        // Show all sections
+        document.getElementById('responseSection').style.display = 'block';
+        if (result.exercises && result.exercises.length > 0) {
+            document.getElementById('exercisesSection').style.display = 'block';
+        }
+        if (result.alerts && result.alerts.length > 0) {
+            document.getElementById('alertsSection').style.display = 'block';
+        }
+    }
+
+    function displayExercises(exercises) {
+        const exercisesList = document.getElementById('exercisesList');
+        let exercisesHtml = '';
+
+        exercises.forEach((exercise, index) => {
+            exercisesHtml += `
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6><i class="fas fa-play-circle me-2"></i>${exercise.title}</h6>
+                        <small class="text-muted">${exercise.duration_minutes} minutes • Difficulty: ${exercise.difficulty_level}/5</small>
+                    </div>
+                    <div class="card-body">
+                        <p>${exercise.description}</p>
+                        <div class="mb-3">
+                            <strong>Instructions:</strong>
+                            <ol class="mt-2">
+                                ${exercise.instructions.map(step => `<li>${step}</li>`).join('')}
+                            </ol>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Benefits:</strong> ${exercise.benefits ? exercise.benefits.join(', ') : 'General wellness'}
+                            </div>
+                            <button class="btn btn-success btn-sm" onclick="startExercise(${index})">
+                                <i class="fas fa-play me-1"></i>Start Exercise
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        exercisesList.innerHTML = exercisesHtml;
+    }
+
+    function displayHealthAlerts(alerts) {
+        const healthAlerts = document.getElementById('healthAlerts');
+        let alertsHtml = '';
+
+        alerts.forEach(alert => {
+            const alertClass = alert.severity === 'critical' ? 'danger' : 
+                             alert.severity === 'high' ? 'warning' : 'info';
+            alertsHtml += `
+                <div class="alert alert-${alertClass}">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>${alert.message}</h6>
+                    ${alert.action ? `<p class="mb-2"><strong>Recommended Action:</strong> ${alert.action}</p>` : ''}
+                    ${alert.resources ? `
+                        <div class="mt-2">
+                            <strong>Resources:</strong>
+                            <ul class="mb-0">
+                                ${alert.resources.map(resource => `
+                                    <li>${resource.name}: ${resource.contact}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        });
+
+        healthAlerts.innerHTML = alertsHtml;
+    }
+
+    // Global function for exercise interaction
+    window.startExercise = function(index) {
+        // Implementation for starting guided exercises
+        console.log('Starting exercise:', index);
+        // This would integrate with a guided exercise system
+    };
+});
+</script>
+{% endblock %}

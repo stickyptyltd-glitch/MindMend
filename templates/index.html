@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}Mind Mend - AI Mental Health Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Hero Section -->
+    <div class="col-12">
+        <div class="jumbotron bg-primary text-white rounded p-4 mb-4">
+            <div class="container text-center">
+                <h1 class="display-4">
+                    <i class="fas fa-brain me-3"></i>Mind Mend
+                </h1>
+                <p class="lead">Advanced AI-powered mental health support with video assessment, biometric integration, and expert human guidance.</p>
+                <hr class="my-4">
+                <p>Experience comprehensive therapy with real-time emotion analysis, personalized exercises, and 24/7 AI support.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Individual Therapy -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>Individual Therapy
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Personal one-on-one AI therapy sessions with advanced emotion recognition and biometric monitoring.</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Video emotion analysis</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Heart rate monitoring</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Personalized exercises</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Crisis detection</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('individual_therapy') }}" class="btn btn-primary w-100">
+                    <i class="fas fa-play me-2"></i>Start Individual Session
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Relationship Therapy -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-heart me-2"></i>Relationship Therapy
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">AI-guided couples counseling with communication analysis and relationship dynamics assessment.</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Dual emotion tracking</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Communication patterns</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Conflict resolution</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Attachment analysis</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('relationship_therapy') }}" class="btn btn-danger w-100">
+                    <i class="fas fa-play me-2"></i>Start Relationship Session
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Therapy -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>Group Therapy
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Facilitated group sessions with AI moderation and peer support analytics.</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Group dynamics AI</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Peer support tracking</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Participation analysis</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Social connection metrics</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('group_therapy') }}" class="btn btn-success w-100">
+                    <i class="fas fa-play me-2"></i>Join Group Session
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Assessment -->
+    <div class="col-lg-6 col-md-6">
+        <div class="card h-100 border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-video me-2"></i>AI Video Assessment
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Comprehensive AI-powered video interview with microexpression analysis and emotional state evaluation.</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Facial expression analysis</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Voice tone analysis</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Eye movement tracking</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Microexpression detection</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Real-time mood assessment</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('video_assessment') }}" class="btn btn-info w-100">
+                    <i class="fas fa-camera me-2"></i>Start Video Assessment
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="col-lg-6 col-md-6">
+        <div class="card h-100 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Progress Dashboard
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Track your mental health journey with comprehensive analytics and biometric integration.</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Progress tracking</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Biometric integration</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Exercise completion</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Mood trends</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Risk assessment</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-warning w-100">
+                    <i class="fas fa-chart-bar me-2"></i>View Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">
+            <i class="fas fa-star me-2"></i>Advanced AI Features
+        </h2>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-3 text-center">
+        <div class="card bg-dark border-0 h-100">
+            <div class="card-body">
+                <i class="fas fa-robot fa-3x text-primary mb-3"></i>
+                <h5>Multi-Modal AI</h5>
+                <p class="text-muted">Combines text, video, audio, and biometric data for comprehensive analysis.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 text-center">
+        <div class="card bg-dark border-0 h-100">
+            <div class="card-body">
+                <i class="fas fa-heartbeat fa-3x text-danger mb-3"></i>
+                <h5>Biometric Integration</h5>
+                <p class="text-muted">Real-time monitoring of heart rate, stress levels, and sleep patterns.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 text-center">
+        <div class="card bg-dark border-0 h-100">
+            <div class="card-body">
+                <i class="fas fa-eye fa-3x text-info mb-3"></i>
+                <h5>Microexpression Detection</h5>
+                <p class="text-muted">Advanced facial analysis to detect subtle emotional changes.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 text-center">
+        <div class="card bg-dark border-0 h-100">
+            <div class="card-body">
+                <i class="fas fa-shield-alt fa-3x text-success mb-3"></i>
+                <h5>Crisis Prevention</h5>
+                <p class="text-muted">AI-powered risk assessment with immediate intervention protocols.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card bg-gradient border-0 text-center">
+            <div class="card-body py-5">
+                <h3 class="text-white mb-3">Ready to start your mental health journey?</h3>
+                <p class="text-white-50 mb-4">Experience the future of therapy with AI-powered insights and human expertise.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('individual_therapy') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play me-2"></i>Start Free Session
+                    </a>
+                    <a href="{{ url_for('video_assessment') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-video me-2"></i>Video Assessment
+                    </a>
+                    <a href="{{ url_for('premium') }}" class="btn btn-warning btn-lg">
+                        <i class="fas fa-crown me-2"></i>Upgrade to Premium
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add any JavaScript for the home page here
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate cards on scroll
+    const cards = document.querySelectorAll('.card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+            }
+        });
+    });
+    
+    cards.forEach(card => {
+        observer.observe(card);
+    });
+});
+</script>
+{% endblock %}
