@@ -7,6 +7,9 @@ Mind Mend is a comprehensive AI-powered mental health platform built with Flask 
 - Enhanced AI knowledge base with specialized training in CBT, DBT, ACT, MBSR, EFT, Gottman Method
 - Comprehensive therapeutic activities library with 40+ evidence-based exercises
 - Couples counseling with dual login support (same or separate devices)
+- Advanced mood tracking with patterns analysis and insights
+- Progress tracking with SMART goals and treatment planning
+- Personalized self-care planner with wellness routines
 - Session-specific AI prompts for individual, couple, and group therapy
 - Premium human counselor hooks with payment gateway preparation
 - Advanced video assessment placeholders with microexpression analysis hooks
