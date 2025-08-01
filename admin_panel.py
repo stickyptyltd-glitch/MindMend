@@ -119,20 +119,23 @@ def admin_index():
 def login():
     """Admin login"""
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        email = request.form.get('email', '')
+        password = request.form.get('password', '')
         
-        admin_user = admin_manager.admin_users.get(email)
-        if admin_user and check_password_hash(admin_user['password_hash'], password):
-            session['admin_authenticated'] = True
-            session['admin_email'] = email
-            session['admin_role'] = admin_user['role']
-            session['user_role'] = admin_user['role']  # Set for SecurityRoles
-            session['last_activity'] = datetime.utcnow().isoformat()
-            flash('Logged in successfully', 'success')
-            return redirect(url_for('admin.dashboard'))
+        if email:
+            admin_user = admin_manager.admin_users.get(email)
+            if admin_user and password and check_password_hash(admin_user['password_hash'], password):
+                session['admin_authenticated'] = True
+                session['admin_email'] = email
+                session['admin_role'] = admin_user['role']
+                session['user_role'] = admin_user['role']  # Set for SecurityRoles
+                session['last_activity'] = datetime.utcnow().isoformat()
+                flash('Logged in successfully', 'success')
+                return redirect(url_for('admin.dashboard'))
+            else:
+                flash('Invalid credentials', 'error')
         else:
-            flash('Invalid credentials', 'error')
+            flash('Please provide email and password', 'error')
     
     return render_template('admin/login.html')
 
@@ -200,7 +203,9 @@ def api_keys():
             if request.form.get(key):
                 api_keys[key] = request.form.get(key)
                 # In production, encrypt and store securely
-                os.environ[key.upper()] = request.form.get(key)
+                value = request.form.get(key)
+                if value:
+                    os.environ[key.upper()] = value
         
         # Test API keys
         test_results = test_api_connections(api_keys)
