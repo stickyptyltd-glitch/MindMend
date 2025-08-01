@@ -64,6 +64,28 @@
                     <h5 class="mb-0 text-dark"><i class="fas fa-tools me-2"></i>Session Tools</h5>
                 </div>
                 <div class="card-body">
+                    <div class="dropdown mb-2">
+                        <button class="btn btn-primary dropdown-toggle w-100" type="button" id="conversationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-comments me-2"></i>Get Conversation Starter
+                        </button>
+                        <ul class="dropdown-menu w-100" aria-labelledby="conversationDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="getConversationStarter('random')">
+                                <i class="fas fa-random me-2"></i>Random Topic</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="getConversationStarter('connection')">
+                                <i class="fas fa-heart me-2"></i>Connection & Intimacy</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="getConversationStarter('communication')">
+                                <i class="fas fa-comments me-2"></i>Communication</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="getConversationStarter('conflict_resolution')">
+                                <i class="fas fa-handshake me-2"></i>Conflict Resolution</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="getConversationStarter('growth')">
+                                <i class="fas fa-seedling me-2"></i>Growth & Goals</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="getConversationStarter('appreciation')">
+                                <i class="fas fa-star me-2"></i>Appreciation</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="getConversationStarter('fun')">
+                                <i class="fas fa-smile me-2"></i>Fun & Playfulness</a></li>
+                        </ul>
+                    </div>
                     <button class="btn btn-info w-100 mb-2" onclick="requestExercise()">
                         <i class="fas fa-tasks me-2"></i>Request Exercise
                     </button>
@@ -76,6 +98,29 @@
                     <button class="btn btn-danger w-100" onclick="endSession()">
                         <i class="fas fa-stop me-2"></i>End Session
                     </button>
+                </div>
+            </div>
+
+            <!-- Conversation Starters -->
+            <div class="card mb-3" id="conversationStarterCard" style="display: none;">
+                <div class="card-header bg-primary">
+                    <h5 class="mb-0 text-white">
+                        <i class="fas fa-lightbulb me-2"></i>Conversation Starter
+                        <button type="button" class="btn-close btn-close-white float-end" onclick="hideConversationStarter()"></button>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="conversationStarterContent">
+                        <!-- Dynamic content will be inserted here -->
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-sm btn-outline-primary" onclick="getNewStarter()">
+                            <i class="fas fa-refresh me-1"></i>Try Another
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="useStarter()">
+                            <i class="fas fa-check me-1"></i>Use This
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -130,6 +175,8 @@
 const partner1Name = "{{ partner1_name }}";
 const partner2Name = "{{ partner2_name }}";
 let currentSpeaker = 'partner1';
+let currentStarter = null;
+let conversationHistory = [];
 
 // Update current speaker
 document.querySelectorAll('input[name="currentSpeaker"]').forEach(radio => {
@@ -262,6 +309,83 @@ async function requestSummary() {
 function endSession() {
     if (confirm('Are you sure you want to end this session?')) {
         window.location.href = '{{ url_for("couples_logout") }}';
+    }
+}
+
+// Conversation Starter Functions
+async function getConversationStarter(category = 'random') {
+    try {
+        const response = await fetch('/api/conversation_starter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                category: category,
+                depth: 'medium',
+                history: conversationHistory.slice(-5)
+            })
+        });
+        
+        const data = await response.json();
+        if (data.starter) {
+            currentStarter = data.starter;
+            displayConversationStarter(data.starter);
+        }
+    } catch (error) {
+        console.error('Error getting conversation starter:', error);
+        alert('Unable to get conversation starter. Please try again.');
+    }
+}
+
+function displayConversationStarter(starter) {
+    const card = document.getElementById('conversationStarterCard');
+    const content = document.getElementById('conversationStarterContent');
+    
+    let html = `
+        <div class="starter-category mb-2">
+            <span class="badge bg-secondary">${starter.main_category}</span>
+            <span class="badge bg-info">${starter.depth} depth</span>
+        </div>
+        <p class="lead mb-3">${starter.prompt}</p>
+    `;
+    
+    if (starter.follow_up) {
+        html += `<p class="text-muted mb-2"><strong>Follow-up:</strong> ${starter.follow_up}</p>`;
+    }
+    
+    if (starter.context) {
+        html += `<p class="text-info small"><em>${starter.context}</em></p>`;
+    }
+    
+    content.innerHTML = html;
+    card.style.display = 'block';
+    
+    // Add to conversation history
+    conversationHistory.push(starter.category);
+}
+
+function hideConversationStarter() {
+    document.getElementById('conversationStarterCard').style.display = 'none';
+}
+
+async function getNewStarter() {
+    await getConversationStarter();
+}
+
+function useStarter() {
+    if (currentStarter) {
+        // Add the starter to the chat
+        addMessage('AI Therapist', `Here's a conversation topic: "${currentStarter.prompt}"`, 'ai');
+        
+        // Add follow-up if available
+        if (currentStarter.follow_up) {
+            setTimeout(() => {
+                addMessage('AI Therapist', `And when you're ready: "${currentStarter.follow_up}"`, 'ai');
+            }, 1000);
+        }
+        
+        hideConversationStarter();
     }
 }
 </script>

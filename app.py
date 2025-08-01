@@ -89,6 +89,10 @@ video_analyzer = VideoAnalyzer()
 biometric_integrator = BiometricIntegrator()
 exercise_generator = ExerciseGenerator()
 
+# Import conversation starters
+from models.conversation_starters import ConversationStarterGenerator
+conversation_starter_generator = ConversationStarterGenerator()
+
 @app.route("/")
 def home():
     """Home page with therapy type selection"""
@@ -401,6 +405,28 @@ def api_couples_summary():
     summary = "Today's session focused on improving communication and understanding each other's perspectives. Key themes included expressing feelings constructively and listening actively. Continue practicing the exercises we discussed."
     
     return jsonify({'summary': summary})
+
+@app.route('/api/conversation_starter', methods=['POST'])
+def api_conversation_starter():
+    """Get AI-powered conversation starter for couples"""
+    try:
+        data = request.json
+        category = data.get('category', 'random')
+        depth = data.get('depth', 'medium')
+        history = data.get('history', [])
+        
+        # Get conversation starter
+        starter = conversation_starter_generator.get_starter(
+            category=category,
+            depth=depth,
+            recent_topics=history
+        )
+        
+        return jsonify({'starter': starter})
+        
+    except Exception as e:
+        app.logger.error(f'Conversation starter error: {e}')
+        return jsonify({'error': 'Failed to get conversation starter'}), 500
 
 # Activities Routes
 @app.route('/activities')
