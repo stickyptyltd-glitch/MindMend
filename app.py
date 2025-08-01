@@ -70,11 +70,13 @@ with app.app_context():
     from mobile_app import mobile_bp, MobileAppIntegration
     from payment_integration import payment_bp
     from security_enhancements import SecurityManager
+    from media_pack import media_bp
     
     # Register blueprints
     app.register_blueprint(admin_bp)
     app.register_blueprint(counselor_bp)
     app.register_blueprint(payment_bp)
+    app.register_blueprint(media_bp)
     
     # Initialize security and mobile integration
     security_manager = SecurityManager(app)
