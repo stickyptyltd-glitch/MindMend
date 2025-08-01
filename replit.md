@@ -2,6 +2,13 @@
 
 Mind Mend is a comprehensive AI-powered mental health platform built with Flask that provides therapeutic support through multiple modalities. The application integrates video analysis, biometric monitoring, and AI-driven therapy sessions to offer personalized mental health care. It supports individual, couple, and group therapy sessions with real-time emotion detection, crisis intervention, and automated exercise generation.
 
+**Current Version: Level 2**
+- Real OpenAI GPT-4o integration for authentic therapeutic responses
+- Session-specific AI prompts for individual, couple, and group therapy
+- Premium human counselor hooks with payment gateway preparation
+- Advanced video assessment placeholders with microexpression analysis hooks
+- Enhanced crisis detection with multi-modal analysis preparation
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -35,10 +42,20 @@ Preferred communication style: Simple, everyday language.
 - **Video Processing**: Client-side frame capture with selective server transmission
 
 ## AI Integration Architecture
-- **Primary AI**: OpenAI GPT-4o for therapeutic responses and analysis
+- **Primary AI**: OpenAI GPT-4o for therapeutic responses and analysis (Level 2: ACTIVE)
+- **Session-Specific Prompts**: Different therapeutic approaches for individual, couple, and group sessions
 - **Fallback System**: Local dummy responses when API unavailable
-- **Multi-modal Analysis**: Combined text, video, and biometric data processing
+- **Multi-modal Analysis**: Combined text, video, and biometric data processing (Level 3+ preparation)
 - **Context-aware Responses**: Session type and historical data consideration
+- **Future AI Modules**: Placeholder classes for microexpression analysis and biosensor integration
+
+## Level 2 Features (Current)
+- **Real AI Responses**: OpenAI GPT-4o integration with authentic therapeutic conversations
+- **Enhanced Session Types**: Specialized prompts for individual, couple, and group therapy
+- **Premium Counselor Hooks**: Placeholder routes and UI for human therapist services
+- **Video Assessment Platform**: Advanced video analysis preparation with WebRTC hooks
+- **Payment Integration Hooks**: Stripe/PayPal preparation for premium services
+- **Microexpression Analysis Preparation**: Future AI modules and integration points documented
 
 # External Dependencies
 

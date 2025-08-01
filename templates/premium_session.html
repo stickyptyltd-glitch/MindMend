@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Human Sessions - Mind Mend</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+        .session-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 900px;
+        }
+        .coming-soon-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .therapist-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: transform 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .therapist-card:hover {
+            transform: translateY(-3px);
+            border-color: #667eea;
+        }
+        .session-placeholder {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .video-call-placeholder {
+            background: #f8f9fa;
+            border: 3px dashed #dee2e6;
+            border-radius: 15px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: 2rem 0;
+        }
+        .btn-book-session {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-book-session:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="session-container">
+            <div class="text-center mb-4">
+                <div class="coming-soon-badge">
+                    <i class="fas fa-clock me-2"></i>Coming Soon
+                </div>
+                <h1 class="display-4 text-primary">
+                    <i class="fas fa-video me-3"></i>Premium Human Sessions
+                </h1>
+                <p class="lead text-muted">Connect with licensed mental health professionals</p>
+            </div>
+
+            <!-- Video Session Placeholder -->
+            <div class="video-call-placeholder">
+                <i class="fas fa-video fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">Video Session Platform</h4>
+                <p class="text-muted">Secure video calling with licensed therapists</p>
+                <small class="text-muted">WebRTC integration coming in Level 3+</small>
+            </div>
+
+            <!-- Available Therapists -->
+            <h3 class="mb-4"><i class="fas fa-users me-2"></i>Available Therapists (Preview)</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="therapist-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary rounded-circle p-3 me-3">
+                                <i class="fas fa-user-md text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Dr. Sarah Johnson</h5>
+                                <small class="text-muted">Licensed Clinical Psychologist</small>
+                            </div>
+                        </div>
+                        <p class="small">Specializes in anxiety, depression, and cognitive behavioral therapy. 15+ years experience.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <small class="text-muted ms-1">4.9 (127 reviews)</small>
+                            </div>
+                            <button class="btn btn-book-session btn-sm" onclick="showBookingModal('Dr. Sarah Johnson')">
+                                Book Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="therapist-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success rounded-circle p-3 me-3">
+                                <i class="fas fa-heart text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Dr. Michael Chen</h5>
+                                <small class="text-muted">Marriage & Family Therapist</small>
+                            </div>
+                        </div>
+                        <p class="small">Relationship counseling, couples therapy, and family dynamics. Bilingual (English/Mandarin).</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <small class="text-muted ms-1">4.8 (89 reviews)</small>
+                            </div>
+                            <button class="btn btn-book-session btn-sm" onclick="showBookingModal('Dr. Michael Chen')">
+                                Book Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="therapist-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-info rounded-circle p-3 me-3">
+                                <i class="fas fa-brain text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Dr. Emily Rodriguez</h5>
+                                <small class="text-muted">Trauma & PTSD Specialist</small>
+                            </div>
+                        </div>
+                        <p class="small">EMDR therapy, trauma recovery, and post-traumatic stress treatment. Military veteran support.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <small class="text-muted ms-1">4.9 (156 reviews)</small>
+                            </div>
+                            <button class="btn btn-book-session btn-sm" onclick="showBookingModal('Dr. Emily Rodriguez')">
+                                Book Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="therapist-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-warning rounded-circle p-3 me-3">
+                                <i class="fas fa-child text-white"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">Dr. James Wilson</h5>
+                                <small class="text-muted">Child & Adolescent Psychologist</small>
+                            </div>
+                        </div>
+                        <p class="small">Youth counseling, behavioral issues, ADHD, and developmental disorders. Ages 5-18.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <small class="text-muted ms-1">4.7 (94 reviews)</small>
+                            </div>
+                            <button class="btn btn-book-session btn-sm" onclick="showBookingModal('Dr. James Wilson')">
+                                Book Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Features -->
+            <div class="session-placeholder">
+                <h3><i class="fas fa-shield-alt me-2"></i>Secure & Professional</h3>
+                <p class="mb-3">Premium features for human counselor sessions:</p>
+                <div class="row">
+                    <div class="col-md-3 text-center mb-2">
+                        <i class="fas fa-lock fa-2x mb-2"></i>
+                        <p>HIPAA Compliant</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-2">
+                        <i class="fas fa-calendar-alt fa-2x mb-2"></i>
+                        <p>Flexible Scheduling</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-2">
+                        <i class="fas fa-mobile-alt fa-2x mb-2"></i>
+                        <p>Mobile & Desktop</p>
+                    </div>
+                    <div class="col-md-3 text-center mb-2">
+                        <i class="fas fa-clock fa-2x mb-2"></i>
+                        <p>24/7 Crisis Support</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Types -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-user fa-3x text-primary mb-3"></i>
+                            <h5>Individual Session</h5>
+                            <p class="text-muted">One-on-one therapy with licensed professional</p>
+                            <h4 class="text-primary">$120<small>/session</small></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+                            <h5>Couples Session</h5>
+                            <p class="text-muted">Relationship counseling for couples</p>
+                            <h4 class="text-primary">$180<small>/session</small></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x text-success mb-3"></i>
+                            <h5>Group Session</h5>
+                            <p class="text-muted">Group therapy with shared experiences</p>
+                            <h4 class="text-primary">$60<small>/session</small></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="text-center">
+                <a href="/" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-home me-1"></i>Back to Home
+                </a>
+                <a href="/counselor_signup" class="btn btn-outline-success me-2">
+                    <i class="fas fa-user-plus me-1"></i>Sign Up for Access
+                </a>
+                <button class="btn btn-book-session" onclick="showComingSoon()">
+                    <i class="fas fa-calendar-plus me-1"></i>Book Session
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showBookingModal(therapistName) {
+            alert(`📅 Booking with ${therapistName}\n\nComing Soon in Level 3+!\n\nFeatures being developed:\n• Real-time scheduling system\n• Payment processing\n• Video call integration\n• Secure messaging\n• Session notes and progress tracking\n\nJoin our waitlist to be notified when human counselor services launch!`);
+        }
+
+        function showComingSoon() {
+            alert('🚀 Premium Human Sessions Coming Soon!\n\nWe\'re working on:\n• Licensed therapist network\n• Secure video platform\n• Insurance integration\n• Flexible scheduling\n• Crisis support hotline\n\nFor now, try our AI-powered therapy sessions for immediate support!');
+        }
+
+        // Placeholder for future video calling integration
+        class VideoSessionManager {
+            constructor() {
+                this.isConnected = false;
+                this.currentSession = null;
+                this.therapistId = null;
+            }
+
+            initializeSession(therapistId, sessionType) {
+                // Future WebRTC implementation
+                console.log(`Initializing ${sessionType} session with therapist ${therapistId}`);
+                return {
+                    sessionId: null,
+                    connectionStatus: 'not_implemented',
+                    message: 'Video sessions coming in Level 3+'
+                };
+            }
+
+            startVideoCall() {
+                // Future video call implementation
+                console.log('Video call functionality will be implemented here');
+            }
+
+            endSession() {
+                // Future session cleanup
+                console.log('Session cleanup and notes saving will be implemented here');
+            }
+
+            sendSecureMessage(message) {
+                // Future secure messaging
+                return {
+                    sent: false,
+                    encrypted: false,
+                    message: 'Secure messaging coming soon'
+                };
+            }
+        }
+
+        // Initialize placeholder video system
+        const videoSession = new VideoSessionManager();
+        console.log('Video session system ready for Level 3+ implementation');
+    </script>
+</body>
+</html>

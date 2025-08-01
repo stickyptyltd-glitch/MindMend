@@ -84,6 +84,21 @@ def video_assessment():
     """AI-powered video assessment page"""
     return render_template("video_assessment.html")
 
+@app.route("/video_assess")
+def video_assess():
+    """Level 2 AI video assessment with placeholder features"""
+    return render_template("video_assess.html")
+
+@app.route("/counselor_signup")
+def counselor_signup():
+    """Placeholder for premium human counselor signup"""
+    return render_template("counselor_signup.html")
+
+@app.route("/premium_session")
+def premium_session():
+    """Placeholder for premium human counselor sessions"""
+    return render_template("premium_session.html")
+
 @app.route("/dashboard")
 def dashboard():
     """Patient dashboard with progress tracking"""

@@ -114,7 +114,7 @@
                 </ul>
             </div>
             <div class="card-footer">
-                <a href="{{ url_for('video_assessment') }}" class="btn btn-info w-100">
+                <a href="{{ url_for('video_assess') }}" class="btn btn-info w-100">
                     <i class="fas fa-camera me-2"></i>Start Video Assessment
                 </a>
             </div>
@@ -142,6 +142,60 @@
             <div class="card-footer">
                 <a href="{{ url_for('dashboard') }}" class="btn btn-warning w-100">
                     <i class="fas fa-chart-bar me-2"></i>View Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Level 2 Premium Features -->
+    <div class="col-lg-6 col-md-6">
+        <div class="card h-100 border-warning">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-md me-2"></i>Human Counselors
+                    <span class="badge bg-danger ms-2">Level 2</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Connect with licensed mental health professionals for premium therapy sessions.</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Licensed therapists</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Video sessions</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Insurance coverage</li>
+                    <li><i class="fas fa-check text-success me-2"></i>24/7 crisis support</li>
+                    <li><i class="fas fa-clock text-warning me-2"></i>Coming soon</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('counselor_signup') }}" class="btn btn-warning w-100">
+                    <i class="fas fa-bell me-2"></i>Join Waitlist
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enhanced AI Features -->
+    <div class="col-lg-6 col-md-6">
+        <div class="card h-100 border-light">
+            <div class="card-header bg-light text-dark">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-brain me-2"></i>Enhanced AI Features
+                    <span class="badge bg-success ms-2">Level 2</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Real OpenAI GPT-4o integration with advanced therapeutic capabilities.</p>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Real AI responses</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Session-specific prompts</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Advanced crisis detection</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Personalized therapy</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Microexpression hooks</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('individual_therapy') }}" class="btn btn-light w-100">
+                    <i class="fas fa-robot me-2"></i>Try Enhanced AI
                 </a>
             </div>
         </div>
@@ -210,11 +264,11 @@
                     <a href="{{ url_for('individual_therapy') }}" class="btn btn-primary btn-lg">
                         <i class="fas fa-play me-2"></i>Start Free Session
                     </a>
-                    <a href="{{ url_for('video_assessment') }}" class="btn btn-outline-light btn-lg">
+                    <a href="{{ url_for('video_assess') }}" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-video me-2"></i>Video Assessment
                     </a>
-                    <a href="{{ url_for('premium') }}" class="btn btn-warning btn-lg">
-                        <i class="fas fa-crown me-2"></i>Upgrade to Premium
+                    <a href="{{ url_for('premium_session') }}" class="btn btn-warning btn-lg">
+                        <i class="fas fa-crown me-2"></i>Human Counselors
                     </a>
                 </div>
             </div>
