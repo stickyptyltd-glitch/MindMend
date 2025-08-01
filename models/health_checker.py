@@ -501,6 +501,110 @@ class HealthChecker:
                 "Continue current treatment plan with modifications"
             ]
     
+    def assess_crisis_risk(self, user_message, ai_response=""):
+        """Assess crisis risk level from user message and AI response"""
+        try:
+            # Scan the user message for crisis indicators
+            alerts = self.scan_text(user_message)
+            
+            # Calculate overall risk score
+            risk_score = 0
+            highest_category = "low"
+            
+            for alert in alerts:
+                if alert.get("level") == "critical":
+                    risk_score += 10
+                    highest_category = "critical"
+                elif alert.get("level") == "warning":
+                    risk_score += 6
+                    if highest_category != "critical":
+                        highest_category = "high" 
+                elif alert.get("level") == "info":
+                    risk_score += 3
+                    if highest_category in ["low"]:
+                        highest_category = "medium"
+            
+            # Determine final risk level
+            if risk_score >= 10:
+                risk_level = "critical"
+            elif risk_score >= 6:
+                risk_level = "high"
+            elif risk_score >= 3:
+                risk_level = "medium"
+            else:
+                risk_level = "low"
+            
+            # Generate assessment details
+            assessment = {
+                "risk_level": risk_level,
+                "risk_score": risk_score,
+                "alerts": alerts,
+                "intervention_needed": risk_score >= 6,
+                "emergency_contact": risk_score >= 10,
+                "recommendations": self._get_crisis_recommendations(risk_level),
+                "resources": self._get_crisis_resources(risk_level)
+            }
+            
+            return assessment
+            
+        except Exception as e:
+            logging.error(f"Crisis assessment error: {e}")
+            return {
+                "risk_level": "unknown",
+                "risk_score": 0,
+                "alerts": [],
+                "intervention_needed": False,
+                "emergency_contact": False,
+                "recommendations": ["Please seek professional help if you're in crisis"],
+                "resources": [{"name": "Crisis Hotline", "contact": "988"}]
+            }
+    
+    def _get_crisis_recommendations(self, risk_level):
+        """Get crisis-specific recommendations"""
+        if risk_level == "critical":
+            return [
+                "Contact emergency services (911) immediately",
+                "Call National Suicide Prevention Lifeline (988)",
+                "Go to nearest emergency room",
+                "Do not be alone - contact family/friends immediately"
+            ]
+        elif risk_level == "high":
+            return [
+                "Contact crisis support hotline (988)",
+                "Reach out to mental health professional urgently",
+                "Contact trusted friend or family member",
+                "Remove any means of self-harm from environment"
+            ]
+        elif risk_level == "medium":
+            return [
+                "Consider contacting mental health professional",
+                "Practice grounding techniques",
+                "Reach out to support network",
+                "Monitor feelings and seek help if they worsen"
+            ]
+        else:
+            return [
+                "Continue current coping strategies",
+                "Maintain regular therapy schedule",
+                "Practice self-care activities"
+            ]
+    
+    def _get_crisis_resources(self, risk_level):
+        """Get crisis-specific resources"""
+        if risk_level in ["critical", "high"]:
+            return [
+                {"name": "National Suicide Prevention Lifeline", "contact": "988"},
+                {"name": "Crisis Text Line", "contact": "Text HOME to 741741"},
+                {"name": "Emergency Services", "contact": "911"},
+                {"name": "National Sexual Assault Hotline", "contact": "1-800-656-4673"}
+            ]
+        else:
+            return [
+                {"name": "Crisis Text Line", "contact": "Text HOME to 741741"},
+                {"name": "SAMHSA National Helpline", "contact": "1-800-662-4357"},
+                {"name": "National Alliance on Mental Illness", "contact": "nami.org"}
+            ]
+    
     def log_risk_assessment(self, text, alerts, patient_id=None):
         """Log risk assessment for tracking and analysis"""
         assessment_log = {

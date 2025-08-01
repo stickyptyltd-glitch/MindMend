@@ -16,29 +16,41 @@ class AIManager:
         """Fallback response when OpenAI is not available"""
         return f"[AI Therapist] I hear you saying: '{text}'. Let's explore this together in our {context} session."
     
-    def get_openai_response(self, text, session_type="individual"):
-        """Get therapeutic response using OpenAI GPT-4o"""
+    def get_therapeutic_response(self, message, session_type="individual", context=None):
+        """Enhanced therapeutic response method for Level 2 features"""
         try:
-            # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-            # do not change this unless explicitly requested by the user
-            
             system_prompt = self._get_system_prompt(session_type)
             
             response = self.openai_client.chat.completions.create(
-                model="gpt-4o",
+                model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": text}
+                    {"role": "user", "content": message}
                 ],
                 temperature=0.7,
                 max_tokens=500
             )
             
-            return response.choices[0].message.content
+            ai_message = response.choices[0].message.content
+            
+            # Return enhanced response object
+            return {
+                "message": ai_message,
+                "mood_analysis": self._analyze_mood(message),
+                "recommendations": self._generate_recommendations(message, session_type),
+                "next_steps": self._suggest_next_steps(message, session_type),
+                "session_type": session_type,
+                "confidence": 0.85
+            }
             
         except Exception as e:
             logging.error(f"OpenAI API error: {e}")
-            return self.fake_ai_response(text, session_type)
+            return self._get_enhanced_fallback_response(message, session_type)
+    
+    def get_openai_response(self, text, session_type="individual"):
+        """Get therapeutic response using OpenAI GPT-4o"""
+        result = self.get_therapeutic_response(text, session_type)
+        return result.get('message', self.fake_ai_response(text, session_type))
     
     def get_advanced_analysis(self, text, session_type="individual", context_data=None):
         """Get comprehensive AI analysis with multi-modal data"""
@@ -233,3 +245,72 @@ class AIManager:
         }
         
         return prompts.get(session_type, prompts["individual"])
+    
+    def _analyze_mood(self, message):
+        """Analyze mood from message content"""
+        # Simple keyword-based mood analysis
+        positive_words = ['happy', 'good', 'great', 'wonderful', 'excited', 'joy']
+        negative_words = ['sad', 'depressed', 'anxious', 'worried', 'angry', 'frustrated']
+        
+        message_lower = message.lower()
+        positive_count = sum(1 for word in positive_words if word in message_lower)
+        negative_count = sum(1 for word in negative_words if word in message_lower)
+        
+        if negative_count > positive_count:
+            return {"mood": "negative", "intensity": min(negative_count * 2, 10)}
+        elif positive_count > negative_count:
+            return {"mood": "positive", "intensity": min(positive_count * 2, 10)}
+        else:
+            return {"mood": "neutral", "intensity": 5}
+    
+    def _generate_recommendations(self, message, session_type):
+        """Generate therapeutic recommendations"""
+        recommendations = []
+        message_lower = message.lower()
+        
+        if any(word in message_lower for word in ['anxious', 'anxiety', 'worry']):
+            recommendations.append("Practice deep breathing exercises")
+            recommendations.append("Try progressive muscle relaxation")
+        
+        if any(word in message_lower for word in ['sad', 'depressed', 'down']):
+            recommendations.append("Engage in pleasant activities")
+            recommendations.append("Connect with supportive people")
+        
+        if any(word in message_lower for word in ['stress', 'overwhelmed']):
+            recommendations.append("Break tasks into smaller steps")
+            recommendations.append("Practice mindfulness meditation")
+        
+        if not recommendations:
+            recommendations = ["Continue journaling your thoughts", "Maintain regular self-care routines"]
+        
+        return recommendations[:3]  # Limit to 3 recommendations
+    
+    def _suggest_next_steps(self, message, session_type):
+        """Suggest next therapeutic steps"""
+        steps = []
+        message_lower = message.lower()
+        
+        if session_type == "individual":
+            steps.append("Reflect on today's insights")
+            if any(word in message_lower for word in ['pattern', 'behavior', 'habit']):
+                steps.append("Track patterns in a journal")
+        elif session_type == "couple":
+            steps.append("Practice active listening with your partner")
+            steps.append("Schedule regular check-ins")
+        elif session_type == "group":
+            steps.append("Share insights with the group")
+            steps.append("Support other group members")
+        
+        steps.append("Schedule your next session")
+        return steps[:3]  # Limit to 3 steps
+    
+    def _get_enhanced_fallback_response(self, message, session_type):
+        """Enhanced fallback response when API is unavailable"""
+        return {
+            "message": f"I understand you're sharing something important with me. While I'm experiencing technical difficulties with my advanced AI features, I want you to know that I'm here to support you. In our {session_type} session, your wellbeing is my priority. Please consider reaching out to a mental health professional if you need immediate support.",
+            "mood_analysis": self._analyze_mood(message),
+            "recommendations": self._generate_recommendations(message, session_type),
+            "next_steps": self._suggest_next_steps(message, session_type),
+            "session_type": session_type,
+            "confidence": 0.3
+        }

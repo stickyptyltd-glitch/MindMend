@@ -242,6 +242,66 @@ def api_sessions():
         logging.error(f"API sessions error: {e}")
         return jsonify({"error": "Failed to retrieve sessions"}), 500
 
+@app.route("/api/therapy-session", methods=["POST"])
+def api_therapy_session():
+    """Main therapy session endpoint for AI interactions"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        message = data.get('message', '')
+        session_type = data.get('session_type', 'individual')
+        session_id = data.get('session_id')
+        
+        if not message:
+            return jsonify({"error": "No message provided"}), 400
+        
+        # Get AI response
+        ai_response = ai_manager.get_therapeutic_response(
+            message=message,
+            session_type=session_type,
+            context=data.get('context', {})
+        )
+        
+        # Store session data
+        try:
+            session_entry = Session(
+                patient_name=data.get('patient_name', 'Anonymous'),
+                session_type=session_type,
+                input_text=message,
+                ai_response=ai_response.get('message', ''),
+                mood_before=data.get('mood_score'),
+                notes=json.dumps(data.get('notes', {}))
+            )
+            db.session.add(session_entry)
+            db.session.commit()
+            session_id = session_entry.id
+        except Exception as e:
+            logging.error(f"Database error: {e}")
+            # Continue without storing if DB fails
+        
+        # Check for crisis indicators
+        crisis_assessment = health_checker.assess_crisis_risk(message, ai_response.get('message', ''))
+        
+        return jsonify({
+            "success": True,
+            "response": ai_response.get('message', 'I understand you\'re reaching out. How can I help you today?'),
+            "session_id": session_id,
+            "crisis_level": crisis_assessment.get('risk_level', 'low'),
+            "recommendations": ai_response.get('recommendations', []),
+            "mood_analysis": ai_response.get('mood_analysis', {}),
+            "next_steps": ai_response.get('next_steps', [])
+        })
+        
+    except Exception as e:
+        logging.error(f"Therapy session error: {e}")
+        return jsonify({
+            "success": False,
+            "error": "I'm having technical difficulties. Please try again or contact support if this continues.",
+            "fallback_response": "I'm here to listen and support you. While I work through this technical issue, remember that your wellbeing is important and there are always people who want to help."
+        }), 500
+
 @app.route("/api/analyze-text", methods=["POST"])
 def analyze_text():
     """API endpoint for real-time text analysis"""
