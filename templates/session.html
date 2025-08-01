@@ -310,16 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keypress', function(e) {
         if (e.target.id === 'chatInput' && e.key === 'Enter') {
             sendChatMessage();
-                console.error('Analysis error:', data.error);
-                return;
-            }
-            displayRealTimeAnalysis(data);
-            realTimePanel.style.display = 'block';
-        })
-        .catch(error => {
-            console.error('Analysis error:', error);
-        });
-    }
+        }
+    });
 
     function displayRealTimeAnalysis(data) {
         let html = '';
