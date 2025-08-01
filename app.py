@@ -1,5 +1,6 @@
 import os
 import logging
+import stripe
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, emit
@@ -20,6 +21,11 @@ db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "your-secret-key-here")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Configure Stripe
+stripe.api_key = os.environ.get("STRIPE_SECRET_KEY", "sk_test_placeholder")
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "pk_test_placeholder")
+YOUR_DOMAIN = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')
 
 # Configure the database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///data/patients.db")
@@ -158,6 +164,134 @@ def dashboard():
 def premium():
     """Premium features and human counselor upgrade"""
     return render_template("premium.html")
+
+@app.route("/subscribe")
+def subscribe():
+    """Stripe subscription page"""
+    return render_template("subscribe.html", stripe_publishable_key=STRIPE_PUBLISHABLE_KEY)
+
+@app.route("/api/session", methods=["POST"])
+def api_session():
+    """GPT therapy session endpoint for MVP"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        user_input = data.get('message', '')
+        session_type = data.get('session_type', 'individual')
+        user_id = data.get('user_id', 'anonymous')
+        
+        if not user_input:
+            return jsonify({"error": "No message provided"}), 400
+        
+        # Get AI response (using existing AI manager)
+        ai_response = ai_manager.get_therapeutic_response(
+            message=user_input,
+            session_type=session_type,
+            context=data.get('context', {})
+        )
+        
+        # Store session in database
+        try:
+            session_entry = Session(
+                patient_name=data.get('name', 'Anonymous'),
+                session_type=session_type,
+                input_text=user_input,
+                ai_response=ai_response.get('message', ''),
+                mood_before=data.get('mood_before'),
+                notes=json.dumps({'user_id': user_id, 'timestamp': datetime.now().isoformat()})
+            )
+            db.session.add(session_entry)
+            db.session.commit()
+            
+            return jsonify({
+                "success": True,
+                "response": ai_response.get('message', 'Thank you for sharing. How can I help you today?'),
+                "session_id": session_entry.id,
+                "timestamp": datetime.now().isoformat()
+            })
+        except Exception as e:
+            logging.error(f"Database error in session: {e}")
+            return jsonify({
+                "success": True,
+                "response": ai_response.get('message', 'Thank you for sharing. How can I help you today?'),
+                "session_id": None,
+                "timestamp": datetime.now().isoformat()
+            })
+            
+    except Exception as e:
+        logging.error(f"Session API error: {e}")
+        return jsonify({
+            "success": False,
+            "error": "I'm having technical difficulties. Please try again."
+        }), 500
+
+@app.route("/create-checkout-session", methods=["POST"])
+def create_checkout_session():
+    """Create Stripe checkout session for subscriptions"""
+    try:
+        # Get the base URL for redirects
+        if os.environ.get('REPLIT_DEPLOYMENT'):
+            base_url = f"https://{YOUR_DOMAIN}"
+        else:
+            base_url = f"http://{YOUR_DOMAIN}"
+            
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': 'Mind Mend Premium',
+                            'description': 'Premium AI therapy with advanced features'
+                        },
+                        'unit_amount': 2999,  # $29.99
+                        'recurring': {
+                            'interval': 'month'
+                        }
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='subscription',
+            success_url=base_url + '/dashboard?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=base_url + '/subscribe?canceled=true',
+            automatic_tax={'enabled': True},
+        )
+        
+        return redirect(checkout_session.url, code=303)
+        
+    except Exception as e:
+        logging.error(f"Stripe checkout error: {e}")
+        flash('Payment processing error. Please try again.', 'error')
+        return redirect(url_for('subscribe'))
+
+@app.route("/stripe/webhook", methods=["POST"])
+def stripe_webhook():
+    """Handle Stripe webhook events"""
+    payload = request.get_data(as_text=True)
+    sig_header = request.headers.get('stripe-signature')
+    
+    try:
+        # For now, just log the event (in production, verify signature)
+        event = json.loads(payload)
+        
+        if event['type'] == 'checkout.session.completed':
+            logging.info(f"Payment successful: {event['data']['object']['id']}")
+            # Here you would update user subscription status in database
+            
+        elif event['type'] == 'invoice.payment_succeeded':
+            logging.info(f"Subscription payment: {event['data']['object']['id']}")
+            
+        elif event['type'] == 'customer.subscription.deleted':
+            logging.info(f"Subscription canceled: {event['data']['object']['id']}")
+            
+        return jsonify(success=True)
+        
+    except Exception as e:
+        logging.error(f"Webhook error: {e}")
+        return jsonify(error=str(e)), 400
 
 @app.route("/session", methods=["GET", "POST"])
 def session():

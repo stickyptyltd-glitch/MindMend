@@ -19,6 +19,30 @@
     </div>
 </div>
 
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('session') }}" class="btn btn-primary">
+                        <i class="fas fa-comments me-1"></i>New Session
+                    </a>
+                    <a href="{{ url_for('individual_therapy') }}" class="btn btn-info">
+                        <i class="fas fa-user me-1"></i>Individual Therapy
+                    </a>
+                    <button class="btn btn-success" onclick="startJournaling()">
+                        <i class="fas fa-pen me-1"></i>Journal Entry
+                    </button>
+                    <a href="{{ url_for('subscribe') }}" class="btn btn-warning">
+                        <i class="fas fa-crown me-1"></i>Upgrade Premium
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Key Statistics -->
 <div class="row g-4 mb-4">
     <div class="col-lg-3 col-md-6">
@@ -342,14 +366,245 @@
         </div>
     </div>
 </div>
+<!-- Journaling Section -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-book me-2"></i>Journal Entries</h5>
+            </div>
+            <div class="card-body" id="journalSection">
+                <div class="text-muted text-center py-4" id="noJournalEntries">
+                    <i class="fas fa-book-open fa-3x mb-3"></i>
+                    <p>No journal entries yet. Start writing to track your progress!</p>
+                    <button class="btn btn-primary" onclick="startJournaling()">
+                        <i class="fas fa-pen me-2"></i>Write First Entry
+                    </button>
+                </div>
+                <div id="journalEntries" style="display: none;">
+                    <!-- Journal entries will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>Mood Tracking</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="moodChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Journal Entry Modal -->
+<div class="modal fade" id="journalModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-pen me-2"></i>Journal Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="journalForm">
+                    <div class="mb-3">
+                        <label for="journalTitle" class="form-label">Title (Optional)</label>
+                        <input type="text" class="form-control" id="journalTitle" placeholder="How are you feeling today?">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="journalMood" class="form-label">Current Mood</label>
+                        <div class="d-flex align-items-center">
+                            <input type="range" class="form-range me-3" id="journalMood" min="1" max="10" value="5">
+                            <span class="badge bg-primary" id="journalMoodValue">5</span>
+                        </div>
+                        <div class="form-text">1 = Very Low, 10 = Excellent</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="journalContent" class="form-label">Journal Entry</label>
+                        <textarea class="form-control" id="journalContent" rows="8" 
+                                placeholder="Write about your thoughts, feelings, experiences, or anything on your mind..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="journalTags" class="form-label">Tags (Optional)</label>
+                        <input type="text" class="form-control" id="journalTags" 
+                               placeholder="anxiety, work, family, gratitude (comma separated)">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveJournalEntry()">
+                    <i class="fas fa-save me-2"></i>Save Entry
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize charts
+    // Initialize mood chart
     initializeMoodChart();
-    initializeSessionChart();
+    
+    // Load journal entries
+    loadJournalEntries();
+    
+    // Mood slider in journal modal
+    const moodSlider = document.getElementById('journalMood');
+    const moodValue = document.getElementById('journalMoodValue');
+    if (moodSlider) {
+        moodSlider.addEventListener('input', function() {
+            moodValue.textContent = this.value;
+        });
+    }
+
+// Journaling functions
+window.startJournaling = function() {
+    const modal = new bootstrap.Modal(document.getElementById('journalModal'));
+    modal.show();
+};
+
+window.saveJournalEntry = function() {
+    const title = document.getElementById('journalTitle').value;
+    const mood = document.getElementById('journalMood').value;
+    const content = document.getElementById('journalContent').value;
+    const tags = document.getElementById('journalTags').value;
+    
+    if (!content.trim()) {
+        alert('Please write something in your journal entry.');
+        return;
+    }
+    
+    const entry = {
+        title: title || 'Journal Entry',
+        mood: parseInt(mood),
+        content: content,
+        tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+        timestamp: new Date().toISOString()
+    };
+    
+    // Save to localStorage for now (in production, save to database)
+    let entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+    entries.unshift(entry);
+    localStorage.setItem('journalEntries', JSON.stringify(entries));
+    
+    // Clear form
+    document.getElementById('journalForm').reset();
+    document.getElementById('journalMoodValue').textContent = '5';
+    
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('journalModal'));
+    modal.hide();
+    
+    // Reload entries
+    loadJournalEntries();
+    
+    // Show success message
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show';
+    alertDiv.innerHTML = `
+        <i class="fas fa-check me-2"></i>Journal entry saved successfully!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.row'));
+    
+    setTimeout(() => alertDiv.remove(), 3000);
+};
+
+function loadJournalEntries() {
+    const entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+    const entriesContainer = document.getElementById('journalEntries');
+    const noEntriesDiv = document.getElementById('noJournalEntries');
+    
+    if (entries.length === 0) {
+        noEntriesDiv.style.display = 'block';
+        entriesContainer.style.display = 'none';
+        return;
+    }
+    
+    noEntriesDiv.style.display = 'none';
+    entriesContainer.style.display = 'block';
+    
+    let html = '';
+    entries.slice(0, 5).forEach((entry, index) => {
+        const date = new Date(entry.timestamp);
+        html += `
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">${entry.title}</h6>
+                    <p class="card-text">${entry.content.substring(0, 150)}${entry.content.length > 150 ? '...' : ''}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-info">Mood: ${entry.mood}/10</span>
+                            ${entry.tags.map(tag => `<span class="badge bg-secondary ms-1">${tag}</span>`).join('')}
+                        </div>
+                        <small class="text-muted">${date.toLocaleDateString()}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    entriesContainer.innerHTML = html;
+}
+
+function initializeMoodChart() {
+    const ctx = document.getElementById('moodChart').getContext('2d');
+    
+    // Get mood data from journal entries
+    const entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+    const moodData = entries.slice(0, 30).reverse(); // Last 30 entries
+    
+    const labels = moodData.map(entry => {
+        const date = new Date(entry.timestamp);
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    });
+    
+    const moodValues = moodData.map(entry => entry.mood);
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Mood Score',
+                data: moodValues,
+                borderColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 10,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function initializeSessionChart() {
     {% if biometric_data %}
     initializeBiometricChart();
     {% endif %}

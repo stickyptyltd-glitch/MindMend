@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Subscribe - Mind Mend{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h2><i class="fas fa-crown me-2 text-warning"></i>Upgrade to Mind Mend Premium</h2>
+            <p class="lead">Unlock advanced AI therapy features and premium support</p>
+        </div>
+    </div>
+</div>
+
+{% if request.args.get('canceled') %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="alert alert-warning">
+            <i class="fas fa-info-circle me-2"></i>Payment was canceled. You can try again anytime.
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-4 justify-content-center">
+    <!-- Free Plan -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100">
+            <div class="card-header text-center">
+                <h4>Free</h4>
+                <h2 class="text-muted">$0<small>/month</small></h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Basic AI therapy sessions</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>5 sessions per month</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Basic mood tracking</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Crisis detection</li>
+                    <li class="mb-2"><i class="fas fa-times text-muted me-2"></i>Video analysis</li>
+                    <li class="mb-2"><i class="fas fa-times text-muted me-2"></i>Biometric integration</li>
+                    <li class="mb-2"><i class="fas fa-times text-muted me-2"></i>Human counselor access</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('individual_therapy') }}" class="btn btn-outline-primary w-100">
+                    Current Plan
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-warning">
+            <div class="card-header bg-warning text-dark text-center">
+                <h4><i class="fas fa-crown me-2"></i>Premium</h4>
+                <h2>$29.99<small>/month</small></h2>
+                <span class="badge bg-dark">Most Popular</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Unlimited AI therapy sessions</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Advanced GPT-4o conversations</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Video emotion analysis</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Biometric monitoring</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Personalized exercises</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Priority crisis support</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Human counselor booking</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Progress analytics</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <form action="{{ url_for('create_checkout_session') }}" method="post">
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="fas fa-credit-card me-2"></i>Subscribe Now
+                    </button>
+                </form>
+                <small class="text-muted d-block mt-2 text-center">Cancel anytime</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enterprise Plan -->
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100">
+            <div class="card-header text-center">
+                <h4>Enterprise</h4>
+                <h2 class="text-muted">Contact Us</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Everything in Premium</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>White-label solution</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Custom AI training</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>HIPAA compliance</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Dedicated support</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>API access</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Custom integrations</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="mailto:enterprise@mindmend.com" class="btn btn-outline-secondary w-100">
+                    Contact Sales
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-lg-8 mx-auto">
+        <div class="card bg-light">
+            <div class="card-body text-center">
+                <h5><i class="fas fa-shield-alt me-2 text-success"></i>Secure & Private</h5>
+                <p class="mb-0">All payments processed securely through Stripe. Your therapy data is encrypted and never shared.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe JS (only needed if using Stripe Elements) -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+// Initialize Stripe (for future custom payment forms)
+const stripe = Stripe('{{ stripe_publishable_key }}');
+</script>
+{% endblock %}
