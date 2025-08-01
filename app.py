@@ -39,7 +39,10 @@ os.makedirs('static/css', exist_ok=True)
 
 # Import models after app initialization
 with app.app_context():
-    import models
+    from models import (
+        Session, BiometricData, VideoAnalysis, Exercise,
+        Patient, Assessment, TherapistSession
+    )
     from models.ai_manager import AIManager
     from models.health_checker import HealthChecker
     from models.video_analyzer import VideoAnalyzer
@@ -86,21 +89,21 @@ def dashboard():
     """Patient dashboard with progress tracking"""
     try:
         # Get recent sessions
-        recent_sessions = models.Session.query.order_by(models.Session.timestamp.desc()).limit(10).all()
+        recent_sessions = Session.query.order_by(Session.timestamp.desc()).limit(10).all()
         
         # Get biometric data
-        biometric_data = models.BiometricData.query.order_by(models.BiometricData.timestamp.desc()).limit(20).all()
+        biometric_data = BiometricData.query.order_by(BiometricData.timestamp.desc()).limit(20).all()
         
         # Get recent assessments
-        assessments = models.Assessment.query.order_by(models.Assessment.timestamp.desc()).limit(5).all()
+        assessments = Assessment.query.order_by(Assessment.timestamp.desc()).limit(5).all()
         
         # Get exercises
-        exercises = models.Exercise.query.order_by(models.Exercise.timestamp.desc()).limit(10).all()
+        exercises = Exercise.query.order_by(Exercise.timestamp.desc()).limit(10).all()
         
         # Calculate statistics
         stats = {
-            'total_sessions': models.Session.query.count(),
-            'completed_exercises': models.Exercise.query.filter_by(completion_status='completed').count(),
+            'total_sessions': Session.query.count(),
+            'completed_exercises': Exercise.query.filter_by(completion_status='completed').count(),
             'avg_mood': calculate_average_mood(),
             'streak_days': calculate_streak_days()
         }
@@ -147,7 +150,7 @@ def session():
             exercises = exercise_generator.generate_exercises(user_input, session_type, ai_response)
             
             # Log session to database
-            new_session = models.Session(
+            new_session = Session(
                 patient_name=patient_name,
                 session_type=session_type,
                 input_text=user_input,
@@ -160,7 +163,7 @@ def session():
 
             # Store exercises in database
             for exercise_data in exercises:
-                exercise = models.Exercise(
+                exercise = Exercise(
                     session_id=new_session.id,
                     exercise_type=exercise_data.get('category', 'general'),
                     title=exercise_data.get('title', 'Untitled Exercise'),
@@ -191,7 +194,7 @@ def session():
 def api_sessions():
     """API endpoint for session data"""
     try:
-        sessions = models.Session.query.order_by(models.Session.timestamp.desc()).all()
+        sessions = Session.query.order_by(Session.timestamp.desc()).all()
         return jsonify([{
             'id': s.id,
             'patient_name': s.patient_name,
@@ -257,7 +260,7 @@ def receive_biometric_data():
             return jsonify({"error": "No data provided"}), 400
         
         # Process and store biometric data
-        biometric_entry = models.BiometricData(
+        biometric_entry = BiometricData(
             heart_rate=data.get('heart_rate'),
             stress_level=data.get('stress_level'),
             sleep_quality=data.get('sleep_quality'),
@@ -297,7 +300,7 @@ def video_analysis():
             duration = data.get('duration', 0)
             
             # Create comprehensive assessment
-            assessment = models.Assessment(
+            assessment = Assessment(
                 assessment_type='video_assessment',
                 text_analysis=json.dumps(assessment_data),
                 multi_modal_score=calculate_assessment_score(assessment_data),
@@ -362,7 +365,7 @@ def handle_video_frame(data):
         
         # Store video analysis if significant
         if analysis.get('confidence', 0) > 0.7:
-            video_analysis = models.VideoAnalysis(
+            video_analysis = VideoAnalysis(
                 session_id=session_id if session_id else None,
                 emotions_detected=json.dumps(analysis.get('emotions', {})),
                 microexpressions=json.dumps(analysis.get('microexpressions', {})),
@@ -396,7 +399,7 @@ def handle_biometric_update(data):
         
         # Store critical data points
         if analysis.get('store_data', False):
-            biometric_entry = models.BiometricData(
+            biometric_entry = BiometricData(
                 heart_rate=data.get('heart_rate'),
                 stress_level=data.get('stress_level'),
                 hrv_score=data.get('hrv_score'),
@@ -420,11 +423,11 @@ def dashboard_stats():
     """API endpoint for dashboard statistics"""
     try:
         stats = {
-            'total_sessions': models.Session.query.count(),
-            'this_week_sessions': models.Session.query.filter(
-                models.Session.timestamp >= datetime.now() - timedelta(days=7)
+            'total_sessions': Session.query.count(),
+            'this_week_sessions': Session.query.filter(
+                Session.timestamp >= datetime.now() - timedelta(days=7)
             ).count(),
-            'completed_exercises': models.Exercise.query.filter_by(completion_status='completed').count(),
+            'completed_exercises': Exercise.query.filter_by(completion_status='completed').count(),
             'avg_mood_week': calculate_weekly_average_mood(),
             'streak_days': calculate_streak_days(),
             'improvement_percentage': calculate_improvement_percentage()
@@ -438,9 +441,9 @@ def dashboard_stats():
 def calculate_average_mood():
     """Calculate average mood from recent sessions"""
     try:
-        recent_sessions = models.Session.query.filter(
-            models.Session.mood_before.isnot(None)
-        ).order_by(models.Session.timestamp.desc()).limit(10).all()
+        recent_sessions = Session.query.filter(
+            Session.mood_before.isnot(None)
+        ).order_by(Session.timestamp.desc()).limit(10).all()
         
         if not recent_sessions:
             return 5.0
@@ -454,9 +457,9 @@ def calculate_weekly_average_mood():
     """Calculate average mood for the past week"""
     try:
         week_ago = datetime.now() - timedelta(days=7)
-        sessions = models.Session.query.filter(
-            models.Session.timestamp >= week_ago,
-            models.Session.mood_before.isnot(None)
+        sessions = Session.query.filter(
+            Session.timestamp >= week_ago,
+            Session.mood_before.isnot(None)
         ).all()
         
         if not sessions:
@@ -470,7 +473,7 @@ def calculate_weekly_average_mood():
 def calculate_streak_days():
     """Calculate consecutive days with sessions"""
     try:
-        sessions = models.Session.query.order_by(models.Session.timestamp.desc()).all()
+        sessions = Session.query.order_by(Session.timestamp.desc()).all()
         if not sessions:
             return 0
         
@@ -496,11 +499,11 @@ def calculate_improvement_percentage():
     try:
         # Get sessions from the past month
         month_ago = datetime.now() - timedelta(days=30)
-        sessions = models.Session.query.filter(
-            models.Session.timestamp >= month_ago,
-            models.Session.mood_before.isnot(None),
-            models.Session.mood_after.isnot(None)
-        ).order_by(models.Session.timestamp).all()
+        sessions = Session.query.filter(
+            Session.timestamp >= month_ago,
+            Session.mood_before.isnot(None),
+            Session.mood_after.isnot(None)
+        ).order_by(Session.timestamp).all()
         
         if len(sessions) < 2:
             return 0
