@@ -55,6 +55,9 @@ with app.app_context():
     from models.biometric_integrator import BiometricIntegrator
     from models.exercise_generator import ExerciseGenerator
     
+    # Initialize AI Manager
+    ai_manager = AIManager()
+    
     # Import and register blueprints
     from admin_panel import admin_bp
     from counselor_dashboard import counselor_bp
@@ -94,7 +97,16 @@ def individual_therapy():
 @app.route("/relationship")
 def relationship_therapy():
     """Relationship therapy page"""
-    return render_template("relationship_therapy.html")
+    # Check if both partners are logged in
+    partner1_logged_in = session.get('partner1_logged_in', False)
+    partner2_logged_in = session.get('partner2_logged_in', False)
+    
+    if partner1_logged_in and partner2_logged_in:
+        # Both logged in, redirect to session
+        return redirect(url_for('couples_session'))
+    else:
+        # Show login page
+        return redirect(url_for('couples_login'))
 
 @app.route("/group")
 def group_therapy():
@@ -266,6 +278,124 @@ def create_checkout_session():
         logging.error(f"Stripe checkout error: {e}")
         flash('Payment processing error. Please try again.', 'error')
         return redirect(url_for('subscribe'))
+
+# Couples Counseling Routes
+@app.route('/couples/login', methods=['GET', 'POST'])
+def couples_login():
+    if request.method == 'POST':
+        partner_role = request.form.get('partner_role')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        
+        # Store partner info in session
+        if partner_role == 'partner1':
+            session['partner1_logged_in'] = True
+            session['partner1_name'] = name
+            session['partner1_email'] = email
+        elif partner_role == 'partner2':
+            session['partner2_logged_in'] = True
+            session['partner2_name'] = name
+            session['partner2_email'] = email
+        
+        flash(f'{name} successfully logged in!', 'success')
+        return redirect(url_for('couples_login'))
+    
+    # Get current login status
+    partner1_logged_in = session.get('partner1_logged_in', False)
+    partner2_logged_in = session.get('partner2_logged_in', False)
+    partner1_name = session.get('partner1_name', '')
+    partner2_name = session.get('partner2_name', '')
+    
+    return render_template('couples_login.html',
+                         partner1_logged_in=partner1_logged_in,
+                         partner2_logged_in=partner2_logged_in,
+                         partner1_name=partner1_name,
+                         partner2_name=partner2_name)
+
+@app.route('/couples/session')
+def couples_session():
+    # Check if both partners are logged in
+    if not (session.get('partner1_logged_in') and session.get('partner2_logged_in')):
+        flash('Both partners must be logged in to start a session.', 'warning')
+        return redirect(url_for('couples_login'))
+    
+    return render_template('couples_session.html',
+                         partner1_name=session.get('partner1_name'),
+                         partner2_name=session.get('partner2_name'))
+
+@app.route('/couples/logout')
+def couples_logout():
+    # Clear couples session data
+    session.pop('partner1_logged_in', None)
+    session.pop('partner1_name', None)
+    session.pop('partner1_email', None)
+    session.pop('partner2_logged_in', None)
+    session.pop('partner2_name', None)
+    session.pop('partner2_email', None)
+    
+    flash('Both partners have been logged out.', 'info')
+    return redirect(url_for('couples_login'))
+
+@app.route('/api/couples_session', methods=['POST'])
+def api_couples_session():
+    try:
+        data = request.json
+        message = data.get('message')
+        speaker = data.get('speaker')
+        speaker_name = data.get('speaker_name')
+        partner1_name = data.get('partner1_name')
+        partner2_name = data.get('partner2_name')
+        
+        # Create context for couples therapy
+        context = f"""You are a couples therapist facilitating a session between {partner1_name} and {partner2_name}.
+        {speaker_name} just said: "{message}"
+        
+        Provide a therapeutic response that:
+        1. Acknowledges what was said
+        2. Helps both partners understand each other
+        3. Guides toward constructive communication
+        4. Suggests healthy relationship practices when appropriate"""
+        
+        # Get AI response
+        ai_response = ai_manager.get_therapeutic_response(context, session_type='couple')
+        
+        # Calculate relationship metrics (simplified)
+        metrics = {
+            'communication': min(100, 70 + len(message) // 10),
+            'emotional': 60,
+            'conflict': 50
+        }
+        
+        return jsonify({
+            'response': ai_response,
+            'metrics': metrics
+        })
+        
+    except Exception as e:
+        app.logger.error(f'Couples session error: {e}')
+        return jsonify({'error': 'Failed to process message'}), 500
+
+@app.route('/api/couples_exercise', methods=['POST'])
+def api_couples_exercise():
+    exercises = [
+        "Active Listening Exercise: Take turns speaking for 2 minutes about your feelings while the other partner listens without interrupting. Then the listener summarizes what they heard.",
+        "Appreciation Exercise: Each partner shares 3 things they appreciate about the other. Be specific and genuine.",
+        "Dream Sharing: Each partner shares one dream or goal for your relationship. Discuss how you can support each other.",
+        "Conflict Resolution Practice: Choose a minor disagreement and practice using 'I feel' statements to express your needs.",
+        "Connection Ritual: Create a daily 10-minute ritual to connect (e.g., morning coffee together, evening walk, bedtime gratitude)."
+    ]
+    
+    import random
+    exercise = random.choice(exercises)
+    
+    return jsonify({'exercise': exercise})
+
+@app.route('/api/couples_summary', methods=['GET'])
+def api_couples_summary():
+    # In a real implementation, this would analyze the session
+    summary = "Today's session focused on improving communication and understanding each other's perspectives. Key themes included expressing feelings constructively and listening actively. Continue practicing the exercises we discussed."
+    
+    return jsonify({'summary': summary})
 
 @app.route("/stripe/webhook", methods=["POST"])
 def stripe_webhook():
