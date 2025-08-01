@@ -1,0 +1,565 @@
+{% extends "admin/base.html" %}
+
+{% block title %}AI Models Management - Mind Mend Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .model-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .model-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+    }
+    
+    .model-type {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .model-type.openai {
+        background: rgba(16, 163, 127, 0.2);
+        color: #10a37f;
+    }
+    
+    .model-type.ollama {
+        background: rgba(255, 184, 0, 0.2);
+        color: #ffb800;
+    }
+    
+    .model-type.custom {
+        background: rgba(147, 51, 234, 0.2);
+        color: #9333ea;
+    }
+    
+    .model-type.ensemble {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+    
+    .accuracy-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    
+    .accuracy-high {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+    
+    .accuracy-medium {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+    }
+    
+    .accuracy-low {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+    
+    .model-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .status-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+    
+    .status-available {
+        background: #22c55e;
+    }
+    
+    .status-unavailable {
+        background: #ef4444;
+    }
+    
+    .performance-chart {
+        height: 200px;
+        margin-top: 20px;
+    }
+    
+    .config-form {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ai-models-page">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-brain me-2"></i>AI Models Management</h2>
+        <button class="btn btn-primary" onclick="addNewModel()">
+            <i class="fas fa-plus me-2"></i>Add New Model
+        </button>
+    </div>
+    
+    <!-- Overview Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value" id="total-models">{{ status.total_models }}</div>
+                <div class="stat-label">Total Models</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value" id="active-models">{{ status.active_models }}</div>
+                <div class="stat-label">Active Models</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value" id="avg-accuracy">{{ "%.1f"|format((status.model_details|selectattr("accuracy")|sum(attribute="accuracy") / status.total_models * 100) if status.total_models else 0) }}%</div>
+                <div class="stat-label">Average Accuracy</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value" id="api-status">
+                    {% if status.model_details|selectattr("type", "equalto", "openai_gpt")|selectattr("available")|list %}
+                        <span class="text-success">Active</span>
+                    {% else %}
+                        <span class="text-warning">Limited</span>
+                    {% endif %}
+                </div>
+                <div class="stat-label">API Status</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Model Performance Chart -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-3">Model Performance Comparison</h5>
+            <canvas id="modelPerformanceChart" class="performance-chart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Models List -->
+    <div class="models-list">
+        <h4 class="mb-3">Registered Models</h4>
+        
+        {% for model in status.model_details %}
+        <div class="model-card" data-model="{{ model.name }}">
+            <div class="row align-items-start">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center mb-2">
+                        <h5 class="mb-0 me-3">{{ model.name }}</h5>
+                        <span class="model-type {{ model.type.replace('_', '-') }}">{{ model.type }}</span>
+                        <span class="ms-2">
+                            <span class="status-indicator {% if model.available %}status-available{% else %}status-unavailable{% endif %}"></span>
+                            {% if model.available %}Available{% else %}Unavailable{% endif %}
+                        </span>
+                    </div>
+                    
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-tag me-2"></i>Specialization: <strong>{{ model.specialization|replace('_', ' ')|title }}</strong>
+                    </p>
+                    
+                    <div class="mb-3">
+                        {% if model.accuracy %}
+                            {% set accuracy_pct = (model.accuracy * 100)|round(1) %}
+                            <span class="accuracy-badge {% if accuracy_pct >= 85 %}accuracy-high{% elif accuracy_pct >= 70 %}accuracy-medium{% else %}accuracy-low{% endif %}">
+                                Accuracy: {{ accuracy_pct }}%
+                            </span>
+                        {% else %}
+                            <span class="accuracy-badge accuracy-low">No accuracy data</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="model-actions">
+                        {% if model.active %}
+                            <button class="btn btn-sm btn-warning" onclick="toggleModel('{{ model.name }}', false)">
+                                <i class="fas fa-pause me-1"></i>Deactivate
+                            </button>
+                        {% else %}
+                            <button class="btn btn-sm btn-success" onclick="toggleModel('{{ model.name }}', true)">
+                                <i class="fas fa-play me-1"></i>Activate
+                            </button>
+                        {% endif %}
+                        
+                        <button class="btn btn-sm btn-info" onclick="configureModel('{{ model.name }}')">
+                            <i class="fas fa-cog me-1"></i>Configure
+                        </button>
+                        
+                        <button class="btn btn-sm btn-secondary" onclick="testModel('{{ model.name }}')">
+                            <i class="fas fa-vial me-1"></i>Test
+                        </button>
+                        
+                        {% if model.type == 'custom_ml' %}
+                        <button class="btn btn-sm btn-primary" onclick="trainModel('{{ model.name }}')">
+                            <i class="fas fa-graduation-cap me-1"></i>Train
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="model-stats">
+                        <small class="text-muted d-block">Performance Metrics</small>
+                        <div class="progress mb-2" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ (model.accuracy * 100)|round if model.accuracy else 0 }}%"
+                                 aria-valuenow="{{ (model.accuracy * 100)|round if model.accuracy else 0 }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ (model.accuracy * 100)|round(1) if model.accuracy else 0 }}%
+                            </div>
+                        </div>
+                        
+                        {% if model.type == 'openai_gpt' %}
+                        <small class="text-info">
+                            <i class="fas fa-info-circle me-1"></i>Requires OpenAI API Key
+                        </small>
+                        {% elif model.type == 'ollama' %}
+                        <small class="text-warning">
+                            <i class="fas fa-server me-1"></i>Requires Ollama Service
+                        </small>
+                        {% elif model.type == 'custom_ml' %}
+                        <small class="text-primary">
+                            <i class="fas fa-microchip me-1"></i>Local ML Model
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Configuration Form (Hidden by default) -->
+            <div class="config-form d-none" id="config-{{ model.name }}">
+                <h6 class="mb-3">Model Configuration</h6>
+                <form onsubmit="saveModelConfig(event, '{{ model.name }}')">
+                    {% if model.type == 'openai_gpt' %}
+                    <div class="mb-3">
+                        <label class="form-label">API Key</label>
+                        <input type="password" class="form-control" name="api_key" placeholder="sk-...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Temperature</label>
+                        <input type="range" class="form-range" name="temperature" min="0" max="1" step="0.1" value="0.7">
+                        <small class="text-muted">Controls randomness in responses</small>
+                    </div>
+                    {% elif model.type == 'ollama' %}
+                    <div class="mb-3">
+                        <label class="form-label">Endpoint URL</label>
+                        <input type="url" class="form-control" name="endpoint" value="http://localhost:11434/api/generate">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Model Name</label>
+                        <input type="text" class="form-control" name="model_name" value="{{ model.name }}">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Specialization</label>
+                        <select class="form-select" name="specialization">
+                            <option value="general_therapy" {% if model.specialization == 'general_therapy' %}selected{% endif %}>General Therapy</option>
+                            <option value="mental_health_assessment" {% if model.specialization == 'mental_health_assessment' %}selected{% endif %}>Mental Health Assessment</option>
+                            <option value="therapy_recommendations" {% if model.specialization == 'therapy_recommendations' %}selected{% endif %}>Therapy Recommendations</option>
+                            <option value="anxiety_detection" {% if model.specialization == 'anxiety_detection' %}selected{% endif %}>Anxiety Detection</option>
+                            <option value="depression_severity" {% if model.specialization == 'depression_severity' %}selected{% endif %}>Depression Severity</option>
+                            <option value="ptsd_risk" {% if model.specialization == 'ptsd_risk' %}selected{% endif %}>PTSD Risk Assessment</option>
+                            <option value="relationship_conflict" {% if model.specialization == 'relationship_conflict' %}selected{% endif %}>Relationship Conflict</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Configuration</button>
+                    <button type="button" class="btn btn-secondary ms-2" onclick="cancelConfig('{{ model.name }}')">Cancel</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Test Model Modal -->
+    <div class="modal fade" id="testModelModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Test AI Model</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="testModelForm">
+                        <div class="mb-3">
+                            <label class="form-label">Test Input</label>
+                            <textarea class="form-control" id="testInput" rows="4" 
+                                      placeholder="Enter test message for the model...">I've been feeling anxious lately and having trouble sleeping. What can I do to feel better?</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Session Type</label>
+                            <select class="form-select" id="testSessionType">
+                                <option value="individual">Individual Therapy</option>
+                                <option value="couple">Couple Therapy</option>
+                                <option value="group">Group Therapy</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-flask me-2"></i>Run Test
+                        </button>
+                    </form>
+                    
+                    <div id="testResults" class="mt-4 d-none">
+                        <h6>Test Results</h6>
+                        <div class="alert alert-info" id="testOutput"></div>
+                        <div id="testMetrics"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize performance chart
+const ctx = document.getElementById('modelPerformanceChart').getContext('2d');
+const modelData = {{ status.model_details|tojson }};
+
+const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: modelData.map(m => m.name),
+        datasets: [{
+            label: 'Accuracy',
+            data: modelData.map(m => (m.accuracy || 0) * 100),
+            backgroundColor: modelData.map(m => {
+                const acc = (m.accuracy || 0) * 100;
+                if (acc >= 85) return 'rgba(34, 197, 94, 0.5)';
+                if (acc >= 70) return 'rgba(251, 191, 36, 0.5)';
+                return 'rgba(239, 68, 68, 0.5)';
+            }),
+            borderColor: modelData.map(m => {
+                const acc = (m.accuracy || 0) * 100;
+                if (acc >= 85) return 'rgba(34, 197, 94, 1)';
+                if (acc >= 70) return 'rgba(251, 191, 36, 1)';
+                return 'rgba(239, 68, 68, 1)';
+            }),
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                    callback: function(value) {
+                        return value + '%';
+                    }
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return 'Accuracy: ' + context.parsed.y.toFixed(1) + '%';
+                    }
+                }
+            }
+        }
+    }
+});
+
+function toggleModel(modelName, activate) {
+    fetch('/admin/api/ai-models/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model_name: modelName,
+            active: activate
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Model ' + (activate ? 'activated' : 'deactivated') + ' successfully', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Error: ' + data.error, 'error');
+        }
+    });
+}
+
+function configureModel(modelName) {
+    // Toggle configuration form
+    const configForm = document.getElementById('config-' + modelName);
+    configForm.classList.toggle('d-none');
+}
+
+function cancelConfig(modelName) {
+    document.getElementById('config-' + modelName).classList.add('d-none');
+}
+
+function saveModelConfig(event, modelName) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const config = Object.fromEntries(formData.entries());
+    
+    fetch('/admin/api/ai-models/configure', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model_name: modelName,
+            config: config
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Model configured successfully', 'success');
+            cancelConfig(modelName);
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification('Error: ' + data.error, 'error');
+        }
+    });
+}
+
+let currentTestModel = null;
+
+function testModel(modelName) {
+    currentTestModel = modelName;
+    const modal = new bootstrap.Modal(document.getElementById('testModelModal'));
+    modal.show();
+}
+
+document.getElementById('testModelForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const testInput = document.getElementById('testInput').value;
+    const sessionType = document.getElementById('testSessionType').value;
+    const resultsDiv = document.getElementById('testResults');
+    const outputDiv = document.getElementById('testOutput');
+    const metricsDiv = document.getElementById('testMetrics');
+    
+    // Show loading
+    outputDiv.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Testing model...';
+    resultsDiv.classList.remove('d-none');
+    
+    fetch('/admin/api/ai-models/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            model_name: currentTestModel,
+            input: testInput,
+            session_type: sessionType
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            outputDiv.innerHTML = `
+                <strong>Response:</strong><br>
+                ${data.response}<br><br>
+                <strong>Confidence:</strong> ${(data.confidence * 100).toFixed(1)}%<br>
+                <strong>Response Time:</strong> ${data.response_time}ms
+            `;
+            
+            if (data.diagnosis) {
+                metricsDiv.innerHTML = `
+                    <div class="mt-3">
+                        <strong>Diagnosis:</strong> ${data.diagnosis}<br>
+                        <strong>Recommended Treatment:</strong> ${data.treatment || 'N/A'}
+                    </div>
+                `;
+            }
+        } else {
+            outputDiv.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>Error: ${data.error}`;
+            outputDiv.className = 'alert alert-danger';
+        }
+    })
+    .catch(error => {
+        outputDiv.innerHTML = `<i class="fas fa-exclamation-triangle me-2"></i>Test failed: ${error}`;
+        outputDiv.className = 'alert alert-danger';
+    });
+});
+
+function trainModel(modelName) {
+    if (confirm('Start training process for ' + modelName + '? This may take several minutes.')) {
+        showNotification('Training started for ' + modelName + '. You will be notified when complete.', 'info');
+        
+        fetch('/admin/api/ai-models/train', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model_name: modelName })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Training completed successfully! New accuracy: ' + (data.accuracy * 100).toFixed(1) + '%', 'success');
+            } else {
+                showNotification('Training failed: ' + data.error, 'error');
+            }
+        });
+    }
+}
+
+function addNewModel() {
+    // This would open a modal to add a new model
+    showNotification('Model addition interface coming soon!', 'info');
+}
+
+function showNotification(message, type) {
+    // Create toast notification
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    // Add to page
+    document.body.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    // Remove after hidden
+    toast.addEventListener('hidden.bs.toast', () => toast.remove());
+}
+
+// Auto-refresh model status every 30 seconds
+setInterval(() => {
+    fetch('/api/ai-models/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update stats
+                document.getElementById('total-models').textContent = data.status.total_models;
+                document.getElementById('active-models').textContent = data.status.active_models;
+            }
+        });
+}, 30000);
+</script>
+{% endblock %}

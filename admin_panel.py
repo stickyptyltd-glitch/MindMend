@@ -832,3 +832,180 @@ def api_get_conflict_strategies(conflict_type):
             'success': False,
             'error': str(e)
         }), 400
+
+# AI Models Management Routes
+@admin_bp.route('/ai-models')
+@require_admin_auth
+def ai_models():
+    """AI models management interface"""
+    from models.ai_model_manager import ai_model_manager
+    
+    # Get model status
+    status = ai_model_manager.get_model_status()
+    
+    return render_template('admin/ai_models.html', status=status)
+
+@admin_bp.route('/api/ai-models/toggle', methods=['POST'])
+@require_admin_auth
+def api_toggle_ai_model():
+    """Toggle AI model active status"""
+    try:
+        data = request.get_json()
+        model_name = data.get('model_name')
+        active = data.get('active', True)
+        
+        from models.ai_model_manager import ai_model_manager
+        
+        if active:
+            ai_model_manager.active_models.append(model_name)
+        else:
+            ai_model_manager.active_models = [m for m in ai_model_manager.active_models if m != model_name]
+        
+        return jsonify({
+            'success': True,
+            'message': f"Model {model_name} {'activated' if active else 'deactivated'}"
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/ai-models/configure', methods=['POST'])
+@require_admin_auth
+def api_configure_ai_model():
+    """Configure AI model settings"""
+    try:
+        data = request.get_json()
+        model_name = data.get('model_name')
+        config = data.get('config', {})
+        
+        from models.ai_model_manager import ai_model_manager
+        
+        if model_name in ai_model_manager.models:
+            model_config = ai_model_manager.models[model_name]
+            
+            # Update configuration
+            if 'api_key' in config:
+                model_config.api_key = config['api_key']
+            if 'endpoint' in config:
+                model_config.endpoint = config['endpoint']
+            if 'specialization' in config:
+                model_config.specialization = config['specialization']
+            if 'temperature' in config:
+                if model_config.parameters is None:
+                    model_config.parameters = {}
+                model_config.parameters['temperature'] = float(config['temperature'])
+            
+            return jsonify({
+                'success': True,
+                'message': f"Model {model_name} configured successfully"
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Model not found'
+            }), 404
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/ai-models/test', methods=['POST'])
+@require_admin_auth
+def api_test_ai_model():
+    """Test AI model with sample input"""
+    try:
+        data = request.get_json()
+        model_name = data.get('model_name')
+        test_input = data.get('input', 'Hello, how can you help me today?')
+        session_type = data.get('session_type', 'individual')
+        
+        from models.ai_model_manager import ai_model_manager
+        from models.therapy_ai_integration import therapy_ai_integration
+        import time
+        
+        start_time = time.time()
+        
+        # Test the model
+        session_data = {
+            'session_id': 'test_' + str(time.time()),
+            'user_age': 30,
+            'presenting_issue': test_input[:100],
+            'session_number': 1
+        }
+        
+        # Use single model for testing
+        response = therapy_ai_integration.enhance_therapy_response(
+            session_type=session_type,
+            user_message=test_input,
+            session_data=session_data,
+            use_ensemble=False
+        )
+        
+        response_time = int((time.time() - start_time) * 1000)  # milliseconds
+        
+        return jsonify({
+            'success': True,
+            'response': response.get('response', 'No response generated'),
+            'confidence': response.get('confidence', 0),
+            'response_time': response_time,
+            'diagnosis': response.get('diagnosis', {}).get('primary_diagnosis') if 'diagnosis' in response else None,
+            'treatment': response.get('treatment_plan', {}).get('primary_modality') if 'treatment_plan' in response else None
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+@admin_bp.route('/api/ai-models/train', methods=['POST'])
+@require_admin_auth
+def api_train_ai_model():
+    """Train custom ML model"""
+    try:
+        data = request.get_json()
+        model_name = data.get('model_name')
+        
+        from models.ai_model_manager import ai_model_manager
+        import numpy as np
+        
+        # Generate sample training data (in production, use real data)
+        n_samples = 1000
+        n_features = 12
+        
+        # Create synthetic training data
+        X_train = np.random.randn(n_samples, n_features)
+        
+        # Create labels based on model type
+        if 'anxiety' in model_name:
+            y_train = np.random.randint(0, 4, n_samples)  # 4 anxiety levels
+        elif 'depression' in model_name:
+            y_train = np.random.randint(0, 5, n_samples)  # 5 depression levels
+        elif 'ptsd' in model_name:
+            y_train = np.random.randint(0, 3, n_samples)  # 3 PTSD risk levels
+        else:
+            y_train = np.random.randint(0, 2, n_samples)  # Binary classification
+        
+        # Train the model
+        accuracy = ai_model_manager.train_custom_model(
+            model_name=model_name + '_v2',
+            X_train=X_train,
+            y_train=y_train,
+            model_type='random_forest'
+        )
+        
+        return jsonify({
+            'success': True,
+            'accuracy': accuracy,
+            'message': f"Model trained successfully with {accuracy:.1%} accuracy"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400

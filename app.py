@@ -55,6 +55,7 @@ with app.app_context():
     from models.video_analyzer import VideoAnalyzer
     from models.biometric_integrator import BiometricIntegrator
     from models.exercise_generator import ExerciseGenerator
+    from models.therapy_ai_integration import therapy_ai_integration
     
     # Initialize AI Manager
     ai_manager = AIManager()
@@ -673,12 +674,40 @@ def api_therapy_session():
         if not message:
             return jsonify({"error": "No message provided"}), 400
         
-        # Get AI response
-        ai_response = ai_manager.get_therapeutic_response(
-            message=message,
+        # Prepare session data for enhanced AI response
+        session_data = {
+            'session_id': session_id or f"temp_{datetime.utcnow().timestamp()}",
+            'user_age': data.get('age', 30),
+            'user_gender': data.get('gender'),
+            'presenting_issue': data.get('presenting_issue', message[:100]),
+            'anxiety_level': data.get('anxiety_level', 5),
+            'depression_level': data.get('depression_level', 5),
+            'stress_level': data.get('stress_level', 5),
+            'sleep_quality': data.get('sleep_quality', 5),
+            'session_number': data.get('session_number', 1),
+            'session_history': data.get('session_history', []),
+            'response_history': data.get('response_history', []),
+            'mood_score': data.get('mood_score', 5),
+            'preferences': data.get('preferences', {})
+        }
+        
+        # Get enhanced AI response using multiple models
+        enhanced_response = therapy_ai_integration.enhance_therapy_response(
             session_type=session_type,
-            context=data.get('context', {})
+            user_message=message,
+            session_data=session_data,
+            use_ensemble=data.get('use_ensemble', True)
         )
+        
+        # Extract the main response
+        ai_response = {
+            'message': enhanced_response.get('response', 'I understand you\'re reaching out. How can I help you today?'),
+            'confidence': enhanced_response.get('confidence', 0.7),
+            'models_used': enhanced_response.get('models_used', ['fallback']),
+            'recommendations': [activity['name'] for activity in enhanced_response.get('recommended_activities', [])],
+            'activities': enhanced_response.get('recommended_activities', []),
+            'research_insights': enhanced_response.get('research_insights', [])
+        }
         
         # Store session data
         try:
@@ -716,6 +745,77 @@ def api_therapy_session():
             "success": False,
             "error": "I'm having technical difficulties. Please try again or contact support if this continues.",
             "fallback_response": "I'm here to listen and support you. While I work through this technical issue, remember that your wellbeing is important and there are always people who want to help."
+        }), 500
+
+@app.route("/api/ai-models/status")
+def api_ai_models_status():
+    """Get status of available AI models"""
+    try:
+        from models.ai_model_manager import ai_model_manager
+        status = ai_model_manager.get_model_status()
+        
+        return jsonify({
+            'success': True,
+            'status': status,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+    except Exception as e:
+        logging.error(f"AI models status error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route("/api/ai-models/diagnose", methods=["POST"])
+def api_ai_diagnose():
+    """Perform AI-powered diagnosis using ensemble models"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        # Extract patient data
+        patient_data = {
+            'age': data.get('age', 30),
+            'gender': data.get('gender'),
+            'chief_complaint': data.get('chief_complaint', ''),
+            'symptoms': data.get('symptoms', {}),
+            'behavioral_data': data.get('behavioral_data', {}),
+            'assessment_scores': data.get('assessment_scores', {})
+        }
+        
+        # Get diagnosis from ensemble
+        from models.ai_model_manager import ai_model_manager
+        diagnosis = ai_model_manager.diagnose_with_ensemble(patient_data)
+        
+        # Get treatment recommendations
+        if diagnosis.get('primary_diagnosis'):
+            treatment_plan = therapy_ai_integration.treatment_recommender.generate_personalized_treatment_plan(
+                diagnosis=diagnosis,
+                patient_profile=patient_data,
+                preferences=data.get('preferences', {})
+            )
+            
+            diagnosis['treatment_plan'] = {
+                'primary_modality': treatment_plan.primary_modality.value,
+                'secondary_modalities': [m.value for m in treatment_plan.secondary_modalities],
+                'intensity': treatment_plan.intensity.value,
+                'duration_weeks': treatment_plan.duration_weeks,
+                'activities': treatment_plan.activities[:5],  # Top 5 activities
+                'confidence': treatment_plan.confidence_score
+            }
+        
+        return jsonify({
+            'success': True,
+            'diagnosis': diagnosis,
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        logging.error(f"AI diagnosis error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
         }), 500
 
 @app.route("/api/analyze-text", methods=["POST"])
