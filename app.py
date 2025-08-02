@@ -100,6 +100,11 @@ def home():
     """Home page with therapy type selection"""
     return render_template("index.html")
 
+@app.route("/onboarding")
+def onboarding():
+    """Interactive onboarding tutorial with animated character guide"""
+    return render_template("onboarding.html")
+
 @app.route("/logos")
 def logo_showcase():
     """Display logo options for selection"""

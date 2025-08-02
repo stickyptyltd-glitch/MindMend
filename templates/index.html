@@ -270,6 +270,9 @@
                 <h3 class="text-white mb-3">Ready to start your mental health journey?</h3>
                 <p class="text-white-50 mb-4">Experience the future of therapy with AI-powered insights and human expertise.</p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ url_for('onboarding') }}" class="btn btn-success btn-lg tutorial-btn">
+                        <i class="fas fa-graduation-cap me-2"></i>Interactive Tutorial
+                    </a>
                     <a href="{{ url_for('individual_therapy') }}" class="btn btn-primary btn-lg">
                         <i class="fas fa-play me-2"></i>Start Free Session
                     </a>
@@ -297,8 +300,287 @@
 
 {% block scripts %}
 <script>
+// Global function declarations
+function showTutorialPrompt() {
+    // Create tutorial prompt modal
+    const modal = document.createElement('div');
+    modal.className = 'tutorial-prompt-modal';
+    modal.innerHTML = `
+        <div class="tutorial-prompt-overlay"></div>
+        <div class="tutorial-prompt-content">
+            <div class="tutorial-prompt-header">
+                <h3>Welcome to Mind Mend!</h3>
+                <button class="tutorial-close-btn" onclick="closeTutorialPrompt()">&times;</button>
+            </div>
+            <div class="tutorial-prompt-body">
+                <div class="tutorial-character">
+                    <div class="character-mini">
+                        <div class="eyes-mini">
+                            <div class="eye-mini"></div>
+                            <div class="eye-mini"></div>
+                        </div>
+                        <div class="mouth-mini"></div>
+                    </div>
+                </div>
+                <div class="tutorial-message">
+                    <p>Hi! I'm Alex, your guide. Since this is your first visit, would you like me to show you around the platform?</p>
+                    <p class="tutorial-benefits">The tutorial covers:</p>
+                    <ul>
+                        <li>How to choose the right therapy type</li>
+                        <li>Meeting our AI therapists</li>
+                        <li>Interactive features overview</li>
+                        <li>Safety and crisis support</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tutorial-prompt-actions">
+                <button class="tutorial-btn secondary" onclick="startTutorial()">
+                    <i class="fas fa-graduation-cap"></i> Yes, Show Me Around
+                </button>
+                <button class="tutorial-btn primary" onclick="skipAndExplore()">
+                    <i class="fas fa-compass"></i> Skip, I'll Explore
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .tutorial-prompt-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tutorial-prompt-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .tutorial-prompt-content {
+            background: white;
+            border-radius: 20px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tutorial-prompt-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tutorial-prompt-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .tutorial-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+        
+        .tutorial-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .tutorial-prompt-body {
+            padding: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+        
+        .tutorial-character {
+            flex-shrink: 0;
+        }
+        
+        .character-mini {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 2s infinite;
+        }
+        
+        .eyes-mini {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        
+        .eye-mini {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .mouth-mini {
+            width: 8px;
+            height: 4px;
+            border: 1px solid white;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .tutorial-message {
+            flex: 1;
+        }
+        
+        .tutorial-message p {
+            margin-bottom: 1rem;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .tutorial-benefits {
+            font-weight: 600;
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .tutorial-message ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: #666;
+        }
+        
+        .tutorial-message li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-prompt-actions {
+            padding: 1.5rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .tutorial-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tutorial-btn.secondary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .tutorial-btn.primary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .tutorial-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .tutorial-btn.pulse {
+            animation: tutorialPulse 2s infinite;
+        }
+        
+        @keyframes tutorialPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add pulse animation to tutorial button
+    document.querySelector('.tutorial-btn').classList.add('pulse');
+}
+
+function startTutorial() {
+    window.location.href = '/onboarding';
+}
+
+function skipAndExplore() {
+    localStorage.setItem('mindMendTutorialCompleted', 'true');
+    closeTutorialPrompt();
+}
+
+function closeTutorialPrompt() {
+    const modal = document.querySelector('.tutorial-prompt-modal');
+    if (modal) {
+        modal.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
 // Add any JavaScript for the home page here
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is new and show tutorial prompt
+    if (!localStorage.getItem('mindMendTutorialCompleted') && !sessionStorage.getItem('tutorialPromptShown')) {
+        sessionStorage.setItem('tutorialPromptShown', 'true');
+        setTimeout(showTutorialPrompt, 1000); // Delay to ensure page is fully loaded
+    }
+    
     // Animate cards on scroll
     const cards = document.querySelectorAll('.card');
     
@@ -314,5 +596,15 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(card);
     });
 });
+
+// Add fadeOut animation
+const fadeOutStyle = document.createElement('style');
+fadeOutStyle.textContent = `
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+`;
+document.head.appendChild(fadeOutStyle);
 </script>
 {% endblock %}
