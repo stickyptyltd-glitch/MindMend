@@ -849,7 +849,71 @@ def ai_models():
 @require_admin_auth
 def company_documents():
     """Company Documents management page"""
-    return render_template('admin/company_documents.html')
+    # Check for uploaded documents
+    import os
+    documents_dir = 'attached_assets'
+    uploaded_docs = []
+    
+    if os.path.exists(documents_dir):
+        for filename in os.listdir(documents_dir):
+            if filename.lower().endswith(('.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx')):
+                file_path = os.path.join(documents_dir, filename)
+                file_stats = os.stat(file_path)
+                uploaded_docs.append({
+                    'filename': filename,
+                    'size': file_stats.st_size,
+                    'uploaded_date': file_stats.st_mtime,
+                    'type': 'Company Registration' if 'registration' in filename.lower() else 'Business Document'
+                })
+    
+    return render_template('admin/company_documents.html', uploaded_docs=uploaded_docs)
+
+@admin_bp.route('/api/company-documents/upload', methods=['POST'])
+@require_admin_auth
+def upload_company_document():
+    """Handle company document upload"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
+        
+        # Validate file type
+        allowed_extensions = {'.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx'}
+        file_ext = os.path.splitext(file.filename)[1].lower()
+        
+        if file_ext not in allowed_extensions:
+            return jsonify({'success': False, 'error': 'Invalid file type'}), 400
+        
+        # Create documents directory if it doesn't exist
+        documents_dir = 'attached_assets'
+        os.makedirs(documents_dir, exist_ok=True)
+        
+        # Save file with timestamp
+        import time
+        timestamp = int(time.time())
+        safe_filename = f"CompanyRegistration_{timestamp}_{file.filename}"
+        file_path = os.path.join(documents_dir, safe_filename)
+        
+        file.save(file_path)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Document uploaded successfully',
+            'filename': safe_filename
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+# Add custom filter for date formatting
+@admin_bp.app_template_filter('timestamp_to_date')
+def timestamp_to_date(timestamp):
+    """Convert timestamp to readable date"""
+    from datetime import datetime
+    return datetime.fromtimestamp(timestamp).strftime('%B %d, %Y at %I:%M %p')
 
 @admin_bp.route('/api/ai-models/toggle', methods=['POST'])
 @require_admin_auth
