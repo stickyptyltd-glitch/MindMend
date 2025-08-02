@@ -25,6 +25,9 @@ Mind Mend is a comprehensive AI-powered mental health platform built with Flask 
 - **NEW: Advanced Treatment Recommender using AI consensus for personalized therapy plans**
 - **NEW: Admin interface for AI model configuration, testing, and performance monitoring**
 - **NEW: Official brand logo selected - Growth & Healing design (Logo 4) - USER CONFIRMED SELECTION**
+- **NEW: Comprehensive user registration system with 5-step guided onboarding**
+- **NEW: Secure login system with password recovery and social login options**
+- **NEW: Interactive onboarding tutorial with animated Alex character guide**
 
 # User Preferences
 
@@ -32,12 +35,11 @@ Preferred communication style: Simple, everyday language.
 Selected brand logo: Logo 4 (Growth & Healing design) - confirmed by user on 2025-08-02.
 
 ## Business Entity
-- **Company**: Sticky Pty Ltd (Australian company)
-- **Address**: Suite 329/98-100 Elizabeth Street, Melbourne, VIC, 3000
-- **Email**: sticky.pty.ltd@gmail.com
-- **Domain Strategy**: mind-mend.xyz (primary), mindmend.com.au (secondary), mindmend.healthcare (alternative)
+- **Company**: Mind Mend Technologies Inc.
+- **Email**: support@mindmend.com
+- **Domain Strategy**: mindmend.com (primary), mind-mend.app (secondary), mindmend.health (alternative)
 - **Brand Identity**: Logo 4 (Growth & Healing design) - symbolizes transformation and healing journey
-- **Target Market**: Australian mental health market with global expansion
+- **Target Market**: Global mental health market with focus on accessible AI therapy
 - **Business Model**: SaaS platform with tiered subscriptions and counselor employment
 
 ## Admin Panel Features
