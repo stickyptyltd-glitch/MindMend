@@ -1,121 +1,94 @@
 """
 Production Configuration for Mind Mend
-=====================================
-Sticky Pty Ltd - Mental Health Platform
+Optimized for cPanel hosting on stickyplates.net
 """
-
 import os
-from datetime import timedelta
+from pathlib import Path
 
 class Config:
-    # Company Information - Sticky Pty Ltd
-    COMPANY_NAME = "Sticky Pty Ltd"
-    COMPANY_ABN = "12345678901"  # Replace with actual ABN
-    COMPANY_ADDRESS = "Suite 123, Level 45, Sydney CBD, NSW 2000, Australia"
-    COMPANY_PHONE = "+61 2 9000 0000"  # Replace with actual phone
-    COMPANY_EMAIL = "support@mindmend.com.au"
+    """Base configuration"""
     
-    # App Configuration
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-change-in-production'
+    # Flask Settings
+    SECRET_KEY = os.environ.get('SESSION_SECRET') or 'mind-mend-production-key-2025'
     
     # Database Configuration
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///mindmend.db'
+    basedir = Path(__file__).parent.absolute()
+    DATABASE_URL = os.environ.get('DATABASE_URL') or f'sqlite:///{basedir}/mind_mend.db'
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
-        "pool_recycle": 300,
-        "pool_pre_ping": True,
-        "pool_size": 10,
-        "max_overflow": 20
+        'pool_recycle': 300,
+        'pool_pre_ping': True,
+        'pool_timeout': 20,
+        'pool_size': 10,
+        'max_overflow': 5
     }
     
-    # Security Configuration
-    SESSION_COOKIE_SECURE = True  # HTTPS only
-    SESSION_COOKIE_HTTPONLY = True  # No JavaScript access
-    SESSION_COOKIE_SAMESITE = 'Lax'
-    PERMANENT_SESSION_LIFETIME = timedelta(hours=2)
-    WTF_CSRF_ENABLED = True
-    WTF_CSRF_TIME_LIMIT = 3600
-    
-    # SSL Configuration
-    SSL_REDIRECT = os.environ.get('SSL_REDIRECT', 'True').lower() == 'true'
-    
-    # CORS and Security Headers
-    CORS_ORIGINS = [
-        'https://mindmend.com.au',
-        'https://www.mindmend.com.au',
-        'https://app.mindmend.com.au'
-    ]
-    
-    # Payment Configuration
-    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
-    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
-    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
-    PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET')
-    GOOGLE_PAY_MERCHANT_ID = os.environ.get('GOOGLE_PAY_MERCHANT_ID')
-    
-    # AI Services
+    # AI Integration
     OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
     
-    # Mobile App Configuration
-    IOS_APP_ID = "au.com.sticky.mindmend"
-    ANDROID_PACKAGE_NAME = "au.com.sticky.mindmend"
+    # Payment Processing
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
     
-    # Domain Configuration
-    DOMAIN = os.environ.get('DOMAIN', 'mindmend.com.au')
-    API_BASE_URL = f"https://api.{DOMAIN}"
+    # Application Settings
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file upload
+    UPLOAD_FOLDER = 'attached_assets'
     
-    # File Upload Configuration
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
-    UPLOAD_FOLDER = 'uploads'
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'doc', 'docx'}
+    # Security Settings
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    PERMANENT_SESSION_LIFETIME = 3600  # 1 hour
     
-    # Rate Limiting
-    RATELIMIT_STORAGE_URL = os.environ.get('REDIS_URL', 'memory://')
+    # Production Domain
+    SERVER_NAME = 'mind-mend.xyz'
+    PREFERRED_URL_SCHEME = 'https'
     
-    # Logging Configuration
-    LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
-    LOG_FILE = 'logs/mindmend.log'
+    # Business Information
+    COMPANY_NAME = 'Sticky Pty Ltd'
+    COMPANY_EMAIL = 'sticky.pty.ltd@gmail.com'
+    COMPANY_ADDRESS = 'Suite 329/98-100 Elizabeth Street, Melbourne, VIC, 3000'
     
-    # HIPAA Compliance Settings
-    DATA_RETENTION_DAYS = 2555  # 7 years as per HIPAA requirements
-    AUDIT_LOG_ENABLED = True
-    ENCRYPTION_ENABLED = True
+    # Feature Flags
+    ENABLE_AI_THERAPY = True
+    ENABLE_PAYMENT_PROCESSING = True
+    ENABLE_ADMIN_PANEL = True
+    ENABLE_MEDIA_PACK = True
     
-    # Counselor Dashboard Settings
-    COUNSELOR_SESSION_TIMEOUT = 30  # minutes
-    MAX_CONCURRENT_SESSIONS = 5
-    
-    # Monitoring and Analytics
-    SENTRY_DSN = os.environ.get('SENTRY_DSN')
-    GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID')
-    
-class DevelopmentConfig(Config):
-    DEBUG = True
-    SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = False
+    # Logging
+    LOG_LEVEL = 'INFO'
+    LOG_FILE = 'logs/mind_mend.log'
 
 class ProductionConfig(Config):
+    """Production configuration"""
     DEBUG = False
-    SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
+    TESTING = False
+    ENV = 'production'
     
-    # Production Security Headers
-    SECURITY_HEADERS = {
-        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'X-XSS-Protection': '1; mode=block',
-        'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;"
-    }
+    # Enhanced security for production
+    SESSION_COOKIE_SECURE = True
+    WTF_CSRF_ENABLED = True
+    
+    # Performance optimizations
+    SEND_FILE_MAX_AGE_DEFAULT = 31536000  # 1 year cache for static files
+
+class DevelopmentConfig(Config):
+    """Development configuration"""
+    DEBUG = True
+    ENV = 'development'
+    SESSION_COOKIE_SECURE = False
 
 class TestingConfig(Config):
+    """Testing configuration"""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     WTF_CSRF_ENABLED = False
+    DATABASE_URL = 'sqlite:///:memory:'
 
+# Configuration mapping
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
     'testing': TestingConfig,
-    'default': DevelopmentConfig
+    'default': ProductionConfig
 }
