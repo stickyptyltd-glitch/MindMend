@@ -105,6 +105,90 @@ def onboarding():
     """Interactive onboarding tutorial with animated character guide"""
     return render_template("onboarding.html")
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """User registration page"""
+    if request.method == "POST":
+        # Handle registration form submission
+        first_name = request.form.get('firstName')
+        last_name = request.form.get('lastName')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        date_of_birth = request.form.get('dateOfBirth')
+        gender = request.form.get('gender')
+        location = request.form.get('location')
+        goals = request.form.getlist('goals')
+        
+        # Store user data in session for now (replace with database later)
+        session['user'] = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'date_of_birth': date_of_birth,
+            'gender': gender,
+            'location': location,
+            'goals': goals,
+            'registered_at': datetime.now().isoformat()
+        }
+        
+        flash('Account created successfully! Welcome to Mind Mend.', 'success')
+        return redirect(url_for('onboarding'))
+    
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """User login page"""
+    if request.method == "POST":
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = request.form.get('remember')
+        
+        # For now, accept any login (replace with real authentication later)
+        if email and password:
+            session['user'] = {
+                'email': email,
+                'logged_in': True,
+                'login_time': datetime.now().isoformat()
+            }
+            
+            if remember:
+                session.permanent = True
+            
+            flash('Welcome back to Mind Mend!', 'success')
+            return redirect(url_for('user_dashboard'))
+        else:
+            return render_template("login.html", error="Please enter both email and password")
+    
+    return render_template("login.html")
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    """Password reset page"""
+    if request.method == "POST":
+        email = request.form.get('email')
+        
+        if email:
+            # In a real application, you would:
+            # 1. Check if email exists in database
+            # 2. Generate secure reset token
+            # 3. Send email with reset link
+            # For now, just show success message
+            return render_template("forgot_password.html", 
+                                 message="If an account with that email exists, we've sent password reset instructions.")
+        else:
+            return render_template("forgot_password.html", 
+                                 error="Please enter a valid email address.")
+    
+    return render_template("forgot_password.html")
+
+@app.route("/user-dashboard")
+def user_dashboard():
+    """User dashboard"""
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template("dashboard.html")
+
 @app.route("/logos")
 def logo_showcase():
     """Display logo options for selection"""

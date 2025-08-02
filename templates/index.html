@@ -270,11 +270,14 @@
                 <h3 class="text-white mb-3">Ready to start your mental health journey?</h3>
                 <p class="text-white-50 mb-4">Experience the future of therapy with AI-powered insights and human expertise.</p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{{ url_for('onboarding') }}" class="btn btn-success btn-lg tutorial-btn">
-                        <i class="fas fa-graduation-cap me-2"></i>Interactive Tutorial
+                    <a href="{{ url_for('register') }}" class="btn btn-success btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
                     </a>
-                    <a href="{{ url_for('individual_therapy') }}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-play me-2"></i>Start Free Session
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                    <a href="{{ url_for('onboarding') }}" class="btn btn-outline-light btn-lg tutorial-btn">
+                        <i class="fas fa-graduation-cap me-2"></i>Interactive Tutorial
                     </a>
                     <a href="{{ url_for('video_assess') }}" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-video me-2"></i>Video Assessment
