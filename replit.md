@@ -24,6 +24,7 @@ Mind Mend is a comprehensive AI-powered mental health platform built with Flask 
 - **NEW: AI Model Manager supporting ensemble diagnosis with 7+ specialized models**
 - **NEW: Advanced Treatment Recommender using AI consensus for personalized therapy plans**
 - **NEW: Admin interface for AI model configuration, testing, and performance monitoring**
+- **NEW: Official brand logo selected - Growth & Healing design (Logo 4) integrated throughout platform**
 
 # User Preferences
 

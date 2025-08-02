@@ -548,10 +548,11 @@ def get_brand_assets():
     """Get brand asset guidelines"""
     brand_assets = {
         'logo_variations': [
-            {'name': 'Primary Logo', 'description': 'Full color logo on light background', 'file': 'mindmend_logo_primary.svg'},
-            {'name': 'White Logo', 'description': 'White logo for dark backgrounds', 'file': 'mindmend_logo_white.svg'},
-            {'name': 'Icon Only', 'description': 'Brain icon for small spaces', 'file': 'mindmend_icon.svg'},
-            {'name': 'Horizontal Logo', 'description': 'Horizontal layout for headers', 'file': 'mindmend_logo_horizontal.svg'}
+            {'name': 'Primary Logo - Growth & Healing', 'description': 'Official selected logo with nature-inspired leaf and tech elements', 'file': 'mindmend_logo_4.svg'},
+            {'name': 'Neural Brain Design', 'description': 'Alternative brain with neural connections', 'file': 'mindmend_logo_1.svg'},
+            {'name': 'Heart-Mind Fusion', 'description': 'Emotional and logical aspects combined', 'file': 'mindmend_logo_2.svg'},
+            {'name': 'Digital Mind', 'description': 'Circuit-filled head silhouette', 'file': 'mindmend_logo_3.svg'},
+            {'name': 'Minimalist Professional', 'description': 'Clean geometric enterprise design', 'file': 'mindmend_logo_5.svg'}
         ],
         'color_palette': {
             'primary': [
