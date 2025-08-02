@@ -33,6 +33,7 @@ Preferred communication style: Simple, everyday language.
 ## Business Entity
 - **Company**: Sticky Pty Ltd (Australian company)
 - **Address**: Suite 329/98-100 Elizabeth Street, Melbourne, VIC, 3000
+- **Email**: sticky.pty.ltd@gmail.com
 - **Domain Strategy**: mindmend.com.au (primary), mindmend.healthcare (alternative)
 - **Target Market**: Australian mental health market with global expansion
 - **Business Model**: SaaS platform with tiered subscriptions and counselor employment

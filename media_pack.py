@@ -29,6 +29,7 @@ class MediaPackGenerator:
             'company': 'Sticky Pty Ltd',
             'location': 'Melbourne, Australia',
             'address': 'Suite 329/98-100 Elizabeth Street, Melbourne, VIC, 3000',
+            'email': 'sticky.pty.ltd@gmail.com',
             'website': 'mindmend.com.au',
             'founded': '2024',
             'mission': 'Providing expert AI counseling that understands, supports, and guides you through life\'s challenges',
@@ -188,7 +189,7 @@ class MediaPackGenerator:
         <b>Company:</b> {self.company_info['company']}<br/>
         <b>Location:</b> {self.company_info['location']}<br/>
         <b>Website:</b> {self.company_info['website']}<br/>
-        <b>Email:</b> contact@{self.company_info['website']}
+        <b>Email:</b> {self.company_info['email']}
         """
         story.append(Paragraph(contact_text, styles['Normal']))
         
@@ -355,7 +356,7 @@ class MediaPackGenerator:
                     'subtitle': 'Let\'s Transform Mental Healthcare Together',
                     'content': [
                         f'Website: {self.company_info["website"]}',
-                        f'Email: invest@{self.company_info["website"]}',
+                        f'Email: {self.company_info["email"]}',
                         'LinkedIn: /company/mindmend',
                         'Location: Sydney, Australia'
                     ],
@@ -437,7 +438,7 @@ class MediaPackGenerator:
             'boilerplate': 'About Mind Mend: Mind Mend is a specialized AI counseling platform developed by Sticky Pty Ltd. Founded in 2024, we provide expert AI counselors trained in evidence-based therapeutic modalities. Our AI therapists offer personalized mental health counseling that adapts to individual needs, making professional-quality therapy accessible 24/7.',
             'contact': {
                 'name': 'Media Relations',
-                'email': 'press@mindmend.com.au',
+                'email': 'sticky.pty.ltd@gmail.com',
                 'phone': '+61 2 XXXX XXXX',
                 'website': 'www.mindmend.com.au'
             }
