@@ -21,7 +21,10 @@ class MobileAppIntegration:
         app.register_blueprint(mobile_bp)
         
         # Mobile-specific configuration
-        app.config['MOBILE_JWT_SECRET'] = os.environ.get('MOBILE_JWT_SECRET', 'mobile-secret-key')
+        mobile_jwt_secret = os.environ.get('MOBILE_JWT_SECRET')
+        if not mobile_jwt_secret:
+            raise ValueError("MOBILE_JWT_SECRET environment variable is required")
+        app.config['MOBILE_JWT_SECRET'] = mobile_jwt_secret
         app.config['MOBILE_TOKEN_EXPIRY'] = 24 * 7  # 7 days
 
 @mobile_bp.route('/api/health')
@@ -62,9 +65,13 @@ def mobile_login():
         'iat': datetime.utcnow()
     }
     
+    mobile_jwt_secret = os.environ.get('MOBILE_JWT_SECRET')
+    if not mobile_jwt_secret:
+        return jsonify({'error': 'Server configuration error'}), 500
+    
     token = jwt.encode(
         token_payload, 
-        os.environ.get('MOBILE_JWT_SECRET', 'mobile-secret-key'), 
+        mobile_jwt_secret, 
         algorithm='HS256'
     )
     
@@ -87,9 +94,13 @@ def mobile_therapy_session():
     
     try:
         token = auth_header.split(' ')[1]
+        mobile_jwt_secret = os.environ.get('MOBILE_JWT_SECRET')
+        if not mobile_jwt_secret:
+            return jsonify({'error': 'Server configuration error'}), 500
+            
         payload = jwt.decode(
             token, 
-            os.environ.get('MOBILE_JWT_SECRET', 'mobile-secret-key'), 
+            mobile_jwt_secret, 
             algorithms=['HS256']
         )
     except jwt.InvalidTokenError:
