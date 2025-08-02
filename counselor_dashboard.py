@@ -195,7 +195,7 @@ def apply():
             'education': request.form.get('education'),
             'cover_letter': request.form.get('cover_letter'),
             'availability': request.form.get('availability'),
-            'resume_uploaded': bool(request.files.get('resume')),
+            'resume_uploaded': request.files.get('resume') is not None,
             'submitted_at': datetime.utcnow().isoformat()
         }
         
