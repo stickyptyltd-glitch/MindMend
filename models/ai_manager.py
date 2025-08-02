@@ -217,6 +217,23 @@ class AIManager:
         """Main entry point for getting AI responses"""
         return self.models["default"](text, session_type)
     
+    def get_individual_therapy_response(self, message):
+        """Get AI response for individual therapy sessions"""
+        result = self.get_therapeutic_response(message, session_type="individual")
+        return result.get('message', self.fake_ai_response(message, "individual"))
+
+    def get_couples_therapy_response(self, message, partner1_name, partner2_name):
+        """Get AI response for couples therapy sessions"""
+        context = f"This is a couples therapy session between {partner1_name} and {partner2_name}."
+        result = self.get_therapeutic_response(message, session_type="couple", context=context)
+        return result.get('message', self.fake_ai_response(message, "couple"))
+
+    def get_group_therapy_response(self, message, participant_count=None):
+        """Get AI response for group therapy sessions"""
+        context = f"This is a group therapy session with {participant_count or 'several'} participants."
+        result = self.get_therapeutic_response(message, session_type="group", context=context)
+        return result.get('message', self.fake_ai_response(message, "group"))
+    
     def _get_system_prompt(self, session_type):
         """Get appropriate system prompt based on session type"""
         prompts = {
@@ -374,3 +391,7 @@ class AIManager:
             "session_type": session_type,
             "confidence": 0.3
         }
+
+
+# Global AI manager instance
+ai_manager = AIManager()

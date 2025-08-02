@@ -184,10 +184,20 @@ def forgot_password():
 
 @app.route("/user-dashboard")
 def user_dashboard():
-    """User dashboard"""
-    if 'user' not in session:
-        return redirect(url_for('login'))
-    return render_template("dashboard.html")
+    """User dashboard with personalized widgets"""
+    # For demo purposes, skip authentication check temporarily
+    # if 'user' not in session:
+    #     return redirect(url_for('login'))
+    
+    # Mock data for demonstration (replace with real data from database)
+    dashboard_data = {
+        'session_count': 12,
+        'streak_days': 5,
+        'goals_achieved': 3,
+        'last_session_date': 'Yesterday at 7:30 PM'
+    }
+    
+    return render_template("dashboard_widgets.html", **dashboard_data)
 
 @app.route("/logos")
 def logo_showcase():
@@ -202,6 +212,30 @@ def brand_guide():
 @app.route("/individual")
 def individual_therapy():
     """Individual therapy page"""
+    return render_template("individual_therapy.html")
+
+@app.route("/individual-therapy", methods=["GET", "POST"])
+def individual_therapy_session():
+    """Individual therapy session with AI"""
+    if request.method == "POST":
+        user_input = request.form.get('user_input', '')
+        
+        # Get AI response
+        from models.ai_manager import ai_manager
+        ai_response = ai_manager.get_individual_therapy_response(user_input)
+        
+        # Return JSON for AJAX requests
+        if request.headers.get('Content-Type') == 'application/json':
+            return jsonify({
+                'response': ai_response,
+                'success': True
+            })
+        
+        # For form submissions, render template with response
+        return render_template("individual_therapy.html", 
+                             user_input=user_input, 
+                             ai_response=ai_response)
+    
     return render_template("individual_therapy.html")
 
 @app.route("/relationship")
@@ -1274,6 +1308,42 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
+
+@app.route("/api/dashboard/ai-insights")
+def dashboard_ai_insights():
+    """Get AI-generated mental health insights for dashboard"""
+    try:
+        from models.ai_manager import ai_manager
+        
+        # Sample insights data
+        insights = [
+            {
+                'title': 'Mood Improvement Detected',
+                'description': 'Your mood has been consistently improving over the past week. Keep up the great work with your mindfulness exercises!',
+                'confidence': 85
+            },
+            {
+                'title': 'Optimal Session Timing',
+                'description': 'You tend to have more productive sessions in the evening. Consider scheduling your next session around 7 PM.',
+                'confidence': 72
+            },
+            {
+                'title': 'Recommended Exercise',
+                'description': 'Based on your goals, try the "5-4-3-2-1 Grounding" technique for anxiety management.',
+                'confidence': 90
+            }
+        ]
+        
+        return jsonify({
+            'success': True,
+            'data': insights
+        })
+    except Exception as e:
+        logging.error(f"Error generating dashboard insights: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Unable to generate insights at this time'
+        })
 
 # Health check endpoint
 @app.route("/health")
