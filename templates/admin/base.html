@@ -200,6 +200,12 @@
                         <h4 class="mb-0">Mind Mend</h4>
                     </div>
                     <small>Sticky Pty Ltd</small>
+                    <div class="mt-1">
+                        <small class="text-muted" style="font-size: 0.7rem;">
+                            Suite 329/98-100 Elizabeth St<br/>
+                            Melbourne, VIC 3000
+                        </small>
+                    </div>
                 </div>
                 
                 <ul class="sidebar-nav">
@@ -235,6 +241,9 @@
                     </a></li>
                     <li><a href="{{ url_for('admin.ai_models') }}" {% if request.endpoint == 'admin.ai_models' %}class="active"{% endif %}>
                         <i class="fas fa-brain me-2"></i>AI Models
+                    </a></li>
+                    <li><a href="{{ url_for('admin.company_documents') }}" {% if request.endpoint == 'admin.company_documents' %}class="active"{% endif %}>
+                        <i class="fas fa-file-contract me-2"></i>Company Documents
                     </a></li>
                 </ul>
                 

@@ -845,6 +845,12 @@ def ai_models():
     
     return render_template('admin/ai_models.html', status=status)
 
+@admin_bp.route('/company-documents')
+@require_admin_auth
+def company_documents():
+    """Company Documents management page"""
+    return render_template('admin/company_documents.html')
+
 @admin_bp.route('/api/ai-models/toggle', methods=['POST'])
 @require_admin_auth
 def api_toggle_ai_model():
