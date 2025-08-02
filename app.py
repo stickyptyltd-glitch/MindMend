@@ -106,6 +106,11 @@ def logo_showcase():
     """Display logo options for selection"""
     return render_template("logo_showcase.html")
 
+@app.route("/brand-guide")
+def brand_guide():
+    """Display comprehensive brand usage guide"""
+    return render_template("brand_guide.html")
+
 @app.route("/individual")
 def individual_therapy():
     """Individual therapy page"""
