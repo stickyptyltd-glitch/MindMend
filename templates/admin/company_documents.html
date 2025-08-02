@@ -251,7 +251,7 @@
 
 <script>
 const uploadArea = document.getElementById('uploadArea');
-const fileInput = document.getElementById('fileInput');
+let fileInput = document.getElementById('fileInput');
 
 // Drag and drop functionality
 uploadArea.addEventListener('dragover', (e) => {
@@ -274,14 +274,18 @@ uploadArea.addEventListener('drop', (e) => {
 });
 
 uploadArea.addEventListener('click', () => {
-    fileInput.click();
-});
-
-fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-        handleFileUpload(e.target.files[0]);
+    if (fileInput) {
+        fileInput.click();
     }
 });
+
+if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileUpload(e.target.files[0]);
+        }
+    });
+}
 
 function handleFileUpload(file) {
     // Validate file type
