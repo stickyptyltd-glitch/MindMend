@@ -1345,6 +1345,99 @@ def dashboard_ai_insights():
             'error': 'Unable to generate insights at this time'
         })
 
+# AI therapy endpoints
+@app.route("/ai/individual", methods=["POST"])
+def ai_individual_therapy():
+    """AI endpoint for individual therapy responses"""
+    try:
+        data = request.get_json()
+        if not data or 'message' not in data:
+            return jsonify({'error': 'Message is required'}), 400
+            
+        message = data['message']
+        context = data.get('context', 'individual_therapy')
+        
+        # Use AI manager to get response
+        from models.ai_manager import ai_manager
+        response = ai_manager.get_individual_therapy_response(message)
+        
+        return jsonify({
+            'success': True,
+            'response': response,
+            'context': context
+        })
+        
+    except Exception as e:
+        logging.error(f"Error in individual AI therapy: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Unable to process therapy request'
+        }), 500
+
+@app.route("/ai/couples", methods=["POST"])
+def ai_couples_therapy():
+    """AI endpoint for couples therapy responses"""
+    try:
+        data = request.get_json()
+        if not data or 'message' not in data:
+            return jsonify({'error': 'Message is required'}), 400
+            
+        message = data['message']
+        context = data.get('context', 'couples_therapy')
+        
+        # Use AI manager to get response
+        from models.ai_manager import ai_manager
+        partner1_name = data.get('partner1_name', 'Partner 1')
+        partner2_name = data.get('partner2_name', 'Partner 2')
+        response = ai_manager.get_couples_therapy_response(message, partner1_name, partner2_name)
+        
+        return jsonify({
+            'success': True,
+            'response': response,
+            'context': context
+        })
+        
+    except Exception as e:
+        logging.error(f"Error in couples AI therapy: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Unable to process therapy request'
+        }), 500
+
+@app.route("/ai/group", methods=["POST"])
+def ai_group_therapy():
+    """AI endpoint for group therapy responses"""
+    try:
+        data = request.get_json()
+        if not data or 'message' not in data:
+            return jsonify({'error': 'Message is required'}), 400
+            
+        message = data['message']
+        context = data.get('context', 'group_therapy')
+        
+        # Use AI manager to get response
+        from models.ai_manager import ai_manager
+        response = ai_manager.get_group_therapy_response(message)
+        
+        return jsonify({
+            'success': True,
+            'response': response,
+            'context': context
+        })
+        
+    except Exception as e:
+        logging.error(f"Error in group AI therapy: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Unable to process therapy request'
+        }), 500
+
+# Brand and media routes  
+@app.route("/media-pack")
+def media_pack():
+    """Media pack with brand assets and guidelines"""
+    return render_template("media_pack.html")
+
 # Health check endpoint
 @app.route("/health")
 def health_check():
