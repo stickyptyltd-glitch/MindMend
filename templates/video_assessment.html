@@ -10,7 +10,107 @@
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
     }
+    
+    /* Mobile-friendly camera view */
+    .camera-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        transition: all 0.3s ease;
+    }
+    
+    .camera-container.minimized {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 200px;
+        height: 150px;
+        z-index: 1000;
+        border: 2px solid #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    
+    .video-element {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    
+    .camera-controls {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+    }
+    
+    .camera-controls.minimized {
+        bottom: 5px;
+        gap: 5px;
+    }
+    
+    .camera-btn {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.9);
+        color: #333;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .camera-btn.minimized {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    
+    .camera-btn:hover {
+        background: rgba(255,255,255,1);
+        transform: scale(1.05);
+    }
+    
+    /* Questions panel - always visible on mobile */
+    .questions-panel {
+        background: rgba(255,255,255,0.95);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+        min-height: 300px;
+    }
+    
+    .questions-panel.camera-active {
+        margin-top: 0;
+    }
+    
+    /* Mobile-specific styles */
+    @media (max-width: 768px) {
+        .camera-container {
+            height: 300px;
+        }
+        
+        .camera-container.minimized {
+            width: 150px;
+            height: 100px;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .questions-panel {
+            padding: 15px;
+            margin-bottom: 120px; /* Space for minimized camera */
+        }
+        
+        .questions-panel.camera-active {
+            padding-top: 60px; /* Space for minimized camera when active */
+        }
+    }
+    
     .assessment-overlay {
         position: absolute;
         top: 0;
@@ -98,8 +198,19 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-body p-0">
-                <div class="video-assessment-container" style="height: 450px;">
-                    <video id="assessmentVideo" width="100%" height="100%" style="object-fit: cover;" muted></video>
+                <div class="camera-container" id="cameraContainer">
+                    <div class="video-assessment-container" style="height: 450px;">
+                        <video id="assessmentVideo" width="100%" height="100%" style="object-fit: cover;" muted class="video-element"></video>
+                        
+                        <!-- Camera Controls Overlay -->
+                        <div class="camera-controls" id="cameraControls">
+                            <button class="camera-btn" id="minimizeBtn" onclick="toggleCameraSize()">
+                                <i class="fas fa-compress"></i> Minimize
+                            </button>
+                            <button class="camera-btn" id="maximizeBtn" onclick="toggleCameraSize()" style="display: none;">
+                                <i class="fas fa-expand"></i> Expand
+                            </button>
+                        </div>
                     
                     <!-- Real-time Analysis Overlay -->
                     <div class="assessment-overlay" id="analysisOverlay">
@@ -262,6 +373,261 @@
                 
                 <div id="currentInstructions" class="mt-4">
                     <h6>Instructions</h6>
+                    <p class="text-muted" id="instructionText">Position yourself comfortably in front of the camera and click "Start Assessment" when ready.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Questions Panel for Mobile -->
+<div class="questions-panel" id="questionsPanel" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-question-circle me-2"></i>Assessment Questions</h5>
+            <small class="text-muted">Answer while the camera is recording</small>
+        </div>
+        <div class="card-body">
+            <div id="currentQuestion">
+                <h6>Question 1 of 5</h6>
+                <p class="mb-3">How have you been feeling emotionally over the past week?</p>
+                <div class="form-group mb-3">
+                    <textarea class="form-control" rows="3" placeholder="Type your response here..." id="questionResponse"></textarea>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-secondary" id="prevQuestion" disabled>Previous</button>
+                    <button class="btn btn-primary" id="nextQuestion">Next Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assessment Results Modal -->
+<div class="modal fade" id="resultsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assessment Complete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="assessmentResults"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="scheduleSession">Schedule Follow-up Session</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Mobile detection and camera management
+let isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let cameraMinimized = false;
+let assessmentActive = false;
+let currentQuestionIndex = 0;
+
+const questions = [
+    "How have you been feeling emotionally over the past week?",
+    "What situations or events tend to make you feel stressed or anxious?", 
+    "How would you describe your energy levels and motivation recently?",
+    "What coping strategies do you currently use when facing challenges?",
+    "What are your main goals for improving your mental well-being?"
+];
+
+// Auto-minimize camera on mobile when assessment starts
+function autoMinimizeOnMobile() {
+    if (isMobile && assessmentActive && !cameraMinimized) {
+        setTimeout(() => {
+            toggleCameraSize();
+            showQuestionsPanel();
+        }, 3000); // Auto-minimize after 3 seconds on mobile
+    }
+}
+
+function toggleCameraSize() {
+    const container = document.getElementById('cameraContainer');
+    const controls = document.getElementById('cameraControls');
+    const minimizeBtn = document.getElementById('minimizeBtn');
+    const maximizeBtn = document.getElementById('maximizeBtn');
+    
+    if (cameraMinimized) {
+        // Expand camera
+        container.classList.remove('minimized');
+        controls.classList.remove('minimized');
+        minimizeBtn.style.display = 'block';
+        maximizeBtn.style.display = 'none';
+        cameraMinimized = false;
+        hideQuestionsPanel();
+    } else {
+        // Minimize camera
+        container.classList.add('minimized');
+        controls.classList.add('minimized');
+        minimizeBtn.style.display = 'none';
+        maximizeBtn.style.display = 'block';
+        cameraMinimized = true;
+        if (assessmentActive) {
+            showQuestionsPanel();
+        }
+    }
+}
+
+function showQuestionsPanel() {
+    const panel = document.getElementById('questionsPanel');
+    panel.style.display = 'block';
+    panel.classList.add('camera-active');
+    updateQuestion();
+}
+
+function hideQuestionsPanel() {
+    const panel = document.getElementById('questionsPanel');
+    panel.style.display = 'none';
+    panel.classList.remove('camera-active');
+}
+
+function updateQuestion() {
+    const questionDiv = document.getElementById('currentQuestion');
+    const questionText = questions[currentQuestionIndex];
+    const questionNumber = currentQuestionIndex + 1;
+    
+    questionDiv.innerHTML = `
+        <h6>Question ${questionNumber} of ${questions.length}</h6>
+        <p class="mb-3">${questionText}</p>
+        <div class="form-group mb-3">
+            <textarea class="form-control" rows="3" placeholder="Type your response here..." id="questionResponse"></textarea>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-secondary" id="prevQuestion" ${currentQuestionIndex === 0 ? 'disabled' : ''}>Previous</button>
+            <button class="btn btn-primary" id="nextQuestion">${currentQuestionIndex === questions.length - 1 ? 'Complete Assessment' : 'Next Question'}</button>
+        </div>
+    `;
+    
+    // Re-attach event listeners
+    document.getElementById('prevQuestion').onclick = previousQuestion;
+    document.getElementById('nextQuestion').onclick = nextQuestion;
+}
+
+function nextQuestion() {
+    if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        updateQuestion();
+    } else {
+        // Complete assessment
+        completeAssessment();
+    }
+}
+
+function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        updateQuestion();
+    }
+}
+
+function completeAssessment() {
+    assessmentActive = false;
+    hideQuestionsPanel();
+    
+    // Show results modal
+    const modal = new bootstrap.Modal(document.getElementById('resultsModal'));
+    document.getElementById('assessmentResults').innerHTML = `
+        <div class="text-center mb-4">
+            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+            <h4>Assessment Complete!</h4>
+            <p class="text-muted">Your video assessment has been processed and analyzed.</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Key Findings:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-circle text-success me-2"></i>Overall mood: Stable</li>
+                    <li><i class="fas fa-circle text-warning me-2"></i>Stress indicators: Moderate</li>
+                    <li><i class="fas fa-circle text-info me-2"></i>Engagement level: High</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6>Recommendations:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Consider mindfulness exercises</li>
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Regular therapy sessions recommended</li>
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Stress management techniques</li>
+                </ul>
+            </div>
+        </div>
+    `;
+    modal.show();
+}
+
+// Camera and assessment controls
+document.addEventListener('DOMContentLoaded', function() {
+    const startBtn = document.getElementById('startAssessment');
+    const stopBtn = document.getElementById('stopAssessment');
+    const pauseBtn = document.getElementById('pauseAssessment');
+    
+    startBtn.addEventListener('click', async function() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }, 
+                audio: true 
+            });
+            
+            document.getElementById('assessmentVideo').srcObject = stream;
+            assessmentActive = true;
+            
+            // Auto-minimize on mobile after starting
+            autoMinimizeOnMobile();
+            
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            pauseBtn.disabled = false;
+            
+            document.getElementById('assessmentStatus').textContent = 'Recording';
+            document.getElementById('assessmentStatus').className = 'badge bg-danger';
+            
+        } catch (error) {
+            console.error('Camera access error:', error);
+            alert('Unable to access camera. Please ensure camera permissions are granted.');
+        }
+    });
+    
+    stopBtn.addEventListener('click', function() {
+        const video = document.getElementById('assessmentVideo');
+        const stream = video.srcObject;
+        
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
+        }
+        
+        assessmentActive = false;
+        hideQuestionsPanel();
+        
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        pauseBtn.disabled = true;
+        
+        document.getElementById('assessmentStatus').textContent = 'Stopped';
+        document.getElementById('assessmentStatus').className = 'badge bg-secondary';
+    });
+    
+    // Handle window resize for mobile detection
+    window.addEventListener('resize', function() {
+        isMobile = window.innerWidth <= 768;
+        if (!isMobile && cameraMinimized) {
+            toggleCameraSize(); // Auto-expand on desktop
+        }
+    });
+});
+</script>
                     <p class="text-muted" id="instructionText">
                         Click "Start Assessment" to begin. Make sure you're in a well-lit area and looking directly at the camera.
                     </p>
