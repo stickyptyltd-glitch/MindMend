@@ -1,4 +1,4 @@
-modules = ["postgresql-16", "python-3.11"]
+modules = ["postgresql-16", "python-3.11", "nodejs-18"]
 
 [nix]
 channel = "stable-25_05"
@@ -6,7 +6,7 @@ packages = ["cargo", "freetype", "glibcLocales", "libiconv", "libxcrypt", "opens
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+run = ["sh", "npm start", "gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
 
 [workflows]
 runButton = "Project"
