@@ -1,12 +1,12 @@
-modules = ["postgresql-16", "python-3.11", "nodejs-18"]
+modules = ["python-3.11"]
 
 [nix]
 channel = "stable-25_05"
-packages = ["cargo", "freetype", "glibcLocales", "libiconv", "libxcrypt", "openssl", "pkg-config", "postgresql", "rustc"]
+packages = ["openssl", "postgresql"]
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["sh", "npm start", "gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
 
 [workflows]
 runButton = "Project"
@@ -32,9 +32,3 @@ waitForPort = 5000
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[agent]
-integrations = ["web_scraper==1.0.0", "flask_stripe==1.0.0", "python_database==1.0.0", "python_openai==1.0.0"]
-
-[objectStorage]
-defaultBucketID = "replit-objstore-5bbae7d3-b41a-45f9-bf1e-5ce5eb83e68d"
