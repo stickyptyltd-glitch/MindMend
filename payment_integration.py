@@ -4,13 +4,11 @@ Payment Integration for Mind Mend
 Stripe, PayPal, Google Pay, Apple Pay Integration
 """
 
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, jsonify, flash, session
 import stripe
 import paypalrestsdk
 import os
 import logging
-from datetime import datetime
-import json
 
 payment_bp = Blueprint('payments', __name__, url_prefix='/payments')
 
@@ -35,7 +33,7 @@ class PaymentManager:
             # Australian domain configuration
             domain = os.environ.get('DOMAIN', 'mindmend.com.au')
             
-            session = stripe.checkout.Session.create(
+            checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[{
                     'price_data': {
@@ -64,7 +62,7 @@ class PaymentManager:
                     'country': 'Australia'
                 }
             )
-            return {'success': True, 'session_id': session.id, 'url': session.url}
+            return {'success': True, 'session_id': checkout_session.id, 'url': checkout_session.url}
             
         except Exception as e:
             logging.error(f"Stripe checkout error: {e}")

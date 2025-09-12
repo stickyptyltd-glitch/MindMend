@@ -4,7 +4,7 @@ Security Enhancements for Mind Mend
 HIPAA compliance, fraud protection, and security features
 """
 
-from flask import request, session, jsonify, abort
+from flask import request, session, abort, redirect, url_for
 from functools import wraps
 import hashlib
 import hmac
@@ -12,7 +12,6 @@ import time
 import logging
 import re
 from datetime import datetime, timedelta
-import ipaddress
 import json
 import os
 

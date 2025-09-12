@@ -47,7 +47,7 @@ os.makedirs('static/css', exist_ok=True)
 with app.app_context():
     from models import (
         Session, BiometricData, VideoAnalysis, Exercise,
-        Patient, Assessment, TherapistSession
+        Assessment
     )
     from models.ai_manager import AIManager
     from models.health_checker import HealthChecker
@@ -66,7 +66,7 @@ with app.app_context():
     # Import and register blueprints
     from admin_panel import admin_bp
     from counselor_dashboard import counselor_bp
-    from mobile_app import mobile_bp, MobileAppIntegration
+    from mobile_app import MobileAppIntegration
     from payment_integration import payment_bp
     from security_enhancements import SecurityManager
     from media_pack import media_bp
@@ -677,7 +677,7 @@ def activity_detail(activity_type):
     if template:
         try:
             return render_template(template)
-        except:
+        except Exception:
             # If specific template doesn't exist, use generic
             return render_template('activities/generic_activity.html', activity_type=activity_type)
     else:
@@ -711,7 +711,7 @@ def stripe_webhook():
         return jsonify(error=str(e)), 400
 
 @app.route("/session", methods=["GET", "POST"])
-def session():
+def therapy_session():
     """Legacy session endpoint - maintained for compatibility"""
     if request.method == "POST":
         try:
@@ -1191,7 +1191,7 @@ def calculate_average_mood():
         
         total_mood = sum(s.mood_before for s in recent_sessions)
         return round(total_mood / len(recent_sessions), 1)
-    except:
+    except (ZeroDivisionError, AttributeError):
         return 5.0
 
 def calculate_weekly_average_mood():
@@ -1208,7 +1208,7 @@ def calculate_weekly_average_mood():
         
         total_mood = sum(s.mood_before for s in sessions)
         return round(total_mood / len(sessions), 1)
-    except:
+    except (ZeroDivisionError, AttributeError):
         return 5.0
 
 def calculate_streak_days():
@@ -1232,7 +1232,7 @@ def calculate_streak_days():
             current_date -= timedelta(days=1)
         
         return streak
-    except:
+    except AttributeError:
         return 0
 
 def calculate_improvement_percentage():
@@ -1258,7 +1258,7 @@ def calculate_improvement_percentage():
         
         improvement = ((avg_second - avg_first) / avg_first) * 100
         return round(max(0, improvement), 1)
-    except:
+    except (ZeroDivisionError, AttributeError):
         return 0
 
 def calculate_assessment_score(assessment_data):
@@ -1275,7 +1275,7 @@ def calculate_assessment_score(assessment_data):
                     score += (int(answer) - 5) * 2  # Adjust based on scale responses
         
         return max(0, min(100, score))
-    except:
+    except (ZeroDivisionError, AttributeError):
         return 75
 
 def generate_assessment_recommendations(assessment_data):
@@ -1296,7 +1296,7 @@ def generate_assessment_recommendations(assessment_data):
                     if answer.isdigit() and int(answer) > 7:
                         recommendations.insert(0, 'Focus on stress management techniques')
                     break
-    except:
+    except AttributeError:
         pass
     
     return recommendations
@@ -1313,7 +1313,6 @@ def internal_server_error(e):
 def dashboard_ai_insights():
     """Get AI-generated mental health insights for dashboard"""
     try:
-        from models.ai_manager import ai_manager
         
         # Sample insights data
         insights = [

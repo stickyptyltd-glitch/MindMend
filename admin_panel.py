@@ -9,11 +9,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import json
 import os
-import logging
 from functools import wraps
 from models.security_roles import SecurityRoles
 from models.admin_ai_assistant import AdminAIAssistant
 from models.research_manager import research_manager, ResearchPaper, ClinicalDataset, ResearchInsight
+from admin_security import require_admin_auth, require_super_admin, admin_security, AdminAuditLogger
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -989,11 +989,10 @@ def api_test_ai_model():
     """Test AI model with sample input"""
     try:
         data = request.get_json()
-        model_name = data.get('model_name')
+        # model_name = data.get('model_name')  # Currently unused
         test_input = data.get('input', 'Hello, how can you help me today?')
         session_type = data.get('session_type', 'individual')
         
-        from models.ai_model_manager import ai_model_manager
         from models.therapy_ai_integration import therapy_ai_integration
         import time
         

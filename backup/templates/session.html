@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}Therapy Session - Mind Mend{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-comments me-2"></i>Therapy Session</h3>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+
+                {% if not ai_response %}
+                <!-- Session Input Form -->
+                <form method="post" id="sessionForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Your Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="session_type" class="form-label">Session Type</label>
+                        <select class="form-select" id="session_type" name="session_type">
+                            <option value="individual">Individual Therapy</option>
+                            <option value="couple">Couple Therapy</option>
+                            <option value="group">Group Therapy</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="user_input" class="form-label">What's on your mind?</label>
+                        <textarea class="form-control" id="user_input" name="user_input" rows="5" 
+                                placeholder="Share your thoughts, feelings, or concerns..." required></textarea>
+                        <div class="form-text">Your input will be analyzed by AI for personalized support.</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </button>
+                        <button type="button" class="btn btn-outline-info" onclick="startChatSession()">
+                            <i class="fas fa-comments me-2"></i>Start Live Chat
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <!-- Session Results -->
+                <div class="session-results">
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-user me-2"></i>Session Summary</h5>
+                        <p><strong>Name:</strong> {{ name }}</p>
+                        <p><strong>Session Type:</strong> {{ session_type.title() }}</p>
+                    </div>
+
+                    <!-- User Input -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6><i class="fas fa-comment me-2"></i>Your Message</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ user_input }}</p>
+                        </div>
+                    </div>
+
+                    <!-- AI Response -->
+                    <div class="card mb-3 border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h6><i class="fas fa-robot me-2"></i>AI Therapist Response</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ ai_response }}</p>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Alerts Section -->
+                    {% if alerts %}
+                    <div class="card mb-3 border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Health & Safety Alerts</h6>
+                        </div>
+                        <div class="card-body">
+                            {% for alert in alerts %}
+                            <div class="alert alert-{{ 'danger' if alert.severity == 'critical' else 'warning' if alert.severity == 'high' else 'info' }} mb-2">
+                                <strong>{{ alert.message }}</strong>
+                                {% if alert.resources %}
+                                <div class="mt-2">
+                                    <small><strong>Resources:</strong></small>
+                                    <ul class="mb-0">
+                                        {% for resource in alert.resources %}
+                                        <li><small>{{ resource.name }}: {{ resource.contact }}</small></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ url_for('session') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>New Session
+                        </a>
+                        <a href="{{ url_for('video_assessment') }}" class="btn btn-info">
+                            <i class="fas fa-video me-2"></i>Video Assessment
+                        </a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                            <i class="fas fa-chart-line me-2"></i>View Progress
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Real-time Analysis Panel (Hidden by default) -->
+<div class="row mt-4" id="realTimePanel" style="display: none;">
+    <div class="col-lg-8 mx-auto">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h6><i class="fas fa-analytics me-2"></i>Real-time Analysis</h6>
+            </div>
+            <div class="card-body">
+                <div id="realTimeResults">
+                    <!-- Real-time analysis results will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userInput = document.getElementById('user_input');
+    const realTimePanel = document.getElementById('realTimePanel');
+    const realTimeResults = document.getElementById('realTimeResults');
+    let analysisTimeout;
+
+    // Real-time text analysis
+    if (userInput) {
+        userInput.addEventListener('input', function() {
+            clearTimeout(analysisTimeout);
+            
+            const text = this.value.trim();
+            if (text.length > 50) { // Only analyze if sufficient text
+                analysisTimeout = setTimeout(() => {
+                    analyzeText(text);
+                }, 1000); // Debounce for 1 second
+            }
+        });
+    }
+
+    function analyzeText(text) {
+        fetch('/api/analyze-text', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: text,
+                session_type: document.getElementById('session_type')?.value || 'individual'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Analysis error:', data.error);
+                realTimePanel.style.display = 'none';
+                return;
+            }
+            
+            // Show real-time analysis
+            realTimePanel.style.display = 'block';
+            
+            // Display analysis results
+            realTimeResults.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-brain me-2"></i>Emotional Analysis</h6>
+                        <p><strong>Primary Emotion:</strong> ${data.ai_response?.emotional_state || 'Analyzing...'}</p>
+                        <p><strong>Confidence:</strong> ${data.ai_response?.confidence || 'N/A'}%</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-shield-alt me-2"></i>Risk Assessment</h6>
+                        <p><strong>Level:</strong> <span class="badge bg-${data.alerts?.length > 0 ? 'warning' : 'success'}">${data.alerts?.length > 0 ? 'Moderate' : 'Low'}</span></p>
+                    </div>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Real-time analysis error:', error);
+            realTimePanel.style.display = 'none';
+        });
+    }
+
+    // Chat functionality for modern GPT interface
+    window.startChatSession = function() {
+        const chatContainer = document.createElement('div');
+        chatContainer.className = 'chat-interface mt-4';
+        chatContainer.innerHTML = `
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h6><i class="fas fa-comments me-2"></i>Live Chat with AI Therapist</h6>
+                </div>
+                <div class="card-body" style="height: 400px; overflow-y: auto;" id="chatMessages">
+                    <div class="text-muted text-center p-3">
+                        <i class="fas fa-robot fa-2x mb-2"></i>
+                        <p>AI Therapist is ready to chat. How are you feeling today?</p>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chatInput" placeholder="Type your message...">
+                        <button class="btn btn-primary" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const formContainer = document.querySelector('.session-results') || document.querySelector('.card-body');
+        formContainer.appendChild(chatContainer);
+        
+        // Focus on chat input
+        document.getElementById('chatInput').focus();
+    };
+
+    window.sendChatMessage = function() {
+        const input = document.getElementById('chatInput');
+        const messages = document.getElementById('chatMessages');
+        const message = input.value.trim();
+        
+        if (!message) return;
+        
+        // Add user message
+        addChatMessage('user', message);
+        input.value = '';
+        
+        // Show typing indicator
+        const typingId = addChatMessage('ai', '<i class="fas fa-spinner fa-spin"></i> Typing...');
+        
+        // Send to API
+        fetch('/api/session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                session_type: 'individual',
+                name: 'Chat User'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove typing indicator
+            document.getElementById(typingId).remove();
+            
+            if (data.success) {
+                addChatMessage('ai', data.response);
+            } else {
+                addChatMessage('ai', 'I apologize, but I\'m having technical difficulties. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Chat error:', error);
+            document.getElementById(typingId).remove();
+            addChatMessage('ai', 'I\'m sorry, I\'m having connection issues. Please try again.');
+        });
+    };
+
+    function addChatMessage(sender, message) {
+        const messages = document.getElementById('chatMessages');
+        const messageId = 'msg_' + Date.now();
+        const messageDiv = document.createElement('div');
+        messageDiv.id = messageId;
+        messageDiv.className = `mb-3 ${sender === 'user' ? 'text-end' : ''}`;
+        
+        messageDiv.innerHTML = `
+            <div class="d-inline-block p-3 rounded ${sender === 'user' ? 'bg-primary text-white' : 'bg-light'}" style="max-width: 70%;">
+                <div class="small mb-1">
+                    <i class="fas fa-${sender === 'user' ? 'user' : 'robot'} me-1"></i>
+                    ${sender === 'user' ? 'You' : 'AI Therapist'}
+                </div>
+                <div>${message}</div>
+            </div>
+        `;
+        
+        messages.appendChild(messageDiv);
+        messages.scrollTop = messages.scrollHeight;
+        
+        return messageId;
+    }
+
+    // Allow Enter key to send messages
+    document.addEventListener('keypress', function(e) {
+        if (e.target.id === 'chatInput' && e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
+
+    function displayRealTimeAnalysis(data) {
+        let html = '';
+        
+        // AI Response Preview
+        if (data.ai_response && typeof data.ai_response === 'object') {
+            html += '<div class="mb-3">';
+            html += '<h6><i class="fas fa-brain me-2"></i>AI Insights</h6>';
+            html += `<p><strong>Emotional State:</strong> ${data.ai_response.emotional_state || 'Analyzing...'}</p>`;
+            if (data.ai_response.key_themes && data.ai_response.key_themes.length > 0) {
+                html += '<p><strong>Key Themes:</strong> ' + data.ai_response.key_themes.join(', ') + '</p>';
+            }
+            html += '</div>';
+        }
+
+        // Alerts
+        if (data.alerts && data.alerts.length > 0) {
+            html += '<div class="mb-3">';
+            html += '<h6><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Alerts</h6>';
+            data.alerts.forEach(alert => {
+                const alertClass = alert.severity === 'critical' ? 'danger' : 
+                                 alert.severity === 'high' ? 'warning' : 'info';
+                html += `<div class="alert alert-${alertClass} py-2 mb-2">${alert.message}</div>`;
+            });
+            html += '</div>';
+        }
+
+        // Exercises
+        if (data.exercises && data.exercises.length > 0) {
+            html += '<div class="mb-3">';
+            html += '<h6><i class="fas fa-dumbbell me-2"></i>Suggested Exercises</h6>';
+            data.exercises.slice(0, 2).forEach(exercise => {
+                html += `<div class="card card-body py-2 mb-2">`;
+                html += `<strong>${exercise.title}</strong> - ${exercise.description}`;
+                html += `</div>`;
+            });
+            html += '</div>';
+        }
+
+        realTimeResults.innerHTML = html || '<p class="text-muted">Analyzing your input...</p>';
+    }
+
+    // Form enhancement
+    const sessionForm = document.getElementById('sessionForm');
+    if (sessionForm) {
+        sessionForm.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            submitBtn.disabled = true;
+        });
+    }
+});
+</script>
+{% endblock %}

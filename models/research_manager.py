@@ -3,13 +3,10 @@ Research and Dataset Management System for Mind Mend
 Handles research papers, clinical datasets, and knowledge base for early diagnosis
 """
 
-import os
-import json
-import hashlib
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List, Dict, Any, Optional
 import logging
-from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey, JSON, func
+from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 try:
     from app import db
@@ -421,7 +418,7 @@ class ResearchManager:
             
             vector = self.vectorizer.transform([text]).toarray()[0]
             return vector.tolist()
-        except:
+        except Exception:
             return [0.0] * 100  # Return zero vector on error
     
     def _calculate_similarity(self, embedding1: List[float], 
@@ -433,7 +430,7 @@ class ResearchManager:
                 np.array(embedding2).reshape(1, -1)
             )[0][0]
             return float(sim)
-        except:
+        except Exception:
             return 0.0
     
     def _calculate_relevance_score(self, paper: ResearchPaper) -> float:

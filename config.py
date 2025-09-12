@@ -42,8 +42,8 @@ class Config:
     PERMANENT_SESSION_LIFETIME = 3600  # 1 hour
     
     # Production Domain
-    SERVER_NAME = 'mind-mend.xyz'
-    PREFERRED_URL_SCHEME = 'https'
+    SERVER_NAME = os.environ.get('SERVER_NAME', 'mindmend.xyz')
+    PREFERRED_URL_SCHEME = os.environ.get('PREFERRED_URL_SCHEME', 'https')
     
     # Business Information
     COMPANY_NAME = 'Sticky Pty Ltd'

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 60" width="400" height="60">
+  <defs>
+    <linearGradient id="leafGradientHoriz" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00b894;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6c5ce7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fd79a8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradientHoriz" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2d3436;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00b894;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Horizontal layout for headers and wide spaces -->
+  <g transform="translate(10, 10)">
+    <!-- Smaller leaf for horizontal layout -->
+    <path d="M10,35 Q7,28 10,22 Q13,16 20,18 Q27,20 27,28 Q24,35 20,35 Q15,36 10,35 Z" 
+          fill="url(#leafGradientHoriz)" stroke="#6c5ce7" stroke-width="2"/>
+    
+    <!-- Leaf veins as tech circuits -->
+    <path d="M12,28 Q18,25 24,28" stroke="#ffffff" stroke-width="1.2" fill="none" opacity="0.8"/>
+    <path d="M14,32 Q19,30 24,32" stroke="#ffffff" stroke-width="0.8" fill="none" opacity="0.7"/>
+    <path d="M16,24 Q19,23 22,24" stroke="#ffffff" stroke-width="0.8" fill="none" opacity="0.7"/>
+    
+    <!-- Tech nodes -->
+    <circle cx="18" cy="25" r="1" fill="#ffffff" opacity="0.9"/>
+    <circle cx="21" cy="28" r="1" fill="#ffffff" opacity="0.9"/>
+    <circle cx="19" cy="32" r="1" fill="#ffffff" opacity="0.9"/>
+  </g>
+  
+  <!-- Company Name - Horizontal layout -->
+  <text x="50" y="25" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="url(#textGradientHoriz)">
+    Mind Mend
+  </text>
+  
+  <!-- Tagline -->
+  <text x="50" y="40" font-family="Arial, sans-serif" font-size="10" fill="#00b894" opacity="0.8">
+    AI-Powered Mental Health Platform
+  </text>
+  
+  <!-- Additional branding for horizontal space -->
+  <text x="280" y="25" font-family="Arial, sans-serif" font-size="12" fill="#6c757d" opacity="0.7">
+    Sticky Pty Ltd
+  </text>
+  <text x="280" y="38" font-family="Arial, sans-serif" font-size="10" fill="#6c757d" opacity="0.6">
+    mindmend.com.au
+  </text>
+</svg>

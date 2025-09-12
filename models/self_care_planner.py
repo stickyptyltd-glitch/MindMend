@@ -2,8 +2,8 @@
 Self-care planning and wellness routines for Mind Mend platform
 """
 
-from datetime import datetime, time, timedelta
-from typing import Dict, List, Optional
+from datetime import datetime
+from typing import Dict, List
 import random
 
 class SelfCarePlanner:
@@ -444,7 +444,7 @@ class SelfCarePlanner:
             return 5
         elif any(m in activity_lower for m in medium):
             return 15
-        elif any(l in activity_lower for l in long):
+        elif any(activity in activity_lower for activity in long):
             return 30
         return 15
     
