@@ -146,15 +146,51 @@ def dashboard():
 
 @counselor_bp.route('/employment')
 def employment_opportunities():
-    """Employment opportunities for counselors"""
-    return render_template(
-        'counselor/employment.html',
-        opportunities={
+    """Employment opportunities for counselors - uses configurable database"""
+    from models.database import CounselorPosition
+
+    # Get all active positions from database
+    positions = CounselorPosition.query.filter_by(is_active=True).all()
+
+    # Convert to the format expected by the template
+    opportunities = {}
+
+    for position in positions:
+        # Format salary/rate display
+        compensation_display = ''
+        if position.salary_range_min > 0 or position.salary_range_max > 0:
+            if position.salary_range_min > 0 and position.salary_range_max > 0:
+                compensation_display = f"${position.salary_range_min:,.0f} - ${position.salary_range_max:,.0f} {position.currency}"
+            elif position.salary_range_max > 0:
+                compensation_display = f"Up to ${position.salary_range_max:,.0f} {position.currency}"
+            else:
+                compensation_display = f"From ${position.salary_range_min:,.0f} {position.currency}"
+        elif position.hourly_rate_min > 0 or position.hourly_rate_max > 0:
+            if position.hourly_rate_min > 0 and position.hourly_rate_max > 0:
+                compensation_display = f"${position.hourly_rate_min:.0f}-{position.hourly_rate_max:.0f} {position.currency} per hour"
+            elif position.hourly_rate_max > 0:
+                compensation_display = f"Up to ${position.hourly_rate_max:.0f} {position.currency} per hour"
+            else:
+                compensation_display = f"From ${position.hourly_rate_min:.0f} {position.currency} per hour"
+
+        # Get benefits and requirements
+        benefits = [b.benefit_name for b in position.benefits if b.is_active]
+        requirements = [r.requirement_text for r in position.requirements if r.is_active]
+
+        opportunities[position.position_type] = {
+            'title': position.title,
+            'salary': compensation_display if 'per hour' not in compensation_display else None,
+            'rate': compensation_display if 'per hour' in compensation_display else None,
+            'benefits': benefits,
+            'requirements': requirements
+        }
+
+    # Fallback to static data if no database positions exist
+    if not opportunities:
+        opportunities = {
             'full_time': {
-                'title':
-                'Senior Mental Health Counselor',
-                'salary':
-                '$85,000 - $110,000 AUD',
+                'title': 'Senior Mental Health Counselor',
+                'salary': '$85,000 - $110,000 AUD',
                 'benefits': [
                     'Health insurance', 'Professional development allowance',
                     'Flexible working arrangements', 'Equipment provided',
@@ -168,10 +204,8 @@ def employment_opportunities():
                 ]
             },
             'contract': {
-                'title':
-                'Contract Therapist',
-                'rate':
-                '$100-150 AUD per hour',
+                'title': 'Contract Therapist',
+                'rate': '$100-150 AUD per hour',
                 'benefits': [
                     'Flexible schedule', 'Platform support',
                     'Client matching service', 'Payment processing included'
@@ -183,10 +217,8 @@ def employment_opportunities():
                 ]
             },
             'part_time': {
-                'title':
-                'Part-Time Crisis Counselor',
-                'rate':
-                '$45-55 AUD per hour',
+                'title': 'Part-Time Crisis Counselor',
+                'rate': '$45-55 AUD per hour',
                 'benefits': [
                     'Crisis intervention training provided',
                     '24/7 supervisor support', 'Continuing education credits',
@@ -199,7 +231,9 @@ def employment_opportunities():
                     'Strong emotional resilience'
                 ]
             }
-        })
+        }
+
+    return render_template('counselor/employment.html', opportunities=opportunities)
 
 
 @counselor_bp.route('/apply', methods=['GET', 'POST'])

@@ -295,3 +295,123 @@ def company_documents():
     uploaded_docs = []
 
     return render_template('admin/company_documents.html', uploaded_docs=uploaded_docs)
+
+@admin_bp.route('/counselor-benefits', methods=['GET', 'POST'])
+@require_admin_auth
+def counselor_benefits():
+    """Counselor Benefits Management - Developer GUI for Dayle Stueven"""
+    from models.database import db, CounselorPosition, CounselorBenefit, CounselorRequirement
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'create_position':
+            # Create new position
+            position = CounselorPosition(
+                position_type=request.form.get('position_type'),
+                title=request.form.get('title'),
+                salary_range_min=float(request.form.get('salary_range_min') or 0),
+                salary_range_max=float(request.form.get('salary_range_max') or 0),
+                hourly_rate_min=float(request.form.get('hourly_rate_min') or 0),
+                hourly_rate_max=float(request.form.get('hourly_rate_max') or 0),
+                currency=request.form.get('currency', 'AUD'),
+                updated_by='sticky.pty.ltd@gmail.com'
+            )
+            db.session.add(position)
+            db.session.commit()
+            flash('Position created successfully', 'success')
+
+        elif action == 'add_benefit':
+            # Add benefit to position
+            benefit = CounselorBenefit(
+                position_id=int(request.form.get('position_id')),
+                benefit_name=request.form.get('benefit_name'),
+                benefit_description=request.form.get('benefit_description'),
+                benefit_category=request.form.get('benefit_category'),
+                display_order=int(request.form.get('display_order', 0))
+            )
+            db.session.add(benefit)
+            db.session.commit()
+            flash('Benefit added successfully', 'success')
+
+        elif action == 'add_requirement':
+            # Add requirement to position
+            requirement = CounselorRequirement(
+                position_id=int(request.form.get('position_id')),
+                requirement_text=request.form.get('requirement_text'),
+                requirement_category=request.form.get('requirement_category'),
+                is_mandatory=bool(request.form.get('is_mandatory')),
+                display_order=int(request.form.get('display_order', 0))
+            )
+            db.session.add(requirement)
+            db.session.commit()
+            flash('Requirement added successfully', 'success')
+
+        elif action == 'update_position':
+            # Update existing position
+            position_id = int(request.form.get('position_id'))
+            position = CounselorPosition.query.get(position_id)
+            if position:
+                position.title = request.form.get('title')
+                position.salary_range_min = float(request.form.get('salary_range_min') or 0)
+                position.salary_range_max = float(request.form.get('salary_range_max') or 0)
+                position.hourly_rate_min = float(request.form.get('hourly_rate_min') or 0)
+                position.hourly_rate_max = float(request.form.get('hourly_rate_max') or 0)
+                position.currency = request.form.get('currency', 'AUD')
+                position.is_active = bool(request.form.get('is_active'))
+                position.updated_by = 'sticky.pty.ltd@gmail.com'
+                position.updated_at = datetime.utcnow()
+                db.session.commit()
+                flash('Position updated successfully', 'success')
+
+        elif action == 'delete_benefit':
+            benefit_id = int(request.form.get('benefit_id'))
+            benefit = CounselorBenefit.query.get(benefit_id)
+            if benefit:
+                db.session.delete(benefit)
+                db.session.commit()
+                flash('Benefit deleted successfully', 'success')
+
+        elif action == 'delete_requirement':
+            requirement_id = int(request.form.get('requirement_id'))
+            requirement = CounselorRequirement.query.get(requirement_id)
+            if requirement:
+                db.session.delete(requirement)
+                db.session.commit()
+                flash('Requirement deleted successfully', 'success')
+
+        return redirect(url_for('admin.counselor_benefits'))
+
+    # Get all positions with their benefits and requirements
+    positions = CounselorPosition.query.all()
+
+    benefits_data = {
+        'positions': positions,
+        'benefit_categories': ['health', 'professional', 'financial', 'lifestyle'],
+        'requirement_categories': ['education', 'experience', 'technical', 'legal'],
+        'currencies': ['AUD', 'USD', 'EUR', 'GBP']
+    }
+
+    return render_template('admin/counselor_benefits.html', data=benefits_data)
+
+@admin_bp.route('/api/counselor-benefits/<int:position_id>')
+@require_admin_auth
+def get_position_data(position_id):
+    """API endpoint to get position data for editing"""
+    from models.database import CounselorPosition
+
+    position = CounselorPosition.query.get_or_404(position_id)
+
+    return jsonify({
+        'id': position.id,
+        'position_type': position.position_type,
+        'title': position.title,
+        'salary_range_min': position.salary_range_min,
+        'salary_range_max': position.salary_range_max,
+        'hourly_rate_min': position.hourly_rate_min,
+        'hourly_rate_max': position.hourly_rate_max,
+        'currency': position.currency,
+        'is_active': position.is_active,
+        'benefits': [{'id': b.id, 'name': b.benefit_name, 'description': b.benefit_description, 'category': b.benefit_category} for b in position.benefits if b.is_active],
+        'requirements': [{'id': r.id, 'text': r.requirement_text, 'category': r.requirement_category, 'mandatory': r.is_mandatory} for r in position.requirements if r.is_active]
+    })

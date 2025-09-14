@@ -148,8 +148,56 @@ class TherapistSession(db.Model):
     cost = db.Column(db.Float)
     payment_status = db.Column(db.String(20), default='pending')
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
     patient = db.relationship('Patient', backref=db.backref('therapist_sessions', lazy=True))
-    
+
     def __repr__(self):
         return f'<TherapistSession {self.id}: {self.patient_id} - {self.therapist_name}>'
+
+class CounselorPosition(db.Model):
+    """Model for configurable counselor positions and benefits"""
+    id = db.Column(db.Integer, primary_key=True)
+    position_type = db.Column(db.String(50), nullable=False, unique=True)  # full_time, contract, part_time
+    title = db.Column(db.String(200), nullable=False)
+    salary_range_min = db.Column(db.Float)  # For salary positions
+    salary_range_max = db.Column(db.Float)  # For salary positions
+    hourly_rate_min = db.Column(db.Float)  # For hourly positions
+    hourly_rate_max = db.Column(db.Float)  # For hourly positions
+    currency = db.Column(db.String(10), default='AUD')
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_by = db.Column(db.String(200))  # Email of admin who made changes
+
+    def __repr__(self):
+        return f'<CounselorPosition {self.position_type}: {self.title}>'
+
+class CounselorBenefit(db.Model):
+    """Model for configurable counselor benefits"""
+    id = db.Column(db.Integer, primary_key=True)
+    position_id = db.Column(db.Integer, db.ForeignKey('counselor_position.id'), nullable=False)
+    benefit_name = db.Column(db.String(200), nullable=False)
+    benefit_description = db.Column(Text)
+    benefit_category = db.Column(db.String(50))  # health, professional, financial, lifestyle
+    is_active = db.Column(db.Boolean, default=True)
+    display_order = db.Column(db.Integer, default=0)
+
+    position = db.relationship('CounselorPosition', backref=db.backref('benefits', lazy=True))
+
+    def __repr__(self):
+        return f'<CounselorBenefit {self.benefit_name}>'
+
+class CounselorRequirement(db.Model):
+    """Model for configurable counselor requirements"""
+    id = db.Column(db.Integer, primary_key=True)
+    position_id = db.Column(db.Integer, db.ForeignKey('counselor_position.id'), nullable=False)
+    requirement_text = db.Column(db.String(500), nullable=False)
+    requirement_category = db.Column(db.String(50))  # education, experience, technical, legal
+    is_mandatory = db.Column(db.Boolean, default=True)
+    is_active = db.Column(db.Boolean, default=True)
+    display_order = db.Column(db.Integer, default=0)
+
+    position = db.relationship('CounselorPosition', backref=db.backref('requirements', lazy=True))
+
+    def __repr__(self):
+        return f'<CounselorRequirement {self.requirement_text[:50]}...>'

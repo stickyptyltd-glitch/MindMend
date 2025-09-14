@@ -1560,25 +1560,8 @@ def relationship_therapy_page():
     """Relationship therapy main page"""
     return render_template("relationship_therapy.html")
 
-@app.route("/couples_login")
-def couples_login():
-    """Couples login page"""
-    return render_template("couples_login.html")
 
-@app.route("/couples_session")
-def couples_session():
-    """Couples therapy session"""
-    return render_template("couples_session.html")
 
-@app.route("/couples_logout")
-def couples_logout():
-    """Couples logout"""
-    session.pop('partner1_logged_in', None)
-    session.pop('partner2_logged_in', None)
-    session.pop('partner1_name', None)
-    session.pop('partner2_name', None)
-    flash('Both partners have been logged out.', 'info')
-    return redirect(url_for('couples_login'))
 
 # Static JS files routes (for missing JS files)
 @app.route("/static/js/video-processing.js")
