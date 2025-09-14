@@ -415,3 +415,205 @@ def get_position_data(position_id):
         'benefits': [{'id': b.id, 'name': b.benefit_name, 'description': b.benefit_description, 'category': b.benefit_category} for b in position.benefits if b.is_active],
         'requirements': [{'id': r.id, 'text': r.requirement_text, 'category': r.requirement_category, 'mandatory': r.is_mandatory} for r in position.requirements if r.is_active]
     })
+
+@admin_bp.route('/ai-model-manager', methods=['GET', 'POST'])
+@require_admin_auth
+def ai_model_manager():
+    """AI Model Import and Management Interface"""
+    from models.ai_model_manager import ai_model_manager, ModelType, ModelConfig
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'add_model':
+            # Add new AI model
+            try:
+                model_config = ModelConfig(
+                    name=request.form.get('model_name'),
+                    type=ModelType(request.form.get('model_type')),
+                    endpoint=request.form.get('endpoint') or None,
+                    api_key=request.form.get('api_key') or None,
+                    model_path=request.form.get('model_path') or None,
+                    parameters=eval(request.form.get('parameters', '{}')) if request.form.get('parameters') else None,
+                    specialization=request.form.get('specialization'),
+                    accuracy_score=float(request.form.get('accuracy_score', 0.0))
+                )
+
+                ai_model_manager.register_model(model_config)
+                flash(f'Model {model_config.name} added successfully', 'success')
+
+            except Exception as e:
+                flash(f'Error adding model: {str(e)}', 'error')
+
+        elif action == 'test_model':
+            # Test model with sample data
+            model_name = request.form.get('model_name')
+            test_data = {
+                'age': 25,
+                'gender': 'female',
+                'chief_complaint': 'Feeling anxious and stressed',
+                'symptoms': {
+                    'anxiety_level': 7,
+                    'depression_level': 4,
+                    'stress_level': 8,
+                    'sleep_quality': 3
+                },
+                'behavioral_data': {
+                    'social_withdrawal': 6,
+                    'activity_level': 3,
+                    'appetite_changes': 5
+                },
+                'assessment_scores': {
+                    'phq9_score': 12,
+                    'gad7_score': 15,
+                    'pss_score': 18
+                }
+            }
+
+            try:
+                # Run diagnosis with single model or ensemble
+                if model_name == 'ensemble':
+                    result = ai_model_manager.diagnose_with_ensemble(test_data)
+                else:
+                    # Test individual model
+                    config = ai_model_manager.models.get(model_name)
+                    if config:
+                        if config.type == ModelType.OPENAI_GPT:
+                            result = ai_model_manager._diagnose_with_openai(test_data, config)
+                        elif config.type == ModelType.OLLAMA:
+                            result = ai_model_manager._diagnose_with_ollama(test_data, config)
+                        elif config.type == ModelType.CUSTOM_ML:
+                            result = ai_model_manager._diagnose_with_ml(test_data, config)
+                        else:
+                            result = {'error': 'Model type not supported for individual testing'}
+                    else:
+                        result = {'error': 'Model not found'}
+
+                session['last_test_result'] = result
+                flash('Model test completed successfully', 'success')
+
+            except Exception as e:
+                session['last_test_result'] = {'error': str(e)}
+                flash(f'Model test failed: {str(e)}', 'error')
+
+        elif action == 'train_model':
+            # Train custom ML model
+            model_name = request.form.get('model_name')
+            model_type = request.form.get('model_type_ml', 'random_forest')
+
+            try:
+                # Generate sample training data for demonstration
+                import numpy as np
+                np.random.seed(42)
+
+                # Create synthetic training data
+                n_samples = 1000
+                X_train = np.random.rand(n_samples, 12)  # 12 features
+
+                # Create labels based on feature combinations (synthetic)
+                y_train = np.zeros(n_samples, dtype=int)
+                for i in range(n_samples):
+                    anxiety_score = X_train[i, 2]  # anxiety level
+                    depression_score = X_train[i, 3]  # depression level
+
+                    if anxiety_score > 0.7:
+                        y_train[i] = 3  # Severe
+                    elif anxiety_score > 0.5:
+                        y_train[i] = 2  # Moderate
+                    elif anxiety_score > 0.3:
+                        y_train[i] = 1  # Mild
+                    else:
+                        y_train[i] = 0  # None
+
+                # Train the model
+                accuracy = ai_model_manager.train_custom_model(
+                    model_name, X_train, y_train, model_type
+                )
+
+                if accuracy:
+                    flash(f'Model {model_name} trained successfully with {accuracy:.2%} accuracy', 'success')
+                else:
+                    flash(f'Failed to train model {model_name}', 'error')
+
+            except Exception as e:
+                flash(f'Training failed: {str(e)}', 'error')
+
+        return redirect(url_for('admin.ai_model_manager'))
+
+    # Get current model status
+    model_status = ai_model_manager.get_model_status()
+
+    # Get test result from session
+    test_result = session.pop('last_test_result', None)
+
+    ai_data = {
+        'model_status': model_status,
+        'test_result': test_result,
+        'model_types': [e.value for e in ModelType],
+        'ml_model_types': ['random_forest', 'gradient_boosting', 'neural_network'],
+        'specializations': [
+            'general_therapy',
+            'mental_health_assessment',
+            'therapy_recommendations',
+            'quick_assessment',
+            'conversational_therapy',
+            'structured_assessment',
+            'cognitive_assessment',
+            'quick_screening',
+            'anxiety_detection',
+            'depression_severity',
+            'ptsd_risk',
+            'bipolar_screening',
+            'eating_disorder_risk',
+            'substance_abuse_risk',
+            'suicide_risk',
+            'sleep_disorder',
+            'adhd_screening',
+            'relationship_conflict',
+            'crisis_intervention',
+            'therapy_response'
+        ]
+    }
+
+    return render_template('admin/ai_model_manager.html', data=ai_data)
+
+@admin_bp.route('/api/ai-models/status')
+@require_admin_auth
+def ai_models_status():
+    """API endpoint for AI model status"""
+    from models.ai_model_manager import ai_model_manager
+
+    return jsonify(ai_model_manager.get_model_status())
+
+@admin_bp.route('/api/ai-models/test', methods=['POST'])
+@require_admin_auth
+def test_ai_model():
+    """API endpoint to test AI models"""
+    from models.ai_model_manager import ai_model_manager
+
+    data = request.get_json()
+    model_name = data.get('model_name')
+    test_data = data.get('test_data', {})
+
+    try:
+        if model_name == 'ensemble':
+            result = ai_model_manager.diagnose_with_ensemble(test_data)
+        else:
+            config = ai_model_manager.models.get(model_name)
+            if not config:
+                return jsonify({'error': 'Model not found'}), 404
+
+            # Test individual model based on type
+            if config.type.value == 'openai_gpt':
+                result = ai_model_manager._diagnose_with_openai(test_data, config)
+            elif config.type.value == 'ollama':
+                result = ai_model_manager._diagnose_with_ollama(test_data, config)
+            elif config.type.value == 'custom_ml':
+                result = ai_model_manager._diagnose_with_ml(test_data, config)
+            else:
+                result = {'error': 'Model type not supported'}
+
+        return jsonify({'success': True, 'result': result})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

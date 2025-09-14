@@ -70,8 +70,26 @@ class AIModelManager:
             specialization="general_therapy",
             accuracy_score=0.92
         ))
-        
-        # Ollama local models
+
+        self.register_model(ModelConfig(
+            name="gpt-4o-mini",
+            type=ModelType.OPENAI_GPT,
+            api_key=os.environ.get("OPENAI_API_KEY"),
+            parameters={"temperature": 0.6, "max_tokens": 800},
+            specialization="quick_assessment",
+            accuracy_score=0.89
+        ))
+
+        self.register_model(ModelConfig(
+            name="gpt-3.5-turbo",
+            type=ModelType.OPENAI_GPT,
+            api_key=os.environ.get("OPENAI_API_KEY"),
+            parameters={"temperature": 0.8, "max_tokens": 1200},
+            specialization="conversational_therapy",
+            accuracy_score=0.87
+        ))
+
+        # Ollama local models - Popular open source models
         self.register_model(ModelConfig(
             name="llama2-mental-health",
             type=ModelType.OLLAMA,
@@ -79,7 +97,7 @@ class AIModelManager:
             specialization="mental_health_assessment",
             accuracy_score=0.88
         ))
-        
+
         self.register_model(ModelConfig(
             name="mistral-therapy",
             type=ModelType.OLLAMA,
@@ -87,7 +105,47 @@ class AIModelManager:
             specialization="therapy_recommendations",
             accuracy_score=0.86
         ))
-        
+
+        self.register_model(ModelConfig(
+            name="llama3-8b",
+            type=ModelType.OLLAMA,
+            endpoint="http://localhost:11434/api/generate",
+            specialization="general_therapy",
+            accuracy_score=0.90
+        ))
+
+        self.register_model(ModelConfig(
+            name="codellama-7b",
+            type=ModelType.OLLAMA,
+            endpoint="http://localhost:11434/api/generate",
+            specialization="structured_assessment",
+            accuracy_score=0.84
+        ))
+
+        self.register_model(ModelConfig(
+            name="neural-chat-7b",
+            type=ModelType.OLLAMA,
+            endpoint="http://localhost:11434/api/generate",
+            specialization="crisis_intervention",
+            accuracy_score=0.85
+        ))
+
+        self.register_model(ModelConfig(
+            name="orca-mini-3b",
+            type=ModelType.OLLAMA,
+            endpoint="http://localhost:11434/api/generate",
+            specialization="quick_screening",
+            accuracy_score=0.82
+        ))
+
+        self.register_model(ModelConfig(
+            name="phi-2",
+            type=ModelType.OLLAMA,
+            endpoint="http://localhost:11434/api/generate",
+            specialization="cognitive_assessment",
+            accuracy_score=0.83
+        ))
+
         # Custom ML models for specific tasks
         self._initialize_ml_models()
     
@@ -101,7 +159,7 @@ class AIModelManager:
             specialization="anxiety_detection",
             accuracy_score=0.91
         ))
-        
+
         # Depression severity classifier
         self.register_model(ModelConfig(
             name="depression_classifier_gb",
@@ -110,7 +168,7 @@ class AIModelManager:
             specialization="depression_severity",
             accuracy_score=0.89
         ))
-        
+
         # PTSD risk assessment
         self.register_model(ModelConfig(
             name="ptsd_risk_nn",
@@ -119,13 +177,83 @@ class AIModelManager:
             specialization="ptsd_risk",
             accuracy_score=0.87
         ))
-        
+
+        # Bipolar disorder screening
+        self.register_model(ModelConfig(
+            name="bipolar_screener_svm",
+            type=ModelType.CUSTOM_ML,
+            model_path="models/ml/bipolar_svm.pkl",
+            specialization="bipolar_screening",
+            accuracy_score=0.86
+        ))
+
+        # Eating disorder risk
+        self.register_model(ModelConfig(
+            name="eating_disorder_rf",
+            type=ModelType.CUSTOM_ML,
+            model_path="models/ml/eating_disorder_rf.pkl",
+            specialization="eating_disorder_risk",
+            accuracy_score=0.84
+        ))
+
+        # Substance abuse risk
+        self.register_model(ModelConfig(
+            name="substance_abuse_gb",
+            type=ModelType.CUSTOM_ML,
+            model_path="models/ml/substance_abuse_gb.pkl",
+            specialization="substance_abuse_risk",
+            accuracy_score=0.88
+        ))
+
+        # Suicide risk assessment
+        self.register_model(ModelConfig(
+            name="suicide_risk_nn",
+            type=ModelType.CUSTOM_ML,
+            model_path="models/ml/suicide_risk_nn.pkl",
+            specialization="suicide_risk",
+            accuracy_score=0.93
+        ))
+
+        # Sleep disorder classifier
+        self.register_model(ModelConfig(
+            name="sleep_disorder_rf",
+            type=ModelType.CUSTOM_ML,
+            model_path="models/ml/sleep_disorder_rf.pkl",
+            specialization="sleep_disorder",
+            accuracy_score=0.85
+        ))
+
+        # ADHD screening model
+        self.register_model(ModelConfig(
+            name="adhd_screener_gb",
+            type=ModelType.CUSTOM_ML,
+            model_path="models/ml/adhd_gb.pkl",
+            specialization="adhd_screening",
+            accuracy_score=0.87
+        ))
+
         # Relationship conflict predictor
         self.register_model(ModelConfig(
             name="conflict_predictor_ensemble",
             type=ModelType.ENSEMBLE,
             specialization="relationship_conflict",
             accuracy_score=0.85
+        ))
+
+        # Therapy response predictor
+        self.register_model(ModelConfig(
+            name="therapy_response_ensemble",
+            type=ModelType.ENSEMBLE,
+            specialization="therapy_response",
+            accuracy_score=0.83
+        ))
+
+        # Crisis intervention predictor
+        self.register_model(ModelConfig(
+            name="crisis_intervention_ensemble",
+            type=ModelType.ENSEMBLE,
+            specialization="crisis_intervention",
+            accuracy_score=0.90
         ))
     
     def register_model(self, config: ModelConfig):

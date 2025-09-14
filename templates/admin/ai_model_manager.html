@@ -1,0 +1,624 @@
+{% extends "base.html" %}
+
+{% block title %}AI Model Manager - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <h4 class="mb-4">Admin Panel</h4>
+                <nav class="nav flex-column">
+                    <li><a href="{{ url_for('admin.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('admin.user_management') }}">
+                        <i class="fas fa-users me-2"></i>Users
+                    </a></li>
+                    <li><a href="{{ url_for('admin.counselor_benefits') }}">
+                        <i class="fas fa-briefcase me-2"></i>Counselor Benefits
+                    </a></li>
+                    <li><a href="{{ url_for('admin.ai_model_manager') }}" class="active">
+                        <i class="fas fa-brain me-2"></i>AI Models
+                    </a></li>
+                    <li><a href="{{ url_for('admin.financial_overview') }}">
+                        <i class="fas fa-chart-line me-2"></i>Finances
+                    </a></li>
+                    <li><a href="{{ url_for('admin.system_monitoring') }}">
+                        <i class="fas fa-server me-2"></i>Monitoring
+                    </a></li>
+                    <li><a href="{{ url_for('admin.api_keys') }}">
+                        <i class="fas fa-key me-2"></i>API Keys
+                    </a></li>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <div class="content-header">
+                    <h2><i class="fas fa-brain me-3"></i>AI Model Manager</h2>
+                    <p class="text-muted">Manage, import, test, and monitor AI models for therapy and diagnosis</p>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Model Status Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>{{ data.model_status.total_models }}</h4>
+                                <p>Total Models</p>
+                                <small class="text-primary">Registered in system</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>{{ data.model_status.active_models }}</h4>
+                                <p>Active Models</p>
+                                <small class="text-success">Available for use</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>{{ "%.1f"|format((data.model_status.model_details|selectattr('accuracy')|map(attribute='accuracy')|sum / data.model_status.model_details|selectattr('accuracy')|list|length * 100) if data.model_status.model_details|selectattr('accuracy')|list|length > 0 else 0) }}%</h4>
+                                <p>Avg Accuracy</p>
+                                <small class="text-info">Across all models</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-stopwatch"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="models-available">{{ data.model_status.model_details|selectattr('available')|list|length }}</h4>
+                                <p>Available Now</p>
+                                <small class="text-warning">Ready to test</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Test Interface -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-flask me-2"></i>Quick Model Test</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.ai_model_manager') }}">
+                            <input type="hidden" name="action" value="test_model">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Select Model to Test</label>
+                                        <select class="form-select" name="model_name" required>
+                                            <option value="ensemble">🎯 Ensemble (All Models)</option>
+                                            {% for model in data.model_status.model_details %}
+                                            {% if model.available %}
+                                            <option value="{{ model.name }}">
+                                                {{ model.name }} ({{ model.type }}) - {{ "%.1f"|format(model.accuracy * 100) if model.accuracy else 'N/A' }}%
+                                            </option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Test Scenario</label>
+                                        <select class="form-select" id="test-scenario">
+                                            <option value="anxiety">High Anxiety Case</option>
+                                            <option value="depression">Depression Assessment</option>
+                                            <option value="mixed">Mixed Symptoms</option>
+                                            <option value="crisis">Crisis Intervention</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-play me-2"></i>Run Test
+                            </button>
+                            <button type="button" class="btn btn-info ms-2" onclick="refreshModelStatus()">
+                                <i class="fas fa-sync-alt me-2"></i>Refresh Status
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Test Results -->
+                {% if data.test_result %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-pie me-2"></i>Test Results</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if data.test_result.error %}
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Error: {{ data.test_result.error }}
+                            </div>
+                        {% else %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Primary Diagnosis</h6>
+                                    <p class="lead">{{ data.test_result.primary_diagnosis or data.test_result.diagnosis }}</p>
+
+                                    <h6>Confidence Level</h6>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar bg-{{ 'success' if (data.test_result.overall_confidence or data.test_result.confidence) > 0.8 else 'warning' if (data.test_result.overall_confidence or data.test_result.confidence) > 0.6 else 'danger' }}"
+                                             style="width: {{ ((data.test_result.overall_confidence or data.test_result.confidence) * 100) if (data.test_result.overall_confidence or data.test_result.confidence) else 0 }}%">
+                                            {{ "%.1f"|format((data.test_result.overall_confidence or data.test_result.confidence) * 100) if (data.test_result.overall_confidence or data.test_result.confidence) else 0 }}%
+                                        </div>
+                                    </div>
+
+                                    {% if data.test_result.models_consulted %}
+                                    <small class="text-muted">{{ data.test_result.models_consulted }} models consulted</small>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    {% if data.test_result.treatment_recommendations %}
+                                    <h6>Recommendations</h6>
+                                    <ul class="list-unstyled">
+                                        {% for rec in data.test_result.treatment_recommendations[:3] %}
+                                        <li><i class="fas fa-arrow-right text-primary me-2"></i>{{ rec }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+
+                                    {% if data.test_result.risk_factors %}
+                                    <h6>Risk Factors</h6>
+                                    <ul class="list-unstyled">
+                                        {% for risk in data.test_result.risk_factors[:3] %}
+                                        <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>{{ risk }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="showFullResults()">
+                                    <i class="fas fa-expand-alt me-2"></i>View Full Results
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Add New Model -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-plus-circle me-2"></i>Add New AI Model</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.ai_model_manager') }}">
+                            <input type="hidden" name="action" value="add_model">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Model Name</label>
+                                        <input type="text" class="form-control" name="model_name" placeholder="e.g., gpt-4-turbo" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Model Type</label>
+                                        <select class="form-select" name="model_type" required onchange="updateModelFields(this.value)">
+                                            <option value="">Select Type</option>
+                                            {% for type in data.model_types %}
+                                            <option value="{{ type }}">{{ type.replace('_', ' ').title() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Specialization</label>
+                                        <select class="form-select" name="specialization">
+                                            <option value="">Select Specialization</option>
+                                            {% for spec in data.specializations %}
+                                            <option value="{{ spec }}">{{ spec.replace('_', ' ').title() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Expected Accuracy (0.0-1.0)</label>
+                                        <input type="number" class="form-control" name="accuracy_score" step="0.01" min="0" max="1" placeholder="0.85">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- OpenAI/API Fields -->
+                            <div class="model-fields" id="openai-fields" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label">API Key</label>
+                                    <input type="password" class="form-control" name="api_key" placeholder="sk-...">
+                                </div>
+                            </div>
+
+                            <!-- Ollama Fields -->
+                            <div class="model-fields" id="ollama-fields" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label">Ollama Endpoint</label>
+                                    <input type="url" class="form-control" name="endpoint" placeholder="http://localhost:11434/api/generate">
+                                </div>
+                            </div>
+
+                            <!-- ML Model Fields -->
+                            <div class="model-fields" id="ml-fields" style="display: none;">
+                                <div class="mb-3">
+                                    <label class="form-label">Model Path</label>
+                                    <input type="text" class="form-control" name="model_path" placeholder="/path/to/model.pkl">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Parameters (JSON)</label>
+                                <textarea class="form-control" name="parameters" rows="3" placeholder='{"temperature": 0.7, "max_tokens": 1000}'></textarea>
+                                <small class="form-text text-muted">Optional model-specific parameters in JSON format</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>Add Model
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Train New ML Model -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-graduation-cap me-2"></i>Train Custom ML Model</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.ai_model_manager') }}">
+                            <input type="hidden" name="action" value="train_model">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">New Model Name</label>
+                                        <input type="text" class="form-control" name="model_name" placeholder="e.g., anxiety_detector_v2" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">ML Algorithm</label>
+                                        <select class="form-select" name="model_type_ml">
+                                            {% for type in data.ml_model_types %}
+                                            <option value="{{ type }}">{{ type.replace('_', ' ').title() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                This will train a new model using synthetic data for demonstration. In production, replace with real training data.
+                            </div>
+
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-cog me-2"></i>Train Model
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Existing Models Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list me-2"></i>Registered Models</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Model Name</th>
+                                        <th>Type</th>
+                                        <th>Specialization</th>
+                                        <th>Accuracy</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for model in data.model_status.model_details %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ model.name }}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ model.type.replace('_', ' ').title() }}</span>
+                                        </td>
+                                        <td>{{ (model.specialization or 'General').replace('_', ' ').title() }}</td>
+                                        <td>
+                                            {% if model.accuracy %}
+                                            <div class="progress" style="width: 100px; height: 20px;">
+                                                <div class="progress-bar bg-{{ 'success' if model.accuracy > 0.8 else 'warning' if model.accuracy > 0.6 else 'danger' }}"
+                                                     style="width: {{ model.accuracy * 100 }}%">
+                                                    {{ "%.1f"|format(model.accuracy * 100) }}%
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if model.available %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>Available
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times-circle me-1"></i>Unavailable
+                                                </span>
+                                            {% endif %}
+                                            {% if model.active %}
+                                                <span class="badge bg-primary ms-1">
+                                                    <i class="fas fa-play me-1"></i>Active
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" onclick="testSingleModel('{{ model.name }}')"
+                                                        {{ 'disabled' if not model.available }}>
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info" onclick="showModelDetails('{{ model.name }}')">
+                                                    <i class="fas fa-info"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Full Results Modal -->
+<div class="modal fade" id="fullResultsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Full Test Results</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <pre id="full-results-content">{{ data.test_result | tojson(indent=2) if data.test_result else '' }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Model Details Modal -->
+<div class="modal fade" id="modelDetailsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Model Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="model-details-content">
+                <!-- Content populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-dashboard {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px 15px;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-right: 15px;
+    opacity: 0.8;
+    color: #007bff;
+}
+
+.stat-info h4 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.model-fields {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+pre {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+</style>
+
+<script>
+function updateModelFields(modelType) {
+    // Hide all field groups
+    document.querySelectorAll('.model-fields').forEach(el => el.style.display = 'none');
+
+    // Show relevant fields based on model type
+    if (modelType === 'openai_gpt') {
+        document.getElementById('openai-fields').style.display = 'block';
+    } else if (modelType === 'ollama') {
+        document.getElementById('ollama-fields').style.display = 'block';
+    } else if (modelType === 'custom_ml') {
+        document.getElementById('ml-fields').style.display = 'block';
+    }
+}
+
+function refreshModelStatus() {
+    fetch('/admin/api/ai-models/status')
+        .then(response => response.json())
+        .then(data => {
+            // Update the available models count
+            document.getElementById('models-available').textContent =
+                data.model_details.filter(m => m.available).length;
+
+            // Optionally reload the page to update all status indicators
+            setTimeout(() => window.location.reload(), 1000);
+        })
+        .catch(error => console.error('Error refreshing status:', error));
+}
+
+function testSingleModel(modelName) {
+    const testData = {
+        age: 25,
+        gender: 'female',
+        chief_complaint: 'Feeling anxious and stressed',
+        symptoms: {
+            anxiety_level: 7,
+            depression_level: 4,
+            stress_level: 8,
+            sleep_quality: 3
+        },
+        behavioral_data: {
+            social_withdrawal: 6,
+            activity_level: 3,
+            appetite_changes: 5
+        },
+        assessment_scores: {
+            phq9_score: 12,
+            gad7_score: 15,
+            pss_score: 18
+        }
+    };
+
+    fetch('/admin/api/ai-models/test', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            model_name: modelName,
+            test_data: testData
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Test completed! Result: ' + (data.result.diagnosis || data.result.primary_diagnosis || 'No diagnosis'));
+        } else {
+            alert('Test failed: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Test failed: Network error');
+    });
+}
+
+function showFullResults() {
+    new bootstrap.Modal(document.getElementById('fullResultsModal')).show();
+}
+
+function showModelDetails(modelName) {
+    // Fetch model details and show in modal
+    const modelData = {{ data.model_status.model_details | tojson }};
+    const model = modelData.find(m => m.name === modelName);
+
+    document.getElementById('model-details-content').innerHTML = `
+        <table class="table">
+            <tr><th>Name</th><td>${model.name}</td></tr>
+            <tr><th>Type</th><td>${model.type}</td></tr>
+            <tr><th>Specialization</th><td>${model.specialization || 'General'}</td></tr>
+            <tr><th>Accuracy</th><td>${model.accuracy ? (model.accuracy * 100).toFixed(1) + '%' : 'N/A'}</td></tr>
+            <tr><th>Active</th><td>${model.active ? 'Yes' : 'No'}</td></tr>
+            <tr><th>Available</th><td>${model.available ? 'Yes' : 'No'}</td></tr>
+        </table>
+    `;
+
+    new bootstrap.Modal(document.getElementById('modelDetailsModal')).show();
+}
+
+// Auto-refresh model status every 30 seconds
+setInterval(refreshModelStatus, 30000);
+</script>
+{% endblock %}
