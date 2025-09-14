@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}Earnings - Counselor Dashboard{% endblock %}
+
+{% block content %}
+<div class="counselor-dashboard">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <h4 class="mb-4">Counselor Portal</h4>
+                <nav class="nav flex-column">
+                    <li><a href="{{ url_for('counselor.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.schedule') }}">
+                        <i class="fas fa-calendar me-2"></i>Schedule
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.client_management') }}">
+                        <i class="fas fa-users me-2"></i>Clients
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.earnings') }}" class="active">
+                        <i class="fas fa-dollar-sign me-2"></i>Earnings
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.professional_development') }}">
+                        <i class="fas fa-graduation-cap me-2"></i>Training
+                    </a></li>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <div class="content-header">
+                    <h2>Earnings & Payouts</h2>
+                    <p>Track your income, sessions, and payout history</p>
+                </div>
+
+                <!-- Earnings Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card earnings">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>$4,560</h4>
+                                <p>This Month</p>
+                                <small class="text-success">+12% from last month</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>$1,140</h4>
+                                <p>This Week</p>
+                                <small class="text-info">38 sessions</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>$54,720</h4>
+                                <p>This Year</p>
+                                <small class="text-primary">456 sessions</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>$1,200</h4>
+                                <p>Pending Payout</p>
+                                <small class="text-warning">Processing</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings Chart -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Earnings Trend</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="earningsChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Earnings Breakdown</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="earning-breakdown">
+                                    <div class="breakdown-item">
+                                        <span class="breakdown-label">Individual Sessions</span>
+                                        <span class="breakdown-value">$3,420</span>
+                                        <div class="breakdown-bar">
+                                            <div class="breakdown-fill" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span class="breakdown-label">Couples Therapy</span>
+                                        <span class="breakdown-value">$912</span>
+                                        <div class="breakdown-bar">
+                                            <div class="breakdown-fill" style="width: 20%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <span class="breakdown-label">Group Sessions</span>
+                                        <span class="breakdown-value">$228</span>
+                                        <div class="breakdown-bar">
+                                            <div class="breakdown-fill" style="width: 5%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payout History -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Payout History</h5>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-download me-2"></i>Download Statement
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Payout Date</th>
+                                                <th>Period</th>
+                                                <th>Gross Earnings</th>
+                                                <th>Platform Fee (15%)</th>
+                                                <th>Net Amount</th>
+                                                <th>Sessions</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Jan 31, 2025</td>
+                                                <td>Jan 1-31, 2025</td>
+                                                <td>$4,200</td>
+                                                <td>$630</td>
+                                                <td class="fw-bold text-success">$3,570</td>
+                                                <td>35</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Dec 31, 2024</td>
+                                                <td>Dec 1-31, 2024</td>
+                                                <td>$3,840</td>
+                                                <td>$576</td>
+                                                <td class="fw-bold text-success">$3,264</td>
+                                                <td>32</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nov 30, 2024</td>
+                                                <td>Nov 1-30, 2024</td>
+                                                <td>$4,680</td>
+                                                <td>$702</td>
+                                                <td class="fw-bold text-success">$3,978</td>
+                                                <td>39</td>
+                                                <td><span class="badge bg-success">Paid</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Feb 28, 2025</td>
+                                                <td>Feb 1-28, 2025</td>
+                                                <td>$1,200</td>
+                                                <td>$180</td>
+                                                <td class="fw-bold text-warning">$1,020</td>
+                                                <td>10</td>
+                                                <td><span class="badge bg-warning">Processing</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Settings -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Payment Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Hourly Rate</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control" value="120">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Payment Method</label>
+                                        <select class="form-select">
+                                            <option>Bank Transfer (ACH)</option>
+                                            <option>PayPal</option>
+                                            <option>Direct Deposit</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Payout Schedule</label>
+                                        <select class="form-select">
+                                            <option>Monthly</option>
+                                            <option>Bi-weekly</option>
+                                            <option>Weekly</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary">Update Settings</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Performance Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="metric-item">
+                                    <span class="metric-label">Average Sessions per Week</span>
+                                    <span class="metric-value">9.5</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Client Retention Rate</span>
+                                    <span class="metric-value">92%</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Average Session Rating</span>
+                                    <span class="metric-value">4.8/5</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Utilization Rate</span>
+                                    <span class="metric-value">87%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.counselor-dashboard {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px 15px;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-right: 15px;
+    opacity: 0.8;
+}
+
+.earnings .stat-icon {
+    color: #28a745;
+}
+
+.stat-card .stat-icon {
+    color: #007bff;
+}
+
+.stat-info h4 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.breakdown-item {
+    margin-bottom: 15px;
+}
+
+.breakdown-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.breakdown-value {
+    float: right;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.breakdown-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    margin-top: 5px;
+    clear: both;
+}
+
+.breakdown-fill {
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 4px;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.metric-label {
+    color: #6c757d;
+}
+
+.metric-value {
+    font-weight: bold;
+    color: #007bff;
+}
+</style>
+{% endblock %}

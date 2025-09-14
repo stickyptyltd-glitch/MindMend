@@ -1,21 +1,22 @@
 import os
 import logging
 import stripe
+import secrets
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
-from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, emit
-from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from email_validator import validate_email, EmailNotValidError
 import json
 from datetime import datetime, timedelta
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
+# Database instance imported from models.database
+from models.database import db, Patient
 
 # Create the app
 app = Flask(__name__, static_folder='static', static_url_path='/static')
@@ -38,8 +39,34 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 db.init_app(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Create data directory if it doesn't exist
+# Login manager setup
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    try:
+        return Patient.query.get(int(user_id))
+    except Exception:
+        return None
+
+# Simple CSRF helpers for auth forms
+def generate_csrf_token():
+    token = secrets.token_urlsafe(32)
+    session['csrf_token'] = token
+    return token
+
+def validate_csrf(token: str) -> bool:
+    return bool(token) and session.get('csrf_token') == token
+
+# Create data directories (both project and instance) if they don't exist
 os.makedirs('data', exist_ok=True)
+try:
+    os.makedirs(app.instance_path, exist_ok=True)
+    os.makedirs(os.path.join(app.instance_path, 'data'), exist_ok=True)
+except Exception:
+    pass
 os.makedirs('static/js', exist_ok=True)
 os.makedirs('static/css', exist_ok=True)
 
@@ -64,7 +91,14 @@ with app.app_context():
     therapy_activities = TherapyActivities()
     
     # Import and register blueprints
-    from admin_panel import admin_bp
+    try:
+        from admin_panel import admin_bp
+        admin_bp_available = True
+    except ImportError:
+        logger.warning("admin_panel module not found, creating placeholder")
+        from flask import Blueprint
+        admin_bp = Blueprint('admin', __name__)
+        admin_bp_available = False
     from counselor_dashboard import counselor_bp
     from mobile_app import MobileAppIntegration
     from payment_integration import payment_bp
@@ -72,9 +106,14 @@ with app.app_context():
     from media_pack import media_bp
     
     # Register blueprints
-    app.register_blueprint(admin_bp)
+    if admin_bp_available:
+        app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(counselor_bp)
     app.register_blueprint(payment_bp)
+    
+    # Register OAuth blueprint
+    from oauth_system import oauth_bp
+    app.register_blueprint(oauth_bp, url_prefix='/oauth')
     app.register_blueprint(media_bp)
     
     # Initialize security and mobile integration
@@ -107,60 +146,103 @@ def onboarding():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """User registration page"""
+    """User registration page (secure)"""
     if request.method == "POST":
-        # Handle registration form submission
-        first_name = request.form.get('firstName')
-        last_name = request.form.get('lastName')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        date_of_birth = request.form.get('dateOfBirth')
-        gender = request.form.get('gender')
-        location = request.form.get('location')
+        # CSRF validation
+        if not validate_csrf(request.form.get('csrf_token')):
+            return render_template("register.html", error="Invalid session. Please try again.", csrf_token=generate_csrf_token()), 400
+
+        # Gather and validate inputs
+        first_name = (request.form.get('firstName') or '').strip()
+        last_name = (request.form.get('lastName') or '').strip()
+        email_raw = (request.form.get('email') or '').strip()
+        password = request.form.get('password') or ''
+        date_of_birth_raw = request.form.get('dateOfBirth') or ''
         goals = request.form.getlist('goals')
-        
-        # Store user data in session for now (replace with database later)
-        session['user'] = {
-            'first_name': first_name,
-            'last_name': last_name,
-            'email': email,
-            'date_of_birth': date_of_birth,
-            'gender': gender,
-            'location': location,
-            'goals': goals,
-            'registered_at': datetime.now().isoformat()
-        }
-        
+
+        # Email validation
+        try:
+            email = validate_email(email_raw, check_deliverability=False).normalized
+        except EmailNotValidError:
+            return render_template("register.html", error="Please enter a valid email address.", csrf_token=generate_csrf_token()), 400
+
+        if len(password) < 8:
+            return render_template("register.html", error="Password must be at least 8 characters.", csrf_token=generate_csrf_token()), 400
+
+        # Check existing user
+        if Patient.query.filter_by(email=email).first():
+            return render_template("register.html", error="An account with this email already exists.", csrf_token=generate_csrf_token()), 400
+
+        # Parse date of birth
+        dob = None
+        if date_of_birth_raw:
+            try:
+                dob = datetime.strptime(date_of_birth_raw, "%Y-%m-%d").date()
+            except ValueError:
+                return render_template("register.html", error="Invalid date of birth.", csrf_token=generate_csrf_token()), 400
+
+        # Create patient
+        full_name = (f"{first_name} {last_name}".strip()) or email.split('@')[0]
+        patient = Patient(
+            name=full_name,
+            email=email,
+            date_of_birth=dob,
+            therapy_goals=json.dumps(goals) if goals else None,
+            password_hash=generate_password_hash(password)
+        )
+
+        try:
+            db.session.add(patient)
+            db.session.commit()
+        except Exception as e:
+            logging.error(f"Registration DB error: {e}")
+            db.session.rollback()
+            return render_template("register.html", error="Registration failed. Please try again.", csrf_token=generate_csrf_token()), 500
+
+        # Auto-login
+        login_user(patient, remember=True)
+        session.pop('csrf_token', None)
         flash('Account created successfully! Welcome to Mind Mend.', 'success')
         return redirect(url_for('onboarding'))
-    
-    return render_template("register.html")
+
+    # GET: show form with CSRF token
+    return render_template("register.html", csrf_token=generate_csrf_token())
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """User login page"""
+    """User login page (secure)"""
     if request.method == "POST":
-        email = request.form.get('email')
-        password = request.form.get('password')
-        remember = request.form.get('remember')
-        
-        # For now, accept any login (replace with real authentication later)
-        if email and password:
-            session['user'] = {
-                'email': email,
-                'logged_in': True,
-                'login_time': datetime.now().isoformat()
-            }
-            
-            if remember:
-                session.permanent = True
-            
-            flash('Welcome back to Mind Mend!', 'success')
-            return redirect(url_for('user_dashboard'))
-        else:
-            return render_template("login.html", error="Please enter both email and password")
-    
-    return render_template("login.html")
+        # CSRF validation
+        if not validate_csrf(request.form.get('csrf_token')):
+            return render_template("login.html", error="Invalid session. Please try again.", csrf_token=generate_csrf_token()), 400
+
+        email_raw = (request.form.get('email') or '').strip()
+        password = request.form.get('password') or ''
+        remember = bool(request.form.get('remember'))
+
+        try:
+            email = validate_email(email_raw, check_deliverability=False).normalized
+        except EmailNotValidError:
+            return render_template("login.html", error="Invalid email or password.", csrf_token=generate_csrf_token()), 400
+
+        user = Patient.query.filter_by(email=email).first()
+        if not user or not user.password_hash or not check_password_hash(user.password_hash, password):
+            return render_template("login.html", error="Invalid email or password.", csrf_token=generate_csrf_token()), 401
+
+        login_user(user, remember=remember)
+        session.pop('csrf_token', None)
+        flash('Welcome back to Mind Mend!', 'success')
+        return redirect(url_for('dashboard'))
+
+    # GET
+    return render_template("login.html", csrf_token=generate_csrf_token())
+
+@app.route("/logout", methods=["GET", "POST"])
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('home'))
 
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
@@ -198,6 +280,36 @@ def user_dashboard():
     }
     
     return render_template("dashboard_widgets.html", **dashboard_data)
+
+@app.route("/ai-models")
+@login_required
+def ai_models_page():
+    try:
+        from models.ai_model_manager import ai_model_manager
+        status = ai_model_manager.get_model_status()
+        return render_template("ai_models.html", status=status)
+    except Exception as e:
+        logging.error(f"AI models page error: {e}")
+        return render_template("ai_models.html", status={"model_details": [], "total_models": 0, "active_models": 0}, error="Failed to load models"), 500
+
+@app.route("/api/ai-models/toggle", methods=["POST"])
+@login_required
+def api_toggle_ai_model():
+    try:
+        data = request.get_json(force=True)
+        name = data.get('name')
+        active = bool(data.get('active'))
+        from models.ai_model_manager import ai_model_manager
+        if name not in ai_model_manager.models:
+            return jsonify({"error": "Unknown model"}), 400
+        if active and name not in ai_model_manager.active_models:
+            ai_model_manager.active_models.append(name)
+        if not active and name in ai_model_manager.active_models:
+            ai_model_manager.active_models.remove(name)
+        return jsonify({"success": True, "active_models": ai_model_manager.active_models})
+    except Exception as e:
+        logging.error(f"Toggle AI model error: {e}")
+        return jsonify({"error": "Failed to toggle model"}), 500
 
 @app.route("/logos")
 def logo_showcase():
@@ -1436,6 +1548,116 @@ def ai_group_therapy():
 def media_pack():
     """Media pack with brand assets and guidelines"""
     return render_template("media_pack.html")
+
+# Missing route fixes
+@app.route("/media")
+def media():
+    """Redirect to media pack"""
+    return redirect(url_for('media_pack'))
+
+@app.route("/relationship_therapy")
+def relationship_therapy_page():
+    """Relationship therapy main page"""
+    return render_template("relationship_therapy.html")
+
+@app.route("/couples_login")
+def couples_login():
+    """Couples login page"""
+    return render_template("couples_login.html")
+
+@app.route("/couples_session")
+def couples_session():
+    """Couples therapy session"""
+    return render_template("couples_session.html")
+
+@app.route("/couples_logout")
+def couples_logout():
+    """Couples logout"""
+    session.pop('partner1_logged_in', None)
+    session.pop('partner2_logged_in', None)
+    session.pop('partner1_name', None)
+    session.pop('partner2_name', None)
+    flash('Both partners have been logged out.', 'info')
+    return redirect(url_for('couples_login'))
+
+# Static JS files routes (for missing JS files)
+@app.route("/static/js/video-processing.js")
+def video_processing_js():
+    """Video processing JavaScript file"""
+    return """
+// Video Processing JavaScript
+console.log('Video processing module loaded');
+
+class VideoProcessor {
+    constructor() {
+        this.isProcessing = false;
+    }
+
+    startProcessing() {
+        this.isProcessing = true;
+        console.log('Video processing started');
+    }
+
+    stopProcessing() {
+        this.isProcessing = false;
+        console.log('Video processing stopped');
+    }
+}
+
+window.VideoProcessor = VideoProcessor;
+""", 200, {'Content-Type': 'application/javascript'}
+
+@app.route("/static/js/real-time-analysis.js")
+def realtime_analysis_js():
+    """Real-time analysis JavaScript file"""
+    return """
+// Real-time Analysis JavaScript
+console.log('Real-time analysis module loaded');
+
+class RealTimeAnalyzer {
+    constructor() {
+        this.isAnalyzing = false;
+    }
+
+    startAnalysis() {
+        this.isAnalyzing = true;
+        console.log('Real-time analysis started');
+    }
+
+    stopAnalysis() {
+        this.isAnalyzing = false;
+        console.log('Real-time analysis stopped');
+    }
+}
+
+window.RealTimeAnalyzer = RealTimeAnalyzer;
+""", 200, {'Content-Type': 'application/javascript'}
+
+@app.route("/static/js/biometric-integration.js")
+def biometric_integration_js():
+    """Biometric integration JavaScript file"""
+    return """
+// Biometric Integration JavaScript
+console.log('Biometric integration module loaded');
+
+class BiometricIntegrator {
+    constructor() {
+        this.isConnected = false;
+    }
+
+    connect() {
+        this.isConnected = true;
+        console.log('Biometric device connected');
+    }
+
+    disconnect() {
+        this.isConnected = false;
+        console.log('Biometric device disconnected');
+    }
+}
+
+window.BiometricIntegrator = BiometricIntegrator;
+""", 200, {'Content-Type': 'application/javascript'}
 
 # Health check endpoint
 @app.route("/health")

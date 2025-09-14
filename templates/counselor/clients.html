@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}Client Management - Counselor Dashboard{% endblock %}
+
+{% block content %}
+<div class="counselor-dashboard">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <h4 class="mb-4">Counselor Portal</h4>
+                <nav class="nav flex-column">
+                    <li><a href="{{ url_for('counselor.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.schedule') }}">
+                        <i class="fas fa-calendar me-2"></i>Schedule
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.client_management') }}" class="active">
+                        <i class="fas fa-users me-2"></i>Clients
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.earnings') }}">
+                        <i class="fas fa-dollar-sign me-2"></i>Earnings
+                    </a></li>
+                    <li><a href="{{ url_for('counselor.professional_development') }}">
+                        <i class="fas fa-graduation-cap me-2"></i>Training
+                    </a></li>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <div class="content-header">
+                    <h2>Client Management</h2>
+                    <p>Manage your client relationships and session history</p>
+                </div>
+
+                <!-- Client Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>24</h4>
+                            <p>Active Clients</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>156</h4>
+                            <p>Total Sessions</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>4.8</h4>
+                            <p>Avg Rating</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>92%</h4>
+                            <p>Retention Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Search and Filters -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row align-items-end">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Search Clients</label>
+                                        <input type="text" class="form-control" placeholder="Search by name or email...">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Filter by Status</label>
+                                        <select class="form-select">
+                                            <option>All Clients</option>
+                                            <option>Active</option>
+                                            <option>Inactive</option>
+                                            <option>New</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Therapy Type</label>
+                                        <select class="form-select">
+                                            <option>All Types</option>
+                                            <option>Individual</option>
+                                            <option>Couples</option>
+                                            <option>Family</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary w-100">Filter</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client List -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Client List</h5>
+                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addClientModal">
+                                    <i class="fas fa-plus me-2"></i>Add New Client
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Client</th>
+                                                <th>Contact</th>
+                                                <th>Therapy Type</th>
+                                                <th>Last Session</th>
+                                                <th>Total Sessions</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="Client">
+                                                        <div>
+                                                            <div class="fw-bold">Sarah Johnson</div>
+                                                            <small class="text-muted">Joined: Jan 2025</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>sarah.j@email.com</div>
+                                                    <small class="text-muted">+61 423 456 789</small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-primary">Individual</span>
+                                                </td>
+                                                <td>Yesterday</td>
+                                                <td>12</td>
+                                                <td>
+                                                    <span class="badge bg-success">Active</span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" title="View Details">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success" title="Schedule Session">
+                                                            <i class="fas fa-calendar-plus"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-info" title="Session Notes">
+                                                            <i class="fas fa-notes-medical"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="Client">
+                                                        <div>
+                                                            <div class="fw-bold">Mike & Emma Chen</div>
+                                                            <small class="text-muted">Joined: Feb 2025</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>mike.chen@email.com</div>
+                                                    <small class="text-muted">+61 434 567 890</small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-warning">Couples</span>
+                                                </td>
+                                                <td>3 days ago</td>
+                                                <td>8</td>
+                                                <td>
+                                                    <span class="badge bg-success">Active</span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success">
+                                                            <i class="fas fa-calendar-plus"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-info">
+                                                            <i class="fas fa-notes-medical"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://via.placeholder.com/40" class="rounded-circle me-3" alt="Client">
+                                                        <div>
+                                                            <div class="fw-bold">David Smith</div>
+                                                            <small class="text-muted">Joined: Dec 2024</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>david.smith@email.com</div>
+                                                    <small class="text-muted">+61 445 678 901</small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-info">PTSD</span>
+                                                </td>
+                                                <td>1 week ago</td>
+                                                <td>18</td>
+                                                <td>
+                                                    <span class="badge bg-warning">Follow-up</span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-success">
+                                                            <i class="fas fa-calendar-plus"></i>
+                                                        </button>
+                                                        <button class="btn btn-outline-info">
+                                                            <i class="fas fa-notes-medical"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.counselor-dashboard {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px 15px;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.stat-card h4 {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+</style>
+{% endblock %}

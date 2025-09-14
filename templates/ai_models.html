@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}AI Models Management{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+  <h2 class="mb-3"><i class="fas fa-robot me-2"></i>AI Models Management</h2>
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <span class="badge bg-primary">Total: {{ status.total_models }}</span>
+          <span class="badge bg-success ms-2">Active: {{ status.active_models }}</span>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" onclick="location.reload()">
+          <i class="fas fa-rotate"></i> Refresh
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Specialization</th>
+              <th>Accuracy</th>
+              <th>Available</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in status.model_details %}
+            <tr>
+              <td><code>{{ m.name }}</code></td>
+              <td>{{ m.type }}</td>
+              <td>{{ m.specialization or '-' }}</td>
+              <td>{{ '%.2f'|format(m.accuracy) if m.accuracy is not none else '—' }}</td>
+              <td>
+                {% if m.available %}
+                <span class="badge bg-success">Yes</span>
+                {% else %}
+                <span class="badge bg-secondary">No</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if m.active %}
+                <span class="badge bg-success">Active</span>
+                {% else %}
+                <span class="badge bg-light text-dark">Inactive</span>
+                {% endif %}
+              </td>
+              <td>
+                <button class="btn btn-sm {{ 'btn-outline-danger' if m.active else 'btn-outline-primary' }}" 
+                        onclick="toggleModel('{{ m.name }}', {{ 'false' if m.active else 'true' }})"
+                        {% if not m.available and not m.active %}disabled title="Model unavailable"{% endif %}>
+                  {% if m.active %}<i class="fas fa-pause"></i> Deactivate{% else %}<i class="fas fa-play"></i> Activate{% endif %}
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function toggleModel(name, active) {
+  try {
+    const res = await fetch('/api/ai-models/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, active })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert('Failed to update model: ' + (err.error || res.status));
+      return;
+    }
+    location.reload();
+  } catch (e) {
+    alert('Error: ' + e);
+  }
+}
+</script>
+{% endblock %}
+

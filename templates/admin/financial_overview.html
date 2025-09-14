@@ -1,0 +1,137 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Financial Overview - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="content-header">
+        <h1>Financial Overview</h1>
+        <p>Revenue tracking, subscription analytics, and financial insights</p>
+    </div>
+
+    <!-- Revenue Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card revenue">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>${{ data.revenue.this_month }}</h3>
+                    <p>This Month</p>
+                    <small class="text-success">+{{ data.revenue.growth_rate }}% from last month</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>${{ data.revenue.projected_annual }}</h3>
+                    <p>Projected Annual</p>
+                    <small class="text-info">Based on current trends</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ data.subscriptions.premium.count }}</h3>
+                    <p>Premium Users</p>
+                    <small>${{ data.subscriptions.premium.revenue }} revenue</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>${{ data.counselor_earnings.total_paid }}</h3>
+                    <p>Counselor Earnings</p>
+                    <small>${{ data.counselor_earnings.pending_payouts }} pending</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Breakdown -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Subscription Revenue Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Expense Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="expense-item">
+                        <span>Hosting & Infrastructure</span>
+                        <span class="expense-amount">${{ data.expenses.hosting }}</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>AI Services</span>
+                        <span class="expense-amount">${{ data.expenses.ai_services }}</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Support Staff</span>
+                        <span class="expense-amount">${{ data.expenses.support_staff }}</span>
+                    </div>
+                    <div class="expense-item">
+                        <span>Marketing</span>
+                        <span class="expense-amount">${{ data.expenses.marketing }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+    opacity: 0.8;
+}
+
+.revenue .stat-icon {
+    color: #28a745;
+}
+
+.expense-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.expense-amount {
+    font-weight: bold;
+    color: #dc3545;
+}
+</style>
+{% endblock %}

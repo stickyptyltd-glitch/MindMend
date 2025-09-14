@@ -341,6 +341,7 @@ def update_availability():
 
 
 @counselor_bp.route('/training')
+@counselor_bp.route('/professional-development')
 def professional_development():
     """Professional development and training resources"""
     training_data = {

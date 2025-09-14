@@ -1,4 +1,12 @@
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase
+from flask_login import UserMixin
+
+class Base(DeclarativeBase):
+    pass
+
+# Create the SQLAlchemy instance here to avoid circular imports
+db = SQLAlchemy(model_class=Base)
 from datetime import datetime
 from sqlalchemy import Text
 
@@ -80,7 +88,7 @@ class Exercise(db.Model):
     def __repr__(self):
         return f'<Exercise {self.id}: {self.title}>'
 
-class Patient(db.Model):
+class Patient(UserMixin, db.Model):
     """Model for patient profiles"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -98,6 +106,8 @@ class Patient(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_session = db.Column(db.DateTime)
     subscription_tier = db.Column(db.String(20), default='free')  # free, premium, enterprise
+    oauth_providers = db.Column(Text)  # JSON string of linked OAuth providers
+    password_hash = db.Column(db.String(255))  # For traditional login
     
     def __repr__(self):
         return f'<Patient {self.id}: {self.name}>'
