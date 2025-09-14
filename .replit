@@ -1,7 +1,8 @@
-modules = ["android-sdk"]
+modules = ["python-3.11"]
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-25_05"
+packages = ["openssl", "postgresql"]
 
 [deployment]
 run = ["sh", "-c", "./gradlew assembleDebug"]

@@ -1,0 +1,14 @@
+def generate_default_accounts():
+    default_accounts = {
+        'account1': {
+            'name': 'John Doe',
+            'balance': 1000.0,
+            'currency': 'USD'
+        },
+        'account2': {
+            'name': 'Jane Smith',
+            'balance': 1500.0,
+            'currency': 'EUR'
+        }
+    }
+    return default_accounts
