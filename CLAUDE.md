@@ -23,6 +23,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Update server**: `./update_mindmend.sh`
 - **Deploy from Git**: `./deploy_from_git.sh`
 - **Production deployment**: `./deploy_production.sh`
+- **Setup admin access**: `python setup_admin_login.py`
+- **Server setup from scratch**: `./server_complete_setup.sh`
 
 ## High-Level Architecture
 
@@ -67,8 +69,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Video Analysis**: Real-time emotion and stress detection
 - **Subscription System**: Tiered access with payment processing
 
+### Admin Panel Access
+- **URL**: http://67.219.102.9/admin (use IP to avoid SSL redirect)
+- **Setup**: Run `python setup_admin_login.py` to create admin user
+- **Credentials**: admin@mindmend.xyz / MindMend2024! (enterprise subscription tier)
+- **Authentication**: Uses Patient table with enterprise subscription for admin access
+
 ### Important Notes
 - **Security**: CSRF protection on auth forms, secure password hashing, environment-based secrets
 - **Testing**: Uses pytest framework with fixtures in `tests/` directory
 - **Deployment**: Multiple deployment scripts for different environments (Vultr, Docker, local)
 - **Scalability**: Socket.IO and modular AI design support real-time features and horizontal scaling
+- **Server**: Production runs on 67.219.102.9 (mindmend.xyz), use IP for admin access to avoid HTTPS redirect issues
