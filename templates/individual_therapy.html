@@ -249,6 +249,8 @@
 {% endblock %}
 
 {% block scripts %}
+<!-- Speaking Avatar Integration -->
+<script src="{{ url_for('static', filename='js/speaking-avatar.js') }}"></script>
 <!-- Future integration points for external libraries -->
 <!-- <script src="{{ url_for('static', filename='js/video-processing.js') }}"></script> -->
 <!-- <script src="{{ url_for('static', filename='js/biometric-integration.js') }}"></script> -->
@@ -256,6 +258,10 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Speaking Avatar
+    const speakingAvatar = new SpeakingAvatar();
+    speakingAvatar.setPersonality('compassionate');
+
     // Video Analysis Integration
     const videoProcessor = {
         active: false,
@@ -392,6 +398,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 ${result.session_id ? `<small class="text-muted">Session ID: ${result.session_id}</small>` : ''}
             </div>
         `;
+
+        // Have the speaking avatar speak the response
+        if (speakingAvatar && result.response) {
+            speakingAvatar.speak(result.response);
+        }
 
         // Display multi-modal analysis
         const analysisResults = document.getElementById('analysisResults');
