@@ -9,10 +9,15 @@ import logging
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, Boolean, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 try:
-    from app import db
+    from models.database import db
 except ImportError:
-    # Handle circular import
-    db = None
+    try:
+        from app import db
+    except ImportError:
+        # Handle circular import - create mock db for testing
+        class MockDB:
+            Model = object
+        db = MockDB()
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity

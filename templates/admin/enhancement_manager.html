@@ -1,0 +1,700 @@
+{% extends "base.html" %}
+
+{% block title %}Mental Health Enhancement Manager - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <h4 class="mb-4">Admin Panel</h4>
+                <nav class="nav flex-column">
+                    <li><a href="{{ url_for('admin.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('admin.user_management') }}">
+                        <i class="fas fa-users me-2"></i>Users
+                    </a></li>
+                    <li><a href="{{ url_for('admin.counselor_benefits') }}">
+                        <i class="fas fa-briefcase me-2"></i>Counselor Benefits
+                    </a></li>
+                    <li><a href="{{ url_for('admin.ai_model_manager') }}">
+                        <i class="fas fa-brain me-2"></i>AI Models
+                    </a></li>
+                    <li><a href="{{ url_for('admin.enhancement_manager') }}" class="active">
+                        <i class="fas fa-rocket me-2"></i>Enhancements
+                    </a></li>
+                    <li><a href="{{ url_for('admin.financial_overview') }}">
+                        <i class="fas fa-chart-line me-2"></i>Finances
+                    </a></li>
+                    <li><a href="{{ url_for('admin.system_monitoring') }}">
+                        <i class="fas fa-server me-2"></i>Monitoring
+                    </a></li>
+                    <li><a href="{{ url_for('admin.api_keys') }}">
+                        <i class="fas fa-key me-2"></i>API Keys
+                    </a></li>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <div class="content-header">
+                    <h2><i class="fas fa-rocket me-3"></i>Mental Health Enhancement Manager</h2>
+                    <p class="text-muted">Install, configure, and manage advanced mental health features</p>
+                    <div class="roadmap-link">
+                        <a href="/MENTAL_HEALTH_ENHANCEMENT_ROADMAP.md" target="_blank" class="btn btn-outline-info btn-sm">
+                            <i class="fas fa-map me-1"></i>View Full Roadmap
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Implementation Progress -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-tasks me-2"></i>Implementation Progress</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="progress-item">
+                                    <div class="progress-icon phase-ready">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <h6>Phase 1: Physical Health</h6>
+                                    <small class="text-success">Ready for Testing</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="progress-item">
+                                    <div class="progress-icon phase-development">
+                                        <i class="fas fa-cog fa-spin"></i>
+                                    </div>
+                                    <h6>Phase 2: Social Connection</h6>
+                                    <small class="text-warning">In Development</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="progress-item">
+                                    <div class="progress-icon phase-planning">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <h6>Phase 3: Immersive Therapy</h6>
+                                    <small class="text-info">Planning</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="progress-item">
+                                    <div class="progress-icon phase-planning">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <h6>Phase 4: Predictive Analytics</h6>
+                                    <small class="text-info">Planning</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Module Status Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-cubes"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>{{ data.module_status.total_modules }}</h4>
+                                <p>Total Modules</p>
+                                <small class="text-primary">Available for installation</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>{{ data.module_status.installed_modules }}</h4>
+                                <p>Installed</p>
+                                <small class="text-success">Ready for activation</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>{{ data.module_status.active_modules }}</h4>
+                                <p>Active</p>
+                                <small class="text-warning">Currently running</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>{{ data.module_status.modules|map(attribute='active_users')|sum }}</h4>
+                                <p>Total Users</p>
+                                <small class="text-info">Using enhanced features</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 1 Testing Interface -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-flask me-2"></i>Phase 1: Physical Health Integration Testing</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p class="mb-3">Test the comprehensive physical health integration system including exercise prescription, nutrition planning, and sleep optimization.</p>
+                                <form method="POST" class="d-inline">
+                                    <input type="hidden" name="action" value="test_physical_health">
+                                    <button type="submit" class="btn btn-primary me-3">
+                                        <i class="fas fa-play me-2"></i>Run Physical Health Test
+                                    </button>
+                                </form>
+                                <small class="text-muted">This will generate sample recommendations for a user with anxiety and stress conditions.</small>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="feature-highlights">
+                                    <h6>Features Tested:</h6>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-dumbbell text-primary me-2"></i>Exercise Prescription</li>
+                                        <li><i class="fas fa-apple-alt text-success me-2"></i>Nutrition Planning</li>
+                                        <li><i class="fas fa-bed text-info me-2"></i>Sleep Optimization</li>
+                                        <li><i class="fas fa-heartbeat text-danger me-2"></i>Biometric Analysis</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Results -->
+                {% if data.test_results %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-pie me-2"></i>Physical Health Integration Test Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Exercise Prescription Results -->
+                            <div class="col-md-4">
+                                <div class="test-result-section">
+                                    <h6><i class="fas fa-dumbbell text-primary me-2"></i>Exercise Prescription</h6>
+                                    <div class="result-details">
+                                        <p><strong>Condition:</strong> {{ data.test_results.exercise.condition.replace('_', ' ').title() }}</p>
+                                        <p><strong>Exercise Type:</strong> {{ data.test_results.exercise.exercise_type }}</p>
+                                        <p><strong>Intensity:</strong> {{ data.test_results.exercise.intensity.title() }}</p>
+                                        <p><strong>Duration:</strong> {{ data.test_results.exercise.duration }} minutes</p>
+                                        <p><strong>Frequency:</strong> {{ data.test_results.exercise.frequency }}x per week</p>
+
+                                        <h6 class="mt-3">Mental Health Benefits:</h6>
+                                        <ul class="small">
+                                            {% for benefit in data.test_results.exercise.benefits %}
+                                            <li>{{ benefit }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nutrition Plan Results -->
+                            <div class="col-md-4">
+                                <div class="test-result-section">
+                                    <h6><i class="fas fa-apple-alt text-success me-2"></i>Nutrition Plan</h6>
+                                    <div class="result-details">
+                                        <h6>Recommended Foods:</h6>
+                                        <ul class="small">
+                                            {% for food in data.test_results.nutrition.recommended_foods %}
+                                            <li>{{ food.replace('_', ' ').title() }}</li>
+                                            {% endfor %}
+                                        </ul>
+
+                                        <h6 class="mt-3">Supplements:</h6>
+                                        <ul class="small">
+                                            {% for supplement in data.test_results.nutrition.supplements %}
+                                            <li>{{ supplement.replace('_', ' ').title() }}</li>
+                                            {% endfor %}
+                                        </ul>
+
+                                        <h6 class="mt-3">Foods to Limit:</h6>
+                                        <ul class="small">
+                                            {% for food in data.test_results.nutrition.foods_to_avoid %}
+                                            <li>{{ food.replace('_', ' ').title() }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sleep Optimization Results -->
+                            <div class="col-md-4">
+                                <div class="test-result-section">
+                                    <h6><i class="fas fa-bed text-info me-2"></i>Sleep Optimization</h6>
+                                    <div class="result-details">
+                                        <p><strong>Recommended Bedtime:</strong> {{ data.test_results.sleep.recommended_bedtime }}</p>
+                                        <p><strong>Recommended Wake Time:</strong> {{ data.test_results.sleep.recommended_wake_time }}</p>
+                                        <p><strong>Sleep Duration:</strong> {{ data.test_results.sleep.duration_hours }} hours</p>
+
+                                        <h6 class="mt-3">Key Sleep Tips:</h6>
+                                        <ul class="small">
+                                            {% for tip in data.test_results.sleep.key_tips %}
+                                            <li>{{ tip }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Available Enhancement Modules -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-cubes me-2"></i>Available Enhancement Modules</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for module in data.module_status.modules %}
+                            <div class="col-md-6 mb-4">
+                                <div class="module-card">
+                                    <div class="module-header">
+                                        <div class="module-icon">
+                                            {% if module.module == 'physical_health' %}
+                                                <i class="fas fa-heartbeat"></i>
+                                            {% elif module.module == 'social_connection' %}
+                                                <i class="fas fa-users"></i>
+                                            {% elif module.module == 'immersive_therapy' %}
+                                                <i class="fas fa-vr-cardboard"></i>
+                                            {% elif module.module == 'predictive_analytics' %}
+                                                <i class="fas fa-chart-line"></i>
+                                            {% elif module.module == 'crisis_prevention' %}
+                                                <i class="fas fa-shield-alt"></i>
+                                            {% elif module.module == 'environmental_tracking' %}
+                                                <i class="fas fa-cloud-sun"></i>
+                                            {% elif module.module == 'biometric_integration' %}
+                                                <i class="fas fa-dna"></i>
+                                            {% elif module.module == 'specialized_care' %}
+                                                <i class="fas fa-user-md"></i>
+                                            {% else %}
+                                                <i class="fas fa-cog"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div class="module-info">
+                                            <h6>{{ module.name }}</h6>
+                                            <span class="badge bg-{{ 'success' if module.status == 'active' else 'warning' if module.status == 'installed' else 'secondary' }}">
+                                                {{ module.status.replace('_', ' ').title() }}
+                                            </span>
+                                            <span class="badge bg-info ms-1">{{ module.cost_tier.title() }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="module-body">
+                                        <p class="module-description">{{ module.description }}</p>
+
+                                        <div class="module-stats">
+                                            <div class="stat-item">
+                                                <small class="text-muted">Version:</small>
+                                                <strong>{{ module.version }}</strong>
+                                            </div>
+                                            <div class="stat-item">
+                                                <small class="text-muted">Active Users:</small>
+                                                <strong>{{ module.active_users }}</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="module-status-indicators">
+                                            <div class="status-indicator">
+                                                <i class="fas fa-{{ 'check' if module.dependencies_met else 'times' }} text-{{ 'success' if module.dependencies_met else 'danger' }}"></i>
+                                                <small>Dependencies {{ 'Met' if module.dependencies_met else 'Missing' }}</small>
+                                            </div>
+                                            <div class="status-indicator">
+                                                <i class="fas fa-{{ 'check' if module.database_ready else 'times' }} text-{{ 'success' if module.database_ready else 'danger' }}"></i>
+                                                <small>Database {{ 'Ready' if module.database_ready else 'Not Ready' }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="module-actions">
+                                        {% if module.status == 'not_installed' %}
+                                        <form method="POST" class="d-inline">
+                                            <input type="hidden" name="action" value="install_module">
+                                            <input type="hidden" name="module_name" value="{{ module.module }}">
+                                            <button type="submit" class="btn btn-primary btn-sm"
+                                                    {{ 'disabled' if not module.dependencies_met }}>
+                                                <i class="fas fa-download me-1"></i>Install
+                                            </button>
+                                        </form>
+                                        {% elif module.status == 'installed' %}
+                                        <button class="btn btn-success btn-sm" onclick="showActivationModal('{{ module.module }}', '{{ module.name }}')">
+                                            <i class="fas fa-play me-1"></i>Activate
+                                        </button>
+                                        {% elif module.status == 'active' %}
+                                        <button class="btn btn-info btn-sm" onclick="showModuleSettings('{{ module.module }}')">
+                                            <i class="fas fa-cog me-1"></i>Settings
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Future Roadmap Preview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-map me-2"></i>Future Enhancement Roadmap</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="roadmap-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-marker completed"></div>
+                                <div class="timeline-content">
+                                    <h6>Phase 1: Physical Health Integration</h6>
+                                    <p>Exercise prescription, nutrition planning, sleep optimization, biometric analysis</p>
+                                    <small class="text-success">✅ COMPLETED</small>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-marker in-progress"></div>
+                                <div class="timeline-content">
+                                    <h6>Phase 2: Social Connection Platform</h6>
+                                    <p>Peer support matching, group therapy, community challenges, relationship tools</p>
+                                    <small class="text-warning">🚧 IN DEVELOPMENT</small>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-marker planned"></div>
+                                <div class="timeline-content">
+                                    <h6>Phase 3: Immersive Therapy Suite</h6>
+                                    <p>VR/AR therapy, biofeedback integration, gamified CBT, emotion recognition</p>
+                                    <small class="text-info">📅 PLANNED</small>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-marker planned"></div>
+                                <div class="timeline-content">
+                                    <h6>Phase 4: Predictive Analytics</h6>
+                                    <p>Crisis prediction, relapse prevention, environmental tracking, treatment optimization</p>
+                                    <small class="text-info">📅 PLANNED</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Module Activation Modal -->
+<div class="modal fade" id="activationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Activate Enhancement Module</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="activate_module">
+                    <input type="hidden" name="module_name" id="activation_module_name">
+
+                    <div class="mb-3">
+                        <label class="form-label">Module Name</label>
+                        <input type="text" class="form-control" id="activation_module_title" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Activate For User ID</label>
+                        <input type="text" class="form-control" name="user_id" value="admin" placeholder="Enter user ID or 'admin'">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Integration Level</label>
+                        <select class="form-select" name="integration_level">
+                            <option value="basic">Basic</option>
+                            <option value="standard">Standard</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="notifications" checked>
+                        <label class="form-check-label">Enable Notifications</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="data_sharing">
+                        <label class="form-check-label">Allow Anonymous Data Sharing for Research</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Activate Module</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-dashboard {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px 15px;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-right: 15px;
+    opacity: 0.8;
+    color: #007bff;
+}
+
+.stat-info h4 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.progress-item {
+    text-align: center;
+    padding: 15px;
+}
+
+.progress-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 1.5rem;
+}
+
+.phase-ready {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.phase-development {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.phase-planning {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.module-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    height: 100%;
+}
+
+.module-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.module-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+}
+
+.module-info h6 {
+    margin: 0 0 5px 0;
+}
+
+.module-body {
+    padding: 15px;
+}
+
+.module-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.module-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.module-status-indicators {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.status-indicator {
+    font-size: 0.8rem;
+}
+
+.module-actions {
+    padding: 15px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.test-result-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    height: 100%;
+}
+
+.roadmap-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.roadmap-timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e9ecef;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -22px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.timeline-marker.completed {
+    background-color: #28a745;
+}
+
+.timeline-marker.in-progress {
+    background-color: #ffc107;
+}
+
+.timeline-marker.planned {
+    background-color: #6c757d;
+}
+
+.timeline-content h6 {
+    margin-bottom: 5px;
+}
+
+.feature-highlights {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.feature-highlights ul li {
+    margin-bottom: 5px;
+}
+
+.roadmap-link {
+    margin-top: 10px;
+}
+</style>
+
+<script>
+function showActivationModal(moduleName, moduleTitle) {
+    document.getElementById('activation_module_name').value = moduleName;
+    document.getElementById('activation_module_title').value = moduleTitle;
+    new bootstrap.Modal(document.getElementById('activationModal')).show();
+}
+
+function showModuleSettings(moduleName) {
+    alert(`Module settings for ${moduleName} - Coming soon!`);
+}
+
+// Auto-refresh module status every 30 seconds
+setInterval(() => {
+    fetch('/admin/api/enhancement-modules/status')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Module status updated:', data);
+        })
+        .catch(error => console.error('Error refreshing status:', error));
+}, 30000);
+</script>
+{% endblock %}

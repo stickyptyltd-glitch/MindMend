@@ -617,3 +617,398 @@ def test_ai_model():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@admin_bp.route('/enhancement-manager', methods=['GET', 'POST'])
+@require_admin_auth
+def enhancement_manager():
+    """Mental Health Enhancement Manager Interface"""
+    from models.enhancement_manager import enhancement_manager, FeatureModule
+
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'install_module':
+            module_name = request.form.get('module_name')
+            result = enhancement_manager.install_module(module_name)
+
+            if result['success']:
+                flash(f'Module {result["module"]} installed successfully!', 'success')
+            else:
+                flash(f'Installation failed: {result["error"]}', 'error')
+
+        elif action == 'activate_module':
+            module_name = request.form.get('module_name')
+            user_id = request.form.get('user_id', 'admin')
+            user_config = {
+                'notifications': request.form.get('notifications') == 'on',
+                'data_sharing': request.form.get('data_sharing') == 'on',
+                'integration_level': request.form.get('integration_level', 'basic')
+            }
+
+            result = enhancement_manager.activate_module(module_name, user_id, user_config)
+
+            if result['success']:
+                flash(f'Module activated successfully for user {user_id}!', 'success')
+            else:
+                flash(f'Activation failed: {result["error"]}', 'error')
+
+        elif action == 'test_physical_health':
+            # Test Physical Health Integration
+            from models.physical_health_integrator import physical_health_integrator
+
+            try:
+                # Create sample exercise prescription
+                prescription = physical_health_integrator.create_exercise_prescription(
+                    user_id=1,
+                    mental_health_conditions=["anxiety", "stress"],
+                    fitness_level="intermediate",
+                    available_time=45,
+                    preferences=["yoga", "walking"]
+                )
+
+                # Create sample nutrition plan
+                nutrition_plan = physical_health_integrator.create_nutrition_plan(
+                    user_id=1,
+                    mental_health_conditions=["anxiety"],
+                    dietary_restrictions=["vegetarian"]
+                )
+
+                # Create sample sleep plan
+                sleep_plan = physical_health_integrator.create_sleep_optimization_plan(
+                    user_id=1,
+                    age=30,
+                    mental_health_conditions=["anxiety"],
+                    current_sleep_duration=6.5
+                )
+
+                session['physical_health_test'] = {
+                    'exercise': {
+                        'condition': prescription.condition.value,
+                        'exercise_type': prescription.exercise_type,
+                        'intensity': prescription.intensity.value,
+                        'duration': prescription.duration_minutes,
+                        'frequency': prescription.frequency_per_week,
+                        'benefits': prescription.mental_health_benefits[:3]
+                    },
+                    'nutrition': {
+                        'recommended_foods': nutrition_plan.recommended_foods[:5],
+                        'supplements': nutrition_plan.supplements,
+                        'foods_to_avoid': nutrition_plan.foods_to_avoid[:3]
+                    },
+                    'sleep': {
+                        'recommended_bedtime': sleep_plan.recommended_bedtime,
+                        'recommended_wake_time': sleep_plan.recommended_wake_time,
+                        'duration_hours': sleep_plan.sleep_duration_hours,
+                        'key_tips': sleep_plan.sleep_hygiene_tips[:3]
+                    }
+                }
+
+                flash('Physical Health Integration test completed successfully!', 'success')
+
+            except Exception as e:
+                flash(f'Physical Health test failed: {str(e)}', 'error')
+
+        return redirect(url_for('admin.enhancement_manager'))
+
+    # Get module status
+    module_status = enhancement_manager.get_module_status()
+
+    # Get test results
+    test_results = session.pop('physical_health_test', None)
+
+    enhancement_data = {
+        'module_status': module_status,
+        'available_modules': [module.value for module in FeatureModule],
+        'test_results': test_results,
+        'installation_progress': {
+            'phase_1_physical_health': 'ready',
+            'phase_2_social_connection': 'development',
+            'phase_3_immersive_therapy': 'planning',
+            'phase_4_predictive_analytics': 'planning'
+        }
+    }
+
+    return render_template('admin/enhancement_manager.html', data=enhancement_data)
+
+@admin_bp.route('/api/enhancement-modules/status')
+@require_admin_auth
+def enhancement_modules_status():
+    """API endpoint for enhancement modules status"""
+    from models.enhancement_manager import enhancement_manager
+
+    return jsonify(enhancement_manager.get_module_status())
+
+@admin_bp.route('/api/user-features/<user_id>')
+@require_admin_auth
+def get_user_features(user_id):
+    """API endpoint to get user's active features"""
+    from models.enhancement_manager import enhancement_manager
+
+    return jsonify(enhancement_manager.get_user_features(user_id))
+
+@admin_bp.route('/social-connection-manager')
+@require_admin_auth
+def social_connection_manager():
+    """Social Connection Management Dashboard"""
+    from models.social_connection_manager import social_connection_manager
+
+    # Get overview statistics
+    stats = social_connection_manager.get_platform_statistics()
+
+    # Get recent activities
+    recent_peer_matches = social_connection_manager.get_recent_peer_matches(limit=10)
+    active_groups = social_connection_manager.get_active_group_sessions()
+    active_challenges = social_connection_manager.get_active_challenges()
+
+    # Get moderation queue
+    content_queue = social_connection_manager.get_moderation_queue()
+
+    return render_template('admin/social_connection_manager.html',
+        stats=stats,
+        recent_matches=recent_peer_matches,
+        active_groups=active_groups,
+        active_challenges=active_challenges,
+        content_queue=content_queue
+    )
+
+@admin_bp.route('/api/social-stats')
+@require_admin_auth
+def get_social_stats():
+    """API endpoint for real-time social connection statistics"""
+    from models.social_connection_manager import social_connection_manager
+
+    return jsonify(social_connection_manager.get_platform_statistics())
+
+@admin_bp.route('/api/peer-matches', methods=['GET', 'POST'])
+@require_admin_auth
+def manage_peer_matches():
+    """Manage peer matching system"""
+    from models.social_connection_manager import social_connection_manager
+
+    if request.method == 'POST':
+        action = request.json.get('action')
+
+        if action == 'create_test_match':
+            user_id = request.json.get('user_id', 'test_user_1')
+            match = social_connection_manager.find_peer_matches(user_id, limit=1)
+            return jsonify({'success': True, 'matches': match})
+
+        elif action == 'moderate_match':
+            match_id = request.json.get('match_id')
+            status = request.json.get('status')  # approved, rejected
+            result = social_connection_manager.moderate_peer_match(match_id, status)
+            return jsonify({'success': result})
+
+    # GET request - return recent matches
+    matches = social_connection_manager.get_recent_peer_matches(limit=20)
+    return jsonify(matches)
+
+@admin_bp.route('/api/group-sessions', methods=['GET', 'POST'])
+@require_admin_auth
+def manage_group_sessions():
+    """Manage group therapy sessions"""
+    from models.social_connection_manager import social_connection_manager
+
+    if request.method == 'POST':
+        action = request.json.get('action')
+
+        if action == 'create_session':
+            session_data = {
+                'session_type': request.json.get('session_type'),
+                'title': request.json.get('title'),
+                'description': request.json.get('description'),
+                'max_participants': request.json.get('max_participants', 8),
+                'scheduled_time': request.json.get('scheduled_time')
+            }
+            session = social_connection_manager.create_group_session(**session_data)
+            return jsonify({'success': True, 'session_id': session.session_id})
+
+        elif action == 'moderate_session':
+            session_id = request.json.get('session_id')
+            status = request.json.get('status')
+            result = social_connection_manager.moderate_group_session(session_id, status)
+            return jsonify({'success': result})
+
+    # GET request - return active sessions
+    sessions = social_connection_manager.get_active_group_sessions()
+    return jsonify(sessions)
+
+@admin_bp.route('/api/community-challenges', methods=['GET', 'POST'])
+@require_admin_auth
+def manage_community_challenges():
+    """Manage community wellness challenges"""
+    from models.social_connection_manager import social_connection_manager
+
+    if request.method == 'POST':
+        action = request.json.get('action')
+
+        if action == 'create_challenge':
+            challenge_data = {
+                'title': request.json.get('title'),
+                'description': request.json.get('description'),
+                'challenge_type': request.json.get('challenge_type'),
+                'duration_days': request.json.get('duration_days', 30),
+                'max_participants': request.json.get('max_participants', 100)
+            }
+            challenge = social_connection_manager.create_community_challenge(**challenge_data)
+            return jsonify({'success': True, 'challenge_id': challenge.challenge_id})
+
+        elif action == 'update_challenge':
+            challenge_id = request.json.get('challenge_id')
+            updates = request.json.get('updates', {})
+            result = social_connection_manager.update_challenge(challenge_id, updates)
+            return jsonify({'success': result})
+
+    # GET request - return active challenges
+    challenges = social_connection_manager.get_active_challenges()
+    return jsonify(challenges)
+
+@admin_bp.route('/api/content-moderation', methods=['GET', 'POST'])
+@require_admin_auth
+def manage_content_moderation():
+    """Handle content moderation for social features"""
+    from models.social_connection_manager import social_connection_manager
+
+    if request.method == 'POST':
+        action = request.json.get('action')
+        content_id = request.json.get('content_id')
+
+        if action == 'approve':
+            result = social_connection_manager.approve_content(content_id)
+            return jsonify({'success': result})
+
+        elif action == 'reject':
+            reason = request.json.get('reason', 'Inappropriate content')
+            result = social_connection_manager.reject_content(content_id, reason)
+            return jsonify({'success': result})
+
+        elif action == 'flag_user':
+            user_id = request.json.get('user_id')
+            reason = request.json.get('reason')
+            result = social_connection_manager.flag_user_for_review(user_id, reason)
+            return jsonify({'success': result})
+
+    # GET request - return moderation queue
+    queue = social_connection_manager.get_moderation_queue()
+    return jsonify(queue)
+
+@admin_bp.route('/therapeutic-tools-manager')
+@require_admin_auth
+def therapeutic_tools_manager():
+    """Advanced Therapeutic Tools Management Dashboard"""
+    from models.therapeutic_tools_manager import therapeutic_tools_manager
+
+    # Get overview statistics
+    stats = therapeutic_tools_manager.get_platform_statistics()
+
+    # Get sample user progress data
+    sample_users = ["user_001", "user_002", "user_003"]
+    user_progress = {}
+    for user_id in sample_users:
+        progress = therapeutic_tools_manager.get_user_therapy_progress(user_id)
+        user_progress[user_id] = progress
+
+    return render_template('admin/therapeutic_tools_manager.html',
+        stats=stats,
+        user_progress=user_progress,
+        vr_environments=therapeutic_tools_manager.vr_environments,
+        biofeedback_exercises=therapeutic_tools_manager.biofeedback_exercises,
+        ai_models=therapeutic_tools_manager.ai_therapy_models
+    )
+
+@admin_bp.route('/api/therapeutic-stats')
+@require_admin_auth
+def get_therapeutic_stats():
+    """API endpoint for real-time therapeutic tools statistics"""
+    from models.therapeutic_tools_manager import therapeutic_tools_manager
+
+    return jsonify(therapeutic_tools_manager.get_platform_statistics())
+
+@admin_bp.route('/api/therapy-plans', methods=['GET', 'POST'])
+@require_admin_auth
+def manage_therapy_plans():
+    """Manage personalized therapy plans"""
+    from models.therapeutic_tools_manager import therapeutic_tools_manager, VREnvironment
+
+    if request.method == 'POST':
+        action = request.json.get('action')
+
+        if action == 'create_plan':
+            user_id = request.json.get('user_id')
+            conditions = request.json.get('conditions', [])
+            preferences = request.json.get('preferences', {})
+
+            plan = therapeutic_tools_manager.create_personalized_therapy_plan(
+                user_id, conditions, preferences
+            )
+            return jsonify({'success': True, 'plan_id': plan.plan_id})
+
+        elif action == 'test_vr_session':
+            user_id = request.json.get('user_id', 'test_user')
+            environment = VREnvironment(request.json.get('environment', 'beach_calm'))
+            therapy_type = request.json.get('therapy_type', 'relaxation')
+
+            session = therapeutic_tools_manager.start_vr_therapy_session(
+                user_id, environment, therapy_type
+            )
+            return jsonify({'success': True, 'session_id': session.session_id})
+
+    # GET request - return therapy plans summary
+    plans_summary = {
+        'total_plans': len(therapeutic_tools_manager.therapy_plans),
+        'active_sessions': len(therapeutic_tools_manager.active_sessions),
+        'recent_plans': list(therapeutic_tools_manager.therapy_plans.keys())[:5]
+    }
+    return jsonify(plans_summary)
+
+@admin_bp.route('/api/vr-sessions', methods=['GET', 'POST'])
+@require_admin_auth
+def manage_vr_sessions():
+    """Manage VR therapy sessions"""
+    from models.therapeutic_tools_manager import therapeutic_tools_manager, BiometricType
+
+    if request.method == 'POST':
+        action = request.json.get('action')
+        session_id = request.json.get('session_id')
+
+        if action == 'simulate_biometric':
+            biometric_type = BiometricType(request.json.get('biometric_type', 'heart_rate'))
+            value = request.json.get('value', 75.0)
+
+            result = therapeutic_tools_manager.process_biometric_reading(
+                session_id, biometric_type, value
+            )
+            return jsonify({'success': result})
+
+        elif action == 'complete_session':
+            user_feedback = request.json.get('feedback', {
+                'pre_mood': 4,
+                'post_mood': 7,
+                'satisfaction': 8
+            })
+
+            outcome = therapeutic_tools_manager.complete_vr_session(session_id, user_feedback)
+            return jsonify({'success': True, 'outcome_id': outcome.outcome_id})
+
+    # GET request - return active sessions
+    active_sessions = {
+        session_id: {
+            'user_id': session.user_id,
+            'environment': session.environment.value,
+            'therapy_type': session.therapy_type,
+            'started_at': session.started_at.isoformat() if session.started_at else None,
+            'biometric_readings': len(session.biometric_data)
+        }
+        for session_id, session in therapeutic_tools_manager.active_sessions.items()
+    }
+
+    return jsonify(active_sessions)
+
+@admin_bp.route('/api/user-progress/<user_id>')
+@require_admin_auth
+def get_user_progress(user_id):
+    """Get detailed user therapy progress"""
+    from models.therapeutic_tools_manager import therapeutic_tools_manager
+
+    progress = therapeutic_tools_manager.get_user_therapy_progress(user_id)
+    return jsonify(progress)

@@ -15,11 +15,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Test coverage**: `pytest --cov=. -q`
 - **Test specific file**: `pytest tests/test_routes.py -v`
 - **Payment system test**: `python test_payment_system.py`
+- **Advanced systems test**: `python test_advanced_systems.py`
 
 ### Deployment Commands
 - **Deploy to server**: `./auto_deploy_to_vultr.sh`
 - **Quick fix deployment**: `./quick_fix_deployment.sh`
 - **Update server**: `./update_mindmend.sh`
+- **Deploy from Git**: `./deploy_from_git.sh`
+- **Production deployment**: `./deploy_production.sh`
 
 ## High-Level Architecture
 
@@ -31,6 +34,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `models/therapy_ai_integration.py` - Advanced therapy AI with ensemble models
   - `models/ai_model_manager.py` - Multiple AI model management
   - `models/treatment_recommender.py` - Personalized treatment planning
+  - `models/enhancement_manager.py` - AI enhancement management
+  - `models/research_manager.py` - Research and analytics capabilities
 
 ### Key Architecture Patterns
 - **Modular AI Components**: Each AI feature (health checking, exercise generation, video analysis) is a separate module that can be imported and used independently
