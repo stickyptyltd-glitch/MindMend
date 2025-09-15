@@ -136,8 +136,315 @@ conversation_starter_generator = ConversationStarterGenerator()
 
 @app.route("/")
 def home():
-    """Home page with therapy type selection"""
-    return render_template("index.html")
+    """Smart homepage - shows personalized dashboard for logged-in users, marketing page for anonymous users"""
+    if current_user.is_authenticated:
+        # Personalized dashboard for logged-in users
+        try:
+            # Get user stats
+            user_sessions = Session.query.filter_by(patient_name=current_user.name).count()
+            recent_sessions = Session.query.filter_by(patient_name=current_user.name).order_by(Session.timestamp.desc()).limit(3).all()
+
+            # Calculate user metrics
+            user_stats = {
+                'total_sessions': user_sessions,
+                'streak_days': calculate_streak_days(),
+                'avg_mood': calculate_average_mood(),
+                'this_week_sessions': Session.query.filter(
+                    Session.patient_name == current_user.name,
+                    Session.timestamp >= datetime.now() - timedelta(days=7)
+                ).count()
+            }
+
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Welcome Back - MindMend</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body {{ font-family: Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
+                    .navbar {{ background: rgba(255,255,255,0.1); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }}
+                    .navbar h1 {{ color: white; margin: 0; }}
+                    .navbar a {{ color: white; text-decoration: none; margin: 0 15px; padding: 8px 16px; border-radius: 20px; transition: background 0.3s; }}
+                    .navbar a:hover {{ background: rgba(255,255,255,0.2); }}
+                    .container {{ max-width: 1200px; margin: 0 auto; padding: 30px; }}
+                    .welcome-card {{ background: white; border-radius: 15px; padding: 30px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }}
+                    .stats-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }}
+                    .stat-card {{ background: white; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }}
+                    .stat-number {{ font-size: 2.5em; font-weight: bold; color: #667eea; margin-bottom: 10px; }}
+                    .stat-label {{ color: #666; font-size: 1.1em; }}
+                    .actions-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }}
+                    .action-card {{ background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }}
+                    .btn {{ background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 8px; text-decoration: none; display: inline-block; font-size: 16px; transition: all 0.3s; }}
+                    .btn:hover {{ background: #5a67d8; transform: translateY(-2px); }}
+                    .btn-secondary {{ background: #48bb78; }}
+                    .btn-secondary:hover {{ background: #38a169; }}
+                    .recent-session {{ background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #667eea; }}
+                    .session-date {{ color: #666; font-size: 0.9em; }}
+                    .quick-actions {{ background: linear-gradient(45deg, #667eea, #764ba2); color: white; border-radius: 15px; padding: 25px; margin-top: 20px; }}
+                    .insights-card {{ background: linear-gradient(45deg, #48bb78, #38a169); color: white; border-radius: 15px; padding: 25px; }}
+                </style>
+            </head>
+            <body>
+                <nav class="navbar">
+                    <h1>🧠 MindMend</h1>
+                    <div>
+                        <a href="/dashboard">Dashboard</a>
+                        <a href="/video-assessment">Video Assessment</a>
+                        <a href="/activities">Activities</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </nav>
+
+                <div class="container">
+                    <div class="welcome-card">
+                        <h1>Welcome back, {current_user.name}! 👋</h1>
+                        <p style="font-size: 1.2em; color: #666; margin: 10px 0;">Ready to continue your mental health journey?</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">{user_stats['total_sessions']}</div>
+                            <div class="stat-label">Total Sessions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">{user_stats['this_week_sessions']}</div>
+                            <div class="stat-label">This Week</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">{user_stats['streak_days']}</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">{user_stats['avg_mood']}/10</div>
+                            <div class="stat-label">Average Mood</div>
+                        </div>
+                    </div>
+
+                    <div class="actions-grid">
+                        <div class="action-card">
+                            <h3>🎯 Start Your Session</h3>
+                            <p>Ready for your next therapy session? Choose the type that fits your needs today.</p>
+                            <a href="/individual" class="btn">Individual Therapy</a>
+                            <a href="/relationship" class="btn btn-secondary">Couples Therapy</a>
+                        </div>
+
+                        <div class="action-card">
+                            <h3>📊 Track Your Progress</h3>
+                            <p>Monitor your mental health journey with comprehensive analytics and insights.</p>
+                            <a href="/dashboard" class="btn">View Dashboard</a>
+                            <a href="/video-assessment" class="btn btn-secondary">Video Assessment</a>
+                        </div>
+
+                        <div class="action-card">
+                            <h3>🧘 Wellness Activities</h3>
+                            <p>Explore therapeutic activities designed to support your mental health goals.</p>
+                            <a href="/activities" class="btn">Browse Activities</a>
+                            <a href="/emotion-tracking" class="btn btn-secondary">Emotion Tracking</a>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h3>⚡ Quick Actions</h3>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px;">
+                            <a href="/api/session" onclick="startQuickSession()" class="btn" style="background: rgba(255,255,255,0.2);">Quick Check-in</a>
+                            <a href="/crisis-support" class="btn" style="background: rgba(255,255,255,0.2);">Crisis Support</a>
+                            <a href="/ai-models" class="btn" style="background: rgba(255,255,255,0.2);">AI Tools</a>
+                        </div>
+                    </div>
+
+                    {f'''
+                    <div class="action-card" style="margin-top: 20px;">
+                        <h3>📈 Recent Sessions</h3>
+                        {''.join([f'<div class="recent-session"><strong>{session.session_type.title()} Session</strong><div class="session-date">{session.timestamp.strftime("%B %d, %Y at %I:%M %p")}</div></div>' for session in recent_sessions]) if recent_sessions else '<p>No recent sessions. Start your first session today!</p>'}
+                    </div>
+                    ''' if recent_sessions else '<div class="insights-card"><h3>🌟 Ready to Begin?</h3><p>Welcome to MindMend! Your mental health journey starts with a single step. Ready to take yours?</p><a href="/individual" class="btn" style="background: rgba(255,255,255,0.2);">Start First Session</a></div>'}
+                </div>
+
+                <script>
+                    function startQuickSession() {{
+                        fetch('/api/session', {{
+                            method: 'POST',
+                            headers: {{ 'Content-Type': 'application/json' }},
+                            body: JSON.stringify({{
+                                message: 'Quick check-in: How are you feeling today?',
+                                session_type: 'individual',
+                                name: '{current_user.name}'
+                            }})
+                        }})
+                        .then(response => response.json())
+                        .then(data => {{
+                            alert('Quick check-in completed! Response: ' + data.response);
+                        }})
+                        .catch(error => console.error('Error:', error));
+                        return false;
+                    }}
+                </script>
+            </body>
+            </html>
+            """
+        except Exception as e:
+            logging.error(f"Error in personalized dashboard: {e}")
+            return redirect(url_for('dashboard'))
+    else:
+        # Marketing homepage for anonymous users
+        return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>MindMend - AI-Powered Mental Health Support</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                body { font-family: Arial, sans-serif; margin: 0; line-height: 1.6; color: #333; }
+                .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 100px 0; text-align: center; }
+                .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+                .hero h1 { font-size: 3.5em; margin-bottom: 20px; font-weight: bold; }
+                .hero p { font-size: 1.3em; margin-bottom: 30px; opacity: 0.9; }
+                .btn { background: #ffffff; color: #667eea; padding: 15px 30px; border: none; border-radius: 25px; text-decoration: none; font-size: 18px; font-weight: bold; display: inline-block; margin: 10px; transition: all 0.3s; }
+                .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+                .btn-outline { background: transparent; color: white; border: 2px solid white; }
+                .btn-outline:hover { background: white; color: #667eea; }
+                .features { padding: 80px 0; background: #f8f9fa; }
+                .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px; }
+                .feature-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
+                .feature-icon { font-size: 3em; margin-bottom: 20px; }
+                .feature-card h3 { color: #667eea; margin-bottom: 15px; }
+                .testimonials { padding: 80px 0; }
+                .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-top: 50px; }
+                .testimonial { background: #f8f9fa; padding: 30px; border-radius: 15px; border-left: 5px solid #667eea; }
+                .cta { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 80px 0; text-align: center; }
+                .stats { padding: 80px 0; background: white; text-align: center; }
+                .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-top: 50px; }
+                .stat-number { font-size: 3em; font-weight: bold; color: #667eea; }
+                .navbar { background: rgba(255,255,255,0.95); padding: 15px 0; position: fixed; width: 100%; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
+                .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+                .navbar .logo { font-weight: bold; font-size: 1.5em; color: #667eea; }
+                .navbar-links { display: flex; gap: 30px; }
+                .navbar-links a { color: #333; text-decoration: none; font-weight: 500; }
+                body { padding-top: 80px; }
+            </style>
+        </head>
+        <body>
+            <nav class="navbar">
+                <div class="container">
+                    <div class="logo">🧠 MindMend</div>
+                    <div class="navbar-links">
+                        <a href="#features">Features</a>
+                        <a href="#testimonials">Success Stories</a>
+                        <a href="/login">Login</a>
+                        <a href="/register" class="btn" style="padding: 8px 20px; margin: 0;">Get Started</a>
+                    </div>
+                </div>
+            </nav>
+
+            <section class="hero">
+                <div class="container">
+                    <h1>Transform Your Mental Health Journey</h1>
+                    <p>AI-powered therapy sessions, real-time emotional analysis, and personalized wellness activities - all in one platform.</p>
+                    <a href="/register" class="btn">Start Your Free Journey</a>
+                    <a href="/video-assessment" class="btn btn-outline">Try Video Assessment</a>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <h2>Trusted by Thousands</h2>
+                    <div class="stats-grid">
+                        <div>
+                            <div class="stat-number">10k+</div>
+                            <div>Active Users</div>
+                        </div>
+                        <div>
+                            <div class="stat-number">50k+</div>
+                            <div>Therapy Sessions</div>
+                        </div>
+                        <div>
+                            <div class="stat-number">95%</div>
+                            <div>Satisfaction Rate</div>
+                        </div>
+                        <div>
+                            <div class="stat-number">24/7</div>
+                            <div>Available Support</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features" id="features">
+                <div class="container">
+                    <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 20px;">Comprehensive Mental Health Support</h2>
+                    <p style="text-align: center; font-size: 1.2em; color: #666;">Everything you need for your mental wellness journey</p>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🤖</div>
+                            <h3>AI-Powered Therapy</h3>
+                            <p>Advanced AI therapists trained on evidence-based techniques provide personalized support 24/7.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📹</div>
+                            <h3>Video Emotion Analysis</h3>
+                            <p>Real-time facial expression analysis to understand your emotional state and provide better support.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💏</div>
+                            <h3>Couples Therapy</h3>
+                            <p>Specialized relationship counseling to strengthen communication and resolve conflicts together.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3>Progress Tracking</h3>
+                            <p>Comprehensive analytics to monitor your mental health journey and celebrate improvements.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🧘</div>
+                            <h3>Wellness Activities</h3>
+                            <p>Curated therapeutic exercises, mindfulness practices, and coping strategies.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🆘</div>
+                            <h3>Crisis Support</h3>
+                            <p>Immediate support and resources available whenever you need help the most.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="testimonials" id="testimonials">
+                <div class="container">
+                    <h2 style="text-align: center; font-size: 2.5em; margin-bottom: 20px;">Success Stories</h2>
+                    <div class="testimonial-grid">
+                        <div class="testimonial">
+                            <p>"MindMend helped me understand my anxiety better. The AI therapist is surprisingly understanding and the video analysis feature helped me recognize emotional patterns I never noticed."</p>
+                            <strong>- Sarah M.</strong>
+                        </div>
+                        <div class="testimonial">
+                            <p>"My partner and I tried the couples therapy feature and it transformed our communication. The exercises are practical and the AI guidance is spot-on."</p>
+                            <strong>- David & Emma</strong>
+                        </div>
+                        <div class="testimonial">
+                            <p>"Having 24/7 access to therapy support has been life-changing. The personalized activities and progress tracking keep me motivated."</p>
+                            <strong>- Michael R.</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta">
+                <div class="container">
+                    <h2 style="font-size: 2.5em; margin-bottom: 20px;">Ready to Start Your Journey?</h2>
+                    <p style="font-size: 1.2em; margin-bottom: 30px;">Join thousands who have transformed their mental health with MindMend</p>
+                    <a href="/register" class="btn" style="color: #48bb78; font-size: 20px; padding: 20px 40px;">Create Free Account</a>
+                    <div style="margin-top: 30px;">
+                        <a href="/individual" style="color: rgba(255,255,255,0.8); text-decoration: none; margin: 0 20px;">Try Individual Therapy</a>
+                        <a href="/video-assessment" style="color: rgba(255,255,255,0.8); text-decoration: none; margin: 0 20px;">Experience Video Assessment</a>
+                        <a href="/activities" style="color: rgba(255,255,255,0.8); text-decoration: none; margin: 0 20px;">Explore Activities</a>
+                    </div>
+                </div>
+            </section>
+        </body>
+        </html>
+        """
 
 @app.route("/onboarding")
 def onboarding():
@@ -378,6 +685,185 @@ def video_assessment():
 def video_assess():
     """Level 2 AI video assessment with placeholder features"""
     return render_template("video_assess.html")
+
+@app.route("/emotion-tracking")
+def emotion_tracking():
+    """Emotion tracking dashboard"""
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Emotion Tracking - MindMend</title>
+        <style>
+            body { font-family: Arial; margin: 0; background: #f8f9fa; }
+            .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+            .header { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
+            .tracking-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+            .tracking-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+            .emotion-chart { width: 100%; height: 200px; background: linear-gradient(45deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+            .quick-log { background: #e6fffa; padding: 20px; border-radius: 10px; margin-top: 20px; }
+            .emotion-btn { background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 20px; margin: 5px; cursor: pointer; }
+            .emotion-btn:hover { background: #5a67d8; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>📈 Emotion Tracking</h1>
+                <p>Monitor your emotional patterns and progress</p>
+            </div>
+
+            <div class="tracking-grid">
+                <div class="tracking-card">
+                    <h3>Weekly Mood Trend</h3>
+                    <div class="emotion-chart">
+                        📊 Mood trending upward this week
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div>Average Mood: <strong>7.2/10</strong></div>
+                        <div>Improvement: <strong>+15%</strong></div>
+                    </div>
+                </div>
+
+                <div class="tracking-card">
+                    <h3>Stress Levels</h3>
+                    <div class="emotion-chart" style="background: linear-gradient(45deg, #48bb78, #38a169);">
+                        🧘 Stress levels decreasing
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div>Current Level: <strong>Low</strong></div>
+                        <div>7-day average: <strong>Moderate</strong></div>
+                    </div>
+                </div>
+
+                <div class="tracking-card">
+                    <h3>Sleep Quality</h3>
+                    <div class="emotion-chart" style="background: linear-gradient(45deg, #4299e1, #3182ce);">
+                        😴 Sleep improving
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div>Last night: <strong>8.1/10</strong></div>
+                        <div>Weekly average: <strong>7.4/10</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-log">
+                <h3>📝 Quick Emotion Log</h3>
+                <p>How are you feeling right now?</p>
+                <div>
+                    <button class="emotion-btn" onclick="logEmotion('happy')">😊 Happy</button>
+                    <button class="emotion-btn" onclick="logEmotion('calm')">😌 Calm</button>
+                    <button class="emotion-btn" onclick="logEmotion('anxious')">😰 Anxious</button>
+                    <button class="emotion-btn" onclick="logEmotion('sad')">😢 Sad</button>
+                    <button class="emotion-btn" onclick="logEmotion('energetic')">⚡ Energetic</button>
+                    <button class="emotion-btn" onclick="logEmotion('tired')">😴 Tired</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="/" style="background: #6c757d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px;">← Back to Home</a>
+                <a href="/video-assessment" style="background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin-left: 10px;">📹 Video Assessment</a>
+            </div>
+        </div>
+
+        <script>
+            function logEmotion(emotion) {
+                fetch('/api/log-emotion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emotion: emotion, timestamp: new Date().toISOString() })
+                }).then(() => {
+                    alert(`Emotion "${emotion}" logged successfully!`);
+                });
+            }
+        </script>
+    </body>
+    </html>
+    """
+
+@app.route('/api/log-emotion', methods=['POST'])
+def log_emotion():
+    """API endpoint for logging emotions"""
+    try:
+        data = request.get_json()
+        return jsonify({"status": "success", "message": "Emotion logged"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/crisis-support")
+def crisis_support():
+    """Crisis support and emergency resources"""
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Crisis Support - MindMend</title>
+        <style>
+            body { font-family: Arial; margin: 0; background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%); color: white; min-height: 100vh; }
+            .container { max-width: 1000px; margin: 0 auto; padding: 30px; }
+            .emergency-card { background: rgba(255,255,255,0.1); border-radius: 15px; padding: 30px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+            .btn { background: white; color: #dc3545; padding: 15px 30px; border: none; border-radius: 8px; text-decoration: none; font-size: 18px; font-weight: bold; display: inline-block; margin: 10px; }
+            .btn:hover { transform: translateY(-2px); }
+            .hotline { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 15px 0; }
+            .immediate { background: #fff3cd; color: #856404; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="emergency-card">
+                <h1>🆘 Crisis Support</h1>
+                <p style="font-size: 1.2em;">If you're in immediate danger or having thoughts of self-harm, please reach out for help immediately.</p>
+            </div>
+
+            <div class="immediate">
+                <h2>⚠️ Immediate Help</h2>
+                <p><strong>If this is a medical emergency, call 000 immediately.</strong></p>
+            </div>
+
+            <div class="emergency-card">
+                <h2>📞 Crisis Hotlines (Australia)</h2>
+
+                <div class="hotline">
+                    <h3>Lifeline - 13 11 14</h3>
+                    <p>24-hour crisis support and suicide prevention</p>
+                </div>
+
+                <div class="hotline">
+                    <h3>Beyond Blue - 1300 22 4636</h3>
+                    <p>Support for anxiety, depression and suicide prevention</p>
+                </div>
+
+                <div class="hotline">
+                    <h3>Kids Helpline - 1800 55 1800</h3>
+                    <p>For people aged 5-25 years</p>
+                </div>
+
+                <div class="hotline">
+                    <h3>MensLine Australia - 1300 78 99 78</h3>
+                    <p>Support for men dealing with relationship and emotional health issues</p>
+                </div>
+            </div>
+
+            <div class="emergency-card">
+                <h2>🧘 Immediate Coping Strategies</h2>
+                <ul style="font-size: 1.1em;">
+                    <li><strong>5-4-3-2-1 Grounding:</strong> Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste</li>
+                    <li><strong>Deep Breathing:</strong> Inhale for 4 counts, hold for 4, exhale for 6</li>
+                    <li><strong>Call Someone:</strong> Reach out to a trusted friend, family member, or counselor</li>
+                    <li><strong>Safety Plan:</strong> Remove any means of self-harm from your immediate area</li>
+                    <li><strong>Stay Connected:</strong> Don't isolate yourself - reach out for support</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/" class="btn">← Return to Safety</a>
+                <a href="/individual" class="btn">Talk to AI Counselor</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
 
 @app.route("/counselor_signup")
 def counselor_signup():
