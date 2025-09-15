@@ -333,6 +333,7 @@ def home():
                         <a href="#testimonials">Success Stories</a>
                         <a href="/login">Login</a>
                         <a href="/register" class="btn" style="padding: 8px 20px; margin: 0;">Get Started</a>
+                        <a href="/admin" style="color: #dc3545; font-weight: bold;">🔐 Admin</a>
                     </div>
                 </div>
             </nav>
@@ -457,7 +458,8 @@ def register():
     if request.method == "POST":
         # CSRF validation
         if not validate_csrf(request.form.get('csrf_token')):
-            return render_template("register.html", error="Invalid session. Please try again.", csrf_token=generate_csrf_token()), 400
+            return f"""<div style="color: red; text-align: center; padding: 20px;">Invalid session. Please try again.</div>
+            <script>setTimeout(() => window.location.href='/register', 2000);</script>"""
 
         # Gather and validate inputs
         first_name = (request.form.get('firstName') or '').strip()
@@ -471,14 +473,17 @@ def register():
         try:
             email = validate_email(email_raw, check_deliverability=False).normalized
         except EmailNotValidError:
-            return render_template("register.html", error="Please enter a valid email address.", csrf_token=generate_csrf_token()), 400
+            return f"""<div style="color: red; text-align: center; padding: 20px;">Please enter a valid email address.</div>
+            <script>setTimeout(() => window.location.href='/register', 2000);</script>"""
 
         if len(password) < 8:
-            return render_template("register.html", error="Password must be at least 8 characters.", csrf_token=generate_csrf_token()), 400
+            return f"""<div style="color: red; text-align: center; padding: 20px;">Password must be at least 8 characters.</div>
+            <script>setTimeout(() => window.location.href='/register', 2000);</script>"""
 
         # Check existing user
         if Patient.query.filter_by(email=email).first():
-            return render_template("register.html", error="An account with this email already exists.", csrf_token=generate_csrf_token()), 400
+            return f"""<div style="color: red; text-align: center; padding: 20px;">An account with this email already exists.</div>
+            <script>setTimeout(() => window.location.href='/login', 2000);</script>"""
 
         # Parse date of birth
         dob = None
@@ -486,7 +491,8 @@ def register():
             try:
                 dob = datetime.strptime(date_of_birth_raw, "%Y-%m-%d").date()
             except ValueError:
-                return render_template("register.html", error="Invalid date of birth.", csrf_token=generate_csrf_token()), 400
+                return f"""<div style="color: red; text-align: center; padding: 20px;">Invalid date of birth.</div>
+                <script>setTimeout(() => window.location.href='/register', 2000);</script>"""
 
         # Create patient
         full_name = (f"{first_name} {last_name}".strip()) or email.split('@')[0]
@@ -504,7 +510,8 @@ def register():
         except Exception as e:
             logging.error(f"Registration DB error: {e}")
             db.session.rollback()
-            return render_template("register.html", error="Registration failed. Please try again.", csrf_token=generate_csrf_token()), 500
+            return f"""<div style="color: red; text-align: center; padding: 20px;">Registration failed. Please try again.</div>
+            <script>setTimeout(() => window.location.href='/register', 2000);</script>"""
 
         # Auto-login
         login_user(patient, remember=True)
@@ -513,7 +520,89 @@ def register():
         return redirect(url_for('onboarding'))
 
     # GET: show form with CSRF token
-    return render_template("register.html", csrf_token=generate_csrf_token())
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Register - MindMend</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
+            .container {{ max-width: 500px; margin: 50px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }}
+            h2 {{ color: #333; text-align: center; margin-bottom: 30px; }}
+            .form-group {{ margin-bottom: 20px; }}
+            label {{ display: block; margin-bottom: 5px; font-weight: bold; color: #555; }}
+            input, select {{ width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }}
+            input:focus, select:focus {{ border-color: #667eea; outline: none; }}
+            .btn {{ background: #667eea; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px; }}
+            .btn:hover {{ background: #5a67d8; }}
+            .links {{ text-align: center; margin-top: 20px; }}
+            .links a {{ color: #667eea; text-decoration: none; margin: 0 10px; }}
+            .links a:hover {{ text-decoration: underline; }}
+            .flash {{ padding: 10px; margin: 10px 0; border-radius: 5px; }}
+            .flash.error {{ background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }}
+            .flash.success {{ background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }}
+            .checkbox-group {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }}
+            .checkbox-item {{ display: flex; align-items: center; }}
+            .checkbox-item input {{ width: auto; margin-right: 8px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>🧠 Join MindMend</h2>
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{generate_csrf_token()}">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password (8+ characters)</label>
+                    <input type="password" id="password" name="password" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label for="dateOfBirth">Date of Birth (Optional)</label>
+                    <input type="date" id="dateOfBirth" name="dateOfBirth">
+                </div>
+                <div class="form-group">
+                    <label>Therapy Goals (Optional)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="anxiety" name="goals" value="anxiety">
+                            <label for="anxiety">Manage Anxiety</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="depression" name="goals" value="depression">
+                            <label for="depression">Address Depression</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="relationships" name="goals" value="relationships">
+                            <label for="relationships">Improve Relationships</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="stress" name="goals" value="stress">
+                            <label for="stress">Reduce Stress</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Create Account</button>
+            </form>
+            <div class="links">
+                <a href="/login">Already have an account? Login</a> |
+                <a href="/">← Back to Home</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -521,7 +610,8 @@ def login():
     if request.method == "POST":
         # CSRF validation
         if not validate_csrf(request.form.get('csrf_token')):
-            return render_template("login.html", error="Invalid session. Please try again.", csrf_token=generate_csrf_token()), 400
+            return f"""<div style="color: red; text-align: center; padding: 20px;">Invalid session. Please try again.</div>
+            <script>setTimeout(() => window.location.href='/login', 2000);</script>"""
 
         email_raw = (request.form.get('email') or '').strip()
         password = request.form.get('password') or ''
@@ -530,11 +620,13 @@ def login():
         try:
             email = validate_email(email_raw, check_deliverability=False).normalized
         except EmailNotValidError:
-            return render_template("login.html", error="Invalid email or password.", csrf_token=generate_csrf_token()), 400
+            return f"""<div style="color: red; text-align: center; padding: 20px;">Invalid email or password.</div>
+            <script>setTimeout(() => window.location.href='/login', 2000);</script>"""
 
         user = Patient.query.filter_by(email=email).first()
         if not user or not user.password_hash or not check_password_hash(user.password_hash, password):
-            return render_template("login.html", error="Invalid email or password.", csrf_token=generate_csrf_token()), 401
+            return f"""<div style="color: red; text-align: center; padding: 20px;">Invalid email or password.</div>
+            <script>setTimeout(() => window.location.href='/login', 2000);</script>"""
 
         login_user(user, remember=remember)
         session.pop('csrf_token', None)
@@ -542,7 +634,60 @@ def login():
         return redirect(url_for('dashboard'))
 
     # GET
-    return render_template("login.html", csrf_token=generate_csrf_token())
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Login - MindMend</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
+            .container {{ max-width: 400px; margin: 100px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }}
+            h2 {{ color: #333; text-align: center; margin-bottom: 30px; }}
+            .form-group {{ margin-bottom: 20px; }}
+            label {{ display: block; margin-bottom: 5px; font-weight: bold; color: #555; }}
+            input {{ width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }}
+            input:focus {{ border-color: #667eea; outline: none; }}
+            .btn {{ background: #667eea; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; }}
+            .btn:hover {{ background: #5a67d8; }}
+            .links {{ text-align: center; margin-top: 20px; }}
+            .links a {{ color: #667eea; text-decoration: none; margin: 0 10px; }}
+            .links a:hover {{ text-decoration: underline; }}
+            .checkbox-group {{ display: flex; align-items: center; margin: 15px 0; }}
+            .checkbox-group input {{ width: auto; margin-right: 8px; }}
+            .flash {{ padding: 10px; margin: 10px 0; border-radius: 5px; }}
+            .flash.error {{ background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }}
+            .flash.success {{ background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2>🧠 MindMend Login</h2>
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{generate_csrf_token()}">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <div class="links">
+                <a href="/register">Create Account</a> |
+                <a href="/forgot-password">Forgot Password?</a> |
+                <a href="/">← Back to Home</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
 
 @app.route("/logout", methods=["GET", "POST"])
 @login_required
