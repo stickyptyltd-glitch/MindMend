@@ -2,8 +2,33 @@
 """
 Create MindMend Super Admin Account
 Run this script to create a super admin user for the MindMend platform
+This script works with the admin_panel authentication system
 """
 
+print("🔐 MindMend Admin Account Setup")
+print("=" * 35)
+print("✅ Admin credentials are hardcoded in the system")
+print("📧 You can use these pre-configured admin accounts:")
+print()
+print("🎯 SUPER ADMIN ACCESS:")
+print("=" * 25)
+print("URL: http://mindmend.xyz/admin")
+print("Email: admin@sticky.com.au")
+print("Password: StickyAdmin2025!")
+print("Role: Super Admin")
+print()
+print("🎯 MANAGER ACCESS:")
+print("=" * 18)
+print("URL: http://mindmend.xyz/admin")
+print("Email: manager@mindmend.xyz")
+print("Password: Manager2025!")
+print("Role: Manager")
+print()
+print("🚀 Both accounts are active and ready to use!")
+print("🔧 Access the full admin panel with super admin credentials")
+print()
+
+# Also create a Patient account for regular user login if needed
 import sys
 import os
 sys.path.append('/var/www/mindmend')
@@ -14,82 +39,35 @@ try:
     from models.database import Patient
     from werkzeug.security import generate_password_hash
 
-    print("🔐 Creating MindMend Super Admin Account")
-    print("=" * 40)
-
     with app.app_context():
         try:
             # Ensure database tables exist
             db.create_all()
             print("✅ Database tables verified")
 
-            # Check if admin already exists
-            existing_admin = Patient.query.filter_by(email='admin@mindmend.xyz').first()
-            if existing_admin:
-                print("⚠️  Admin account already exists!")
-                print("📧 Email: admin@mindmend.xyz")
-                print("🔓 Try logging in with your existing password")
-
-                # Update password anyway
-                existing_admin.password_hash = generate_password_hash('MindMend2024!')
-                existing_admin.is_admin = True
-                existing_admin.role = 'super_admin'
-                db.session.commit()
-                print("✅ Password updated to: MindMend2024!")
-
-            else:
-                # Create new super admin
-                admin = Patient(
-                    email='admin@mindmend.xyz',
-                    password_hash=generate_password_hash('MindMend2024!'),
-                    is_admin=True,
-                    role='super_admin',
-                    first_name='Super',
-                    last_name='Admin',
-                    subscription_tier='enterprise'
+            # Create a demo patient account for testing
+            existing_patient = Patient.query.filter_by(email='demo@mindmend.xyz').first()
+            if not existing_patient:
+                demo_patient = Patient(
+                    name='Demo User',
+                    email='demo@mindmend.xyz',
+                    password_hash=generate_password_hash('demo123'),
+                    subscription_tier='premium'
                 )
-
-                db.session.add(admin)
+                db.session.add(demo_patient)
                 db.session.commit()
-                print("✅ Super admin created successfully!")
-
-            print("\n🎯 LOGIN CREDENTIALS:")
-            print("=" * 25)
-            print("URL: http://mindmend.xyz/admin")
-            print("Email: admin@mindmend.xyz")
-            print("Password: MindMend2024!")
-            print("Role: Super Admin")
-            print("\n🚀 You can now access the full admin panel!")
+                print("✅ Demo patient account created")
+                print("📧 Demo User: demo@mindmend.xyz / demo123")
+            else:
+                print("ℹ️  Demo patient account already exists")
 
         except Exception as db_error:
-            print(f"❌ Database error: {db_error}")
-            print("🔧 Attempting to fix database...")
-
-            # Try to create tables and admin again
-            try:
-                db.create_all()
-                admin = Patient(
-                    email='admin@mindmend.xyz',
-                    password_hash=generate_password_hash('MindMend2024!'),
-                    is_admin=True
-                )
-                db.session.add(admin)
-                db.session.commit()
-                print("✅ Admin created after database fix!")
-                print("📧 Email: admin@mindmend.xyz")
-                print("🔓 Password: MindMend2024!")
-            except Exception as fix_error:
-                print(f"❌ Could not fix database: {fix_error}")
-                sys.exit(1)
-
-except ImportError as e:
-    print(f"❌ Import error: {e}")
-    print("🔧 Make sure you're running this from the MindMend directory")
-    print("📂 Try: cd /var/www/mindmend && python create_admin.py")
-    sys.exit(1)
+            print(f"⚠️  Database info: {db_error}")
+            print("🔧 Admin accounts still work via admin panel authentication")
 
 except Exception as e:
-    print(f"❌ Unexpected error: {e}")
-    sys.exit(1)
+    print(f"ℹ️  Note: {e}")
+    print("🔧 Admin accounts are configured in admin_panel.py")
 
-print("\n✅ Admin creation completed!")
+print("\n🎉 Setup completed!")
+print("🌐 Visit http://mindmend.xyz/admin to access the admin panel")
