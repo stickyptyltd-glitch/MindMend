@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMend - Coming Soon</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .logo { font-size: 4rem; font-weight: bold; margin-bottom: 1rem; }
+        .tagline { font-size: 1.5rem; margin-bottom: 2rem; opacity: 0.9; }
+        .coming-soon {
+            background: #ff6b6b;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
+        .signup-form {
+            max-width: 400px;
+            margin: 2rem auto;
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+        }
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+        .success {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="coming-soon">🚀 Coming Soon</div>
+        <h1 class="logo">MindMend</h1>
+        <p class="tagline">Revolutionary AI-Powered Mental Health Platform</p>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🧠 AI Analysis</h3>
+                <p>Advanced emotion recognition</p>
+            </div>
+            <div class="feature">
+                <h3>👥 Multi-Device</h3>
+                <p>Group therapy sessions</p>
+            </div>
+            <div class="feature">
+                <h3>⌚ Biometric</h3>
+                <p>Health monitoring</p>
+            </div>
+            <div class="feature">
+                <h3>🎥 Smart Video</h3>
+                <p>Therapy assessment</p>
+            </div>
+        </div>
+
+        <form class="signup-form" id="signupForm">
+            <div class="form-group">
+                <input type="text" class="form-input" placeholder="Full Name" name="name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-input" placeholder="Email Address" name="email" required>
+            </div>
+            <button type="submit" class="btn">🚀 Notify Me at Launch</button>
+            <div class="success" id="success">
+                🎉 Thank you! You'll be notified when MindMend launches!
+            </div>
+        </form>
+
+        <p style="opacity: 0.8; margin-top: 2rem;">
+            Be among the first to experience the future of mental health technology
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Store signup data
+            const formData = new FormData(this);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            let signups = JSON.parse(localStorage.getItem('mindmend_early_access') || '[]');
+            signups.push(data);
+            localStorage.setItem('mindmend_early_access', JSON.stringify(signups));
+
+            // Show success
+            document.getElementById('success').style.display = 'block';
+            this.style.display = 'none';
+
+            console.log('Early access signup:', data);
+        });
+    </script>
+</body>
+</html>
