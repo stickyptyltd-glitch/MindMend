@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMend - Revolutionary Mental Health Platform Coming Soon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .features-preview {
+            background: white;
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .signup-section {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            padding: 80px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .signup-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+        }
+
+        .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255,107,107,0.3);
+        }
+
+        .capabilities {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .capability-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .capability-icon {
+            font-size: 2rem;
+            color: #667eea;
+            margin-right: 1.5rem;
+            min-width: 60px;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .coming-soon {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-message {
+            display: none;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 2.5rem; }
+            .tagline { font-size: 1.2rem; }
+            .section-title { font-size: 2rem; }
+            .capability-item { flex-direction: column; text-align: center; }
+            .capability-icon { margin-right: 0; margin-bottom: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="coming-soon">🚀 Coming Soon</div>
+            <h1 class="logo">MindMend</h1>
+            <p class="tagline">Revolutionary AI-Powered Mental Health Platform</p>
+            <p style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 2rem;">
+                The future of therapy is here. Experience cutting-edge technology that transforms mental health care through advanced AI, real-time emotion analysis, and multi-device connectivity.
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Preview -->
+    <section class="features-preview">
+        <div class="container">
+            <h2 class="section-title">Groundbreaking Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                    <h3 class="feature-title">AI Emotion Recognition</h3>
+                    <p class="feature-description">Advanced microexpression analysis and real-time emotion detection using cutting-edge computer vision technology.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                    <h3 class="feature-title">Multi-Device Therapy</h3>
+                    <p class="feature-description">Connect group and couples therapy sessions across multiple devices with secure linking codes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-heartbeat"></i></div>
+                    <h3 class="feature-title">Biometric Integration</h3>
+                    <p class="feature-description">Monitor stress, heart rate, sleep patterns, and breathing through affordable wearable devices.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-video"></i></div>
+                    <h3 class="feature-title">Smart Video Assessment</h3>
+                    <p class="feature-description">Real-time analysis of facial expressions, stress levels, and engagement during therapy sessions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <h3 class="feature-title">AI Therapy Assistant</h3>
+                    <p class="feature-description">Powered by Hugging Face models for personalized therapy recommendations and progress tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="feature-title">Emergency Response</h3>
+                    <p class="feature-description">Automatic detection of crisis situations with immediate notification to support networks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Capabilities -->
+    <section class="capabilities">
+        <div class="container">
+            <h2 class="section-title">Complete Mental Health Ecosystem</h2>
+            <div class="capability-item">
+                <div class="capability-icon"><i class="fas fa-microscope"></i></div>
+                <div>
+                    <h4>Advanced Research Tools</h4>
+                    <p>Comprehensive data analytics and research capabilities for mental health professionals and institutions.</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon"><i class="fas fa-chart-line"></i></div>
+                <div>
+                    <h4>Progress Tracking & Analytics</h4>
+                    <p>Detailed progress monitoring with AI-powered insights and personalized treatment recommendations.</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div>
+                    <h4>Cross-Platform Accessibility</h4>
+                    <p>Seamless experience across desktop, mobile, and tablet devices with real-time synchronization.</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon"><i class="fas fa-lock"></i></div>
+                <div>
+                    <h4>Enterprise-Grade Security</h4>
+                    <p>HIPAA-compliant platform with end-to-end encryption and secure data handling protocols.</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon"><i class="fas fa-globe"></i></div>
+                <div>
+                    <h4>Global Accessibility</h4>
+                    <p>Multi-language support with culturally sensitive therapy approaches and local resource integration.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signup Section -->
+    <section class="signup-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white; margin-bottom: 1rem;">Be Among the First</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 3rem; opacity: 0.9;">
+                Join our exclusive early access program and be notified the moment MindMend launches
+            </p>
+
+            <form class="signup-form" id="signupForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Professional Role (Optional)</label>
+                    <select class="form-input" name="role">
+                        <option value="">Select your role</option>
+                        <option value="therapist">Mental Health Therapist</option>
+                        <option value="counselor">Counselor</option>
+                        <option value="psychologist">Psychologist</option>
+                        <option value="student">Student</option>
+                        <option value="researcher">Researcher</option>
+                        <option value="individual">Individual User</option>
+                        <option value="healthcare">Healthcare Professional</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">What interests you most?</label>
+                    <select class="form-input" name="interest">
+                        <option value="">Select primary interest</option>
+                        <option value="ai-analysis">AI Emotion Analysis</option>
+                        <option value="group-therapy">Group/Couples Therapy</option>
+                        <option value="biometric">Biometric Monitoring</option>
+                        <option value="research">Research & Analytics</option>
+                        <option value="all">All Features</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-rocket"></i> Notify Me at Launch
+                </button>
+                <div class="success-message" id="successMessage">
+                    🎉 Thank you! You'll be among the first to know when MindMend launches!
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 MindMend Platform. Revolutionary mental health technology coming soon.</p>
+            <p style="margin-top: 0.5rem; opacity: 0.7;">Built with ❤️ for mental health and wellness</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(this);
+            const data = {
+                fullName: formData.get('fullName'),
+                email: formData.get('email'),
+                role: formData.get('role'),
+                interest: formData.get('interest'),
+                timestamp: new Date().toISOString()
+            };
+
+            // Store in localStorage (in production, send to backend)
+            let signups = JSON.parse(localStorage.getItem('mindmend_signups') || '[]');
+            signups.push(data);
+            localStorage.setItem('mindmend_signups', JSON.stringify(signups));
+
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            this.style.display = 'none';
+
+            // In production, you would send this to your backend:
+            /*
+            fetch('/api/signup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            */
+
+            console.log('Signup data:', data);
+        });
+
+        // Add some interactive animations
+        window.addEventListener('scroll', function() {
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

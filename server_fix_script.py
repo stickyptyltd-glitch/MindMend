@@ -11,13 +11,13 @@ import json
 from datetime import datetime
 
 class ServerDiagnostics:
-    def __init__(self, server_ip="67.219.102.9", domain="mindmend.xyz"):
+    def __init__(self, server_ip="139.180.175.50", domain="appo.live"):
         self.server_ip = server_ip
         self.domain = domain
 
     def check_server_status(self):
         """Comprehensive server status check"""
-        print("🔍 MindMend Server Diagnostics")
+        print("🔍 Appo.live Server Diagnostics")
         print("=" * 50)
 
         # Check basic connectivity
