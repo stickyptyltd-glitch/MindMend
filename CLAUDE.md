@@ -6,12 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Development Commands
 - **Setup**: `python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
+- **Alternative setup**: `pip install -e .` (installs from pyproject.toml)
 - **Run locally**: `python app.py` (serves on localhost:5000)
-- **Run with Docker**: `cd docker && docker-compose up -d --build`
+- **Run with main entry**: `python main.py`
+- **Run with Docker**: `docker-compose up -d --build`
 - **Health check**: `curl http://localhost:5000/health`
 
+### Code Quality Commands
+- **Lint**: `ruff check .`
+- **Format**: `black .`
+- **Type check**: Uses ruff linting with Python 3.11+ target
+
 ### Testing Commands
-- **Run tests**: `pytest -q` (with venv active)
+- **Run tests**: `pytest -q` (configured in pytest.ini)
 - **Test coverage**: `pytest --cov=. -q`
 - **Test specific file**: `pytest tests/test_routes.py -v`
 - **Payment system test**: `python test_payment_system.py`
