@@ -1,9 +1,7 @@
-json
-
- {
-  "scripts"{
-   "build": "npm install",
-   "start": "node server.js",
-   "deploy": "railway login && railway up"
- }
+{
+  "scripts": {
+    "build": "npm install",
+    "start": "node server.js",
+    "deploy": "railway login && railway up"
+  }
 }
