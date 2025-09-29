@@ -333,6 +333,34 @@ def verify_email(token):
     return ("Not found", 404)
 
 
+@admin_bp.route('/diagnostics/secrets')
+@require_admin_auth
+def diagnostics_secrets():
+    """Admin-only diagnostics for required env secrets.
+    Shows which expected keys are present (values not displayed)."""
+    import os
+    required = [
+        'DATABASE_URL', 'REDIS_URL', 'OPENAI_API_KEY',
+        'STRIPE_SECRET_KEY', 'STRIPE_PUBLISHABLE_KEY', 'SESSION_SECRET',
+        'EMAIL_HOST', 'EMAIL_PORT', 'EMAIL_USER', 'EMAIL_PASSWORD', 'EMAIL_FROM'
+    ]
+    present = {k: bool(os.environ.get(k)) for k in required}
+    # Simple HTML for readability
+    rows = ''.join(
+        f"<tr><td>{k}</td><td>{'✅' if v else '❌'}</td></tr>" for k, v in present.items()
+    )
+    html = f"""
+    <h2>Secrets Diagnostics</h2>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <tr><th>Key</th><th>Present</th></tr>
+      {rows}
+    </table>
+    <p style="margin-top:12px">Values are not displayed. Ensure GSM + CSI are configured if missing.</p>
+    <p><a href="/admin/dashboard">Back to Dashboard</a></p>
+    """
+    return (html, 200, {"Content-Type": "text/html"})
+
+
 @admin_bp.route('/counselors/<int:c_id>/edit', methods=['GET', 'POST'])
 @require_admin_auth
 def edit_counselor(c_id):

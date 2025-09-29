@@ -1,4 +1,6 @@
 # MindMend Production Deployment Guide
+![CI/CD](https://github.com/stickyptyltd-glitch/MindMend/actions/workflows/cicd.yml/badge.svg)
+Actions: https://github.com/stickyptyltd-glitch/MindMend/actions
 ## Comprehensive deployment to mindmend.xyz
 
 ### 🚀 Quick Deployment Summary
@@ -76,6 +78,8 @@ sudo -u mindmend python3.11 -m venv /var/www/mindmend/venv
 ---
 
 ## 🚀 Automated Deployment
+
+Kubernetes/Helm deployment resources are in `k8s/` and `charts/mindmend/`. Secrets are managed in Google Secret Manager and synced via CSI (`k8s/secretmanager-csi.yaml`). For edge protection, use Cloud Armor via `scripts/cloud-armor-setup.sh` and apply `k8s/backendconfig.yaml` to attach the policy.
 
 ### Option A: Using Deployment Script (Recommended)
 
