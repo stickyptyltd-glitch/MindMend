@@ -22,68 +22,24 @@ spec:
           env:
             - name: FLASK_ENV
               value: production
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: DATABASE_URL
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: REDIS_URL
-            - name: OPENAI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: OPENAI_API_KEY
-            - name: STRIPE_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: STRIPE_SECRET_KEY
-            - name: STRIPE_PUBLISHABLE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: STRIPE_PUBLISHABLE_KEY
-            - name: SESSION_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: SESSION_SECRET
-            - name: EMAIL_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: EMAIL_HOST
-            - name: EMAIL_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: EMAIL_PORT
-            - name: EMAIL_USER
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: EMAIL_USER
-            - name: EMAIL_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: EMAIL_PASSWORD
-            - name: EMAIL_FROM
-              valueFrom:
-                secretKeyRef:
-                  name: mindmend-secrets
-                  key: EMAIL_FROM
           volumeMounts:
             - name: uploads
               mountPath: /var/www/mindmend/uploads
           envFrom:
             - secretRef:
-                name: mindmend-secrets-gsm
+              name: mindmend-secrets-gsm
+          # Mount CSI volume to trigger sync of GSM secrets
+          volumeMounts:
+            - name: gsm-secrets
+              mountPath: /var/run/secrets/mindmend/gsm
+              readOnly: true
       volumes:
         - name: uploads
           persistentVolumeClaim:
             claimName: app-uploads
+        - name: gsm-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: mindmend-gsm
