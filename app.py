@@ -2311,3 +2311,6 @@ window.BiometricIntegrator = BiometricIntegrator;
 def health_check():
     """Health check endpoint"""
     return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat()})
+@app.route('/health')
+def health():
+    return jsonify({"status": "ok"}), 200

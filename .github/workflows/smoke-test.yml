@@ -1,0 +1,24 @@
+name: Smoke Test
+
+on:
+  workflow_run:
+    workflows: ["CI/CD"]
+    types: ["completed"]
+
+jobs:
+  curl-health:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait a bit for rollout
+        run: sleep 20
+      - name: Curl health endpoint
+        run: |
+          for i in {1..10}; do
+            if curl -fsS https://mindmend.xyz/health; then
+              echo "Health check OK"; exit 0;
+            fi
+            echo "Retry $i..."; sleep 5;
+          done
+          echo "Health check failed"; exit 1
+

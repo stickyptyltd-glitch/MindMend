@@ -153,6 +153,25 @@ def dashboard():
     return render_template('admin/dashboard.html', data=dashboard_data)
 
 
+@admin_bp.route('/ops')
+@require_admin_auth
+def ops_page():
+    """Lightweight admin operations hub with quick links."""
+    actions_url = "https://github.com/stickyptyltd-glitch/MindMend/actions"
+    html = f"""
+    <h2>Operations</h2>
+    <ul>
+      <li><a href="/admin/diagnostics/secrets">Secrets Diagnostics</a></li>
+      <li><a href="/admin/newsletter/export">Newsletter Export (CSV)</a></li>
+      <li><a href="/admin/admins">Manage Admins</a></li>
+      <li><a href="/admin/counselors">Manage Counselors</a></li>
+      <li><a href="{actions_url}" target="_blank">GitHub Actions</a></li>
+    </ul>
+    <p><a href="/admin/dashboard">Back to Dashboard</a></p>
+    """
+    return (html, 200, {"Content-Type": "text/html"})
+
+
 @admin_bp.route('/admins')
 @require_admin_auth
 def list_admins():
