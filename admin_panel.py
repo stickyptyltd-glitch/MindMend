@@ -98,17 +98,6 @@ def admin_login():
             db.session.commit()
             return redirect(url_for('admin.dashboard'))
 
-        # Fallback to env variables for bootstrap access
-        allowed_email = os.getenv('ADMIN_EMAIL', '').strip().lower()
-        allowed_password = os.getenv('ADMIN_PASSWORD', '')
-        if allowed_email and email == allowed_email and password == allowed_password:
-            session['admin_logged_in'] = True
-            session['admin_email'] = email
-            session['admin_role'] = 'super_admin'
-            db.session.add(AdminAudit(admin_email=email, action='login (env)', ip_address=_client_ip()))
-            db.session.commit()
-            return redirect(url_for('admin.dashboard'))
-
         flash('Invalid credentials', 'error')
 
     return render_template('admin/login.html')
@@ -223,20 +212,7 @@ def create_counselor():
                 flash('Counselor created', 'success')
                 return redirect(url_for('admin.create_counselor'))
     # Minimal HTML form to avoid adding templates
-    return (
-        """
-        <h2>Create Counselor</h2>
-        <form method="POST">
-          <label>Email</label><br><input type="email" name="email" required><br>
-          <label>Name</label><br><input type="text" name="name"><br>
-          <label>Password</label><br><input type="password" name="password" required><br><br>
-          <button type="submit">Create</button>
-        </form>
-        <p><a href="/admin/dashboard">Back to Dashboard</a></p>
-        """,
-        200,
-        {"Content-Type": "text/html"},
-    )
+    return render_template('admin/create_counselor.html')
 
 
 @admin_bp.route('/reset-password', methods=['GET', 'POST'])
@@ -259,19 +235,7 @@ def reset_password():
                 return redirect(url_for('admin.dashboard'))
             else:
                 flash('Current password incorrect', 'error')
-    return (
-        """
-        <h2>Reset Password</h2>
-        <form method="POST">
-          <label>Current Password</label><br><input type="password" name="current" required><br>
-          <label>New Password</label><br><input type="password" name="new" required><br><br>
-          <button type="submit">Update</button>
-        </form>
-        <p><a href="/admin/dashboard">Back to Dashboard</a></p>
-        """,
-        200,
-        {"Content-Type": "text/html"},
-    )
+    return render_template('admin/reset_password.html')
 
 
 @admin_bp.route('/forgot', methods=['GET', 'POST'])
@@ -290,18 +254,7 @@ def forgot_password():
                 flash(f'Email error: {e}', 'error')
         else:
             flash('If the email exists, a reset link has been sent', 'info')
-    return (
-        """
-        <h2>Forgot Password</h2>
-        <form method="POST">
-          <label>Email</label><br><input type="email" name="email" required><br><br>
-          <button type="submit">Send reset link</button>
-        </form>
-        <p><a href="/admin/login">Back to Login</a></p>
-        """,
-        200,
-        {"Content-Type": "text/html"},
-    )
+    return render_template('admin/forgot.html')
 
 
 @admin_bp.route('/reset/<token>', methods=['GET', 'POST'])
@@ -326,17 +279,7 @@ def reset_with_token(token):
         flash('Password updated. Please login.', 'success')
         return redirect(url_for('admin.admin_login'))
 
-    return (
-        """
-        <h2>Set New Password</h2>
-        <form method="POST">
-          <label>New Password</label><br><input type="password" name="new" required><br><br>
-          <button type="submit">Update</button>
-        </form>
-        """,
-        200,
-        {"Content-Type": "text/html"},
-    )
+    return render_template('admin/reset.html')
 
 @admin_bp.route('/business-settings', methods=['GET', 'POST'])
 @require_admin_auth
