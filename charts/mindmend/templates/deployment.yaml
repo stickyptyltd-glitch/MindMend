@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mindmend-backend
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mindmend-backend
+  template:
+    metadata:
+      labels:
+        app: mindmend-backend
+    spec:
+      containers:
+        - name: mindmend-app
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: FLASK_ENV
+              value: production
+          envFrom:
+            - secretRef:
+                name: mindmend-secrets-gsm
+          volumeMounts:
+            - name: uploads
+              mountPath: /var/www/mindmend/uploads
+            - name: gsm-secrets
+              mountPath: /var/run/secrets/mindmend/gsm
+              readOnly: true
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: app-uploads
+        - name: gsm-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: mindmend-gsm
+

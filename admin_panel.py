@@ -144,6 +144,74 @@ def dashboard():
 
     return render_template('admin/dashboard.html', data=dashboard_data)
 
+
+@admin_bp.route('/admins')
+@require_admin_auth
+def list_admins():
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    admins = AdminUser.query.order_by(AdminUser.created_at.desc()).all()
+    return render_template('admin/admins.html', admins=admins)
+
+
+@admin_bp.route('/admins/create', methods=['GET', 'POST'])
+@require_admin_auth
+def create_admin():
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    if request.method == 'POST':
+        email = (request.form.get('email') or '').strip().lower()
+        name = request.form.get('name') or ''
+        password = request.form.get('password') or ''
+        role = request.form.get('role') or 'admin'
+        if not email or not password:
+            flash('Email and password required', 'error')
+        elif AdminUser.query.filter_by(email=email).first():
+            flash('Admin already exists', 'error')
+        else:
+            u = AdminUser(email=email, name=name, role=role)
+            u.set_password(password)
+            db.session.add(u)
+            db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='create_admin', details=email, ip_address=_client_ip()))
+            db.session.commit()
+            flash('Admin created', 'success')
+            return redirect(url_for('admin.list_admins'))
+    return render_template('admin/create_admin.html')
+
+
+@admin_bp.route('/admins/<int:admin_id>/deactivate', methods=['POST'])
+@require_admin_auth
+def deactivate_admin(admin_id):
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    u = AdminUser.query.get_or_404(admin_id)
+    if u.email == session.get('admin_email'):
+        flash('Cannot deactivate current session user', 'error')
+        return redirect(url_for('admin.list_admins'))
+    u.is_active = False
+    db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='deactivate_admin', details=u.email, ip_address=_client_ip()))
+    db.session.commit()
+    flash('Admin deactivated', 'success')
+    return redirect(url_for('admin.list_admins'))
+
+
+@admin_bp.route('/counselors')
+@require_admin_auth
+def list_counselors():
+    cs = Counselor.query.order_by(Counselor.created_at.desc()).all()
+    return render_template('admin/counselors.html', counselors=cs)
+
+
+@admin_bp.route('/counselors/<int:c_id>/deactivate', methods=['POST'])
+@require_admin_auth
+def deactivate_counselor(c_id):
+    c = Counselor.query.get_or_404(c_id)
+    c.is_active = False
+    db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='deactivate_counselor', details=c.email, ip_address=_client_ip()))
+    db.session.commit()
+    flash('Counselor deactivated', 'success')
+    return redirect(url_for('admin.list_counselors'))
+
 @admin_bp.route('/api-keys', methods=['GET', 'POST'])
 @require_admin_auth
 def api_keys():
