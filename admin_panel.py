@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from collections import deque
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from email_utils import send_email
+from models.database import EmailVerification
 
 # Simple in-memory rate limit store (per-IP for login); consider Redis in production
 _login_attempts = {}
@@ -25,6 +26,12 @@ def _token_serializer():
     from flask import current_app
     secret = current_app.config.get('SECRET_KEY') or current_app.secret_key
     return URLSafeTimedSerializer(secret_key=secret, salt='admin-reset')
+
+
+def _verification_serializer():
+    from flask import current_app
+    secret = current_app.config.get('SECRET_KEY') or current_app.secret_key
+    return URLSafeTimedSerializer(secret_key=secret, salt='email-verify')
 
 
 @admin_bp.before_request
@@ -174,7 +181,15 @@ def create_admin():
             db.session.add(u)
             db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='create_admin', details=email, ip_address=_client_ip()))
             db.session.commit()
-            flash('Admin created', 'success')
+            # Send verification email
+            try:
+                s = _verification_serializer()
+                token = s.dumps({"email": email, "role": "admin"})
+                link = url_for('admin.verify_email', token=token, _external=True)
+                send_email(email, "Verify your admin email", f"<p>Please verify: <a href='{link}'>Verify Email</a></p>")
+                flash('Admin created. Verification email sent.', 'success')
+            except Exception:
+                flash('Admin created. (Verification email failed to send)', 'warning')
             return redirect(url_for('admin.list_admins'))
     return render_template('admin/create_admin.html')
 
@@ -248,6 +263,53 @@ def deactivate_counselor(c_id):
     db.session.commit()
     flash('Counselor deactivated', 'success')
     return redirect(url_for('admin.list_counselors'))
+
+
+@admin_bp.route('/admins/send-verification', methods=['POST'])
+@require_admin_auth
+def send_admin_verification():
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    email = (request.form.get('email') or '').strip().lower()
+    user = AdminUser.query.filter_by(email=email, is_active=True).first()
+    if not user:
+        flash('Admin not found', 'error')
+        return redirect(url_for('admin.list_admins'))
+    s = _verification_serializer()
+    token = s.dumps({"email": email, "role": "admin"})
+    link = url_for('admin.verify_email', token=token, _external=True)
+    try:
+        send_email(email, "Verify your admin email", f"<p>Please verify: <a href='{link}'>Verify Email</a></p>")
+        flash('Verification email sent', 'success')
+    except Exception as e:
+        flash(f'Email error: {e}', 'error')
+    return redirect(url_for('admin.list_admins'))
+
+
+@admin_bp.route('/verify/<token>')
+def verify_email(token):
+    s = _verification_serializer()
+    try:
+        data = s.loads(token, max_age=86400)
+        email = data.get('email')
+        role = data.get('role')
+    except (BadSignature, SignatureExpired):
+        return ("Invalid or expired token", 400)
+    if role == 'admin':
+        u = AdminUser.query.filter_by(email=email).first()
+        if u:
+            u.email_verified = True
+            db.session.commit()
+            flash('Email verified', 'success')
+            return redirect(url_for('admin.admin_login'))
+    elif role == 'counselor':
+        c = Counselor.query.filter_by(email=email).first()
+        if c:
+            c.email_verified = True
+            db.session.commit()
+            flash('Email verified', 'success')
+            return redirect(url_for('counselor.login'))
+    return ("Not found", 404)
 
 
 @admin_bp.route('/counselors/<int:c_id>/edit', methods=['GET', 'POST'])

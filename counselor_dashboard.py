@@ -8,6 +8,8 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from models.database import db, Counselor
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from email_utils import send_email
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from email_utils import send_email
 from datetime import datetime, timedelta
 import uuid
 
@@ -453,6 +455,12 @@ def _serializer():
     return URLSafeTimedSerializer(secret_key=secret, salt='counselor-reset')
 
 
+def _verify_serializer():
+    from flask import current_app
+    secret = current_app.config.get('SECRET_KEY') or current_app.secret_key
+    return URLSafeTimedSerializer(secret_key=secret, salt='counselor-verify')
+
+
 @counselor_bp.route('/forgot', methods=['GET', 'POST'])
 def forgot():
     if request.method == 'POST':
@@ -513,3 +521,38 @@ def reset(token):
         200,
         {"Content-Type": "text/html"},
     )
+
+
+@counselor_bp.route('/send-verification', methods=['POST'])
+def send_verification():
+    email = (request.form.get('email') or '').strip().lower()
+    user = Counselor.query.filter_by(email=email, is_active=True).first()
+    if not user:
+        flash('Account not found', 'error')
+        return redirect(url_for('counselor.login'))
+    s = _verify_serializer()
+    token = s.dumps({"email": email})
+    link = url_for('counselor.verify', token=token, _external=True)
+    try:
+        send_email(email, "Verify your counselor email", f"<p>Please verify: <a href='{link}'>Verify Email</a></p>")
+        flash('Verification email sent', 'success')
+    except Exception as e:
+        flash(f'Email error: {e}', 'error')
+    return redirect(url_for('counselor.login'))
+
+
+@counselor_bp.route('/verify/<token>')
+def verify(token):
+    s = _verify_serializer()
+    try:
+        data = s.loads(token, max_age=86400)
+        email = data.get('email')
+    except (BadSignature, SignatureExpired):
+        return ("Invalid or expired token", 400)
+    user = Counselor.query.filter_by(email=email).first()
+    if not user:
+        return ("Not found", 404)
+    user.email_verified = True
+    db.session.commit()
+    flash('Email verified', 'success')
+    return redirect(url_for('counselor.login'))

@@ -109,6 +109,7 @@ class Patient(UserMixin, db.Model):
     subscription_tier = db.Column(db.String(20), default='free')  # free, premium, enterprise
     oauth_providers = db.Column(Text)  # JSON string of linked OAuth providers
     password_hash = db.Column(db.String(255))  # For traditional login
+    email_verified = db.Column(db.Boolean, default=False)
     
     def __repr__(self):
         return f'<Patient {self.id}: {self.name}>'
@@ -164,6 +165,7 @@ class AdminUser(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(50), default='admin')  # admin, super_admin
     is_active = db.Column(db.Boolean, default=True)
+    email_verified = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password: str):
@@ -183,6 +185,7 @@ class Counselor(db.Model):
     name = db.Column(db.String(120))
     password_hash = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
+    email_verified = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password: str):
@@ -206,6 +209,16 @@ class AdminAudit(db.Model):
 
     def __repr__(self):
         return f'<AdminAudit {self.admin_email} {self.action}>'
+
+
+class EmailVerification(db.Model):
+    """Stores verification tokens for accounts."""
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), nullable=False, index=True)
+    token = db.Column(db.String(255), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime)
+
 
 class CounselorPosition(db.Model):
     """Model for configurable counselor positions and benefits"""

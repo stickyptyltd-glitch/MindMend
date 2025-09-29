@@ -147,6 +147,23 @@ exercise_generator = ExerciseGenerator()
 from models.conversation_starters import ConversationStarterGenerator
 conversation_starter_generator = ConversationStarterGenerator()
 
+
+@app.route('/subscribe-newsletter', methods=['POST'])
+def subscribe_newsletter():
+    email = (request.form.get('email') or '').strip().lower()
+    if not email:
+        return redirect(url_for('home'))
+    try:
+        sub = NewsletterSubscription.query.filter_by(email=email).first()
+        if not sub:
+            sub = NewsletterSubscription(email=email, consent=True)
+            db.session.add(sub)
+            db.session.commit()
+        flash('Thanks for subscribing!', 'success')
+    except Exception:
+        flash('Subscription failed. Please try again later.', 'error')
+    return redirect(url_for('home'))
+
 @app.route("/")
 def home():
     """Smart homepage - shows personalized dashboard for logged-in users, marketing page for anonymous users"""
@@ -356,6 +373,10 @@ def home():
                     <p>AI-powered therapy sessions, real-time emotional analysis, and personalized wellness activities - all in one platform.</p>
                     <a href="/register" class="btn">Start Your Free Journey</a>
                     <a href="/video-assessment" class="btn btn-outline">Try Video Assessment</a>
+                    <form method="POST" action="/subscribe-newsletter" style="margin-top:20px;">
+                        <input type="email" name="email" placeholder="Your email for updates" required style="padding:10px;border-radius:6px;border:1px solid #ccc;">
+                        <button class="btn btn-secondary" type="submit" style="padding:10px 16px;">Subscribe</button>
+                    </form>
                 </div>
             </section>
 
