@@ -73,3 +73,32 @@ jobs:
         run: |
           kubectl apply -f MindMend/k8s/ingress.yaml
 
+  deploy-vm:
+    needs: build-and-deploy
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_KEY }}
+          port: ${{ secrets.VM_PORT || 22 }}
+          script: |
+            set -euo pipefail
+            cd ${{ secrets.VM_DIR }}
+            git fetch origin main
+            git reset --hard origin/main
+            if [ -f docker-compose.yml ] || [ -f compose.yaml ] || [ -f compose.yml ]; then
+              docker compose pull || docker-compose pull || true
+              docker compose up -d || docker-compose up -d || true
+              docker system prune -f || true
+            else
+              echo "No compose file found; restarting systemd service if present"
+              sudo systemctl daemon-reload || true
+              sudo systemctl restart mindmend || true
+            fi
