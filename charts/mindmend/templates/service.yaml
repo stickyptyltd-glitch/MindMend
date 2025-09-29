@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: mindmend-backend-service
   namespace: {{ .Values.namespace }}
+  annotations:
+    cloud.google.com/backend-config: '{"default":"mindmend-backendconfig"}'
 spec:
   type: {{ .Values.service.type }}
   selector:
@@ -11,4 +13,3 @@ spec:
     - name: http
       port: {{ .Values.service.port }}
       targetPort: 8000
-

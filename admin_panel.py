@@ -195,6 +195,43 @@ def deactivate_admin(admin_id):
     return redirect(url_for('admin.list_admins'))
 
 
+@admin_bp.route('/admins/<int:admin_id>/edit', methods=['GET', 'POST'])
+@require_admin_auth
+def edit_admin(admin_id):
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    u = AdminUser.query.get_or_404(admin_id)
+    if request.method == 'POST':
+        name = request.form.get('name') or ''
+        role = request.form.get('role') or 'admin'
+        password = request.form.get('password') or ''
+        u.name = name
+        u.role = role
+        if password:
+            u.set_password(password)
+        db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='edit_admin', details=u.email, ip_address=_client_ip()))
+        db.session.commit()
+        flash('Admin updated', 'success')
+        return redirect(url_for('admin.list_admins'))
+    return render_template('admin/edit_admin.html', admin=u)
+
+
+@admin_bp.route('/admins/<int:admin_id>/delete', methods=['POST'])
+@require_admin_auth
+def delete_admin(admin_id):
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    u = AdminUser.query.get_or_404(admin_id)
+    if u.email == session.get('admin_email'):
+        flash('Cannot delete current session user', 'error')
+        return redirect(url_for('admin.list_admins'))
+    db.session.delete(u)
+    db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='delete_admin', details=u.email, ip_address=_client_ip()))
+    db.session.commit()
+    flash('Admin deleted', 'success')
+    return redirect(url_for('admin.list_admins'))
+
+
 @admin_bp.route('/counselors')
 @require_admin_auth
 def list_counselors():
@@ -211,6 +248,23 @@ def deactivate_counselor(c_id):
     db.session.commit()
     flash('Counselor deactivated', 'success')
     return redirect(url_for('admin.list_counselors'))
+
+
+@admin_bp.route('/counselors/<int:c_id>/edit', methods=['GET', 'POST'])
+@require_admin_auth
+def edit_counselor(c_id):
+    c = Counselor.query.get_or_404(c_id)
+    if request.method == 'POST':
+        name = request.form.get('name') or ''
+        password = request.form.get('password') or ''
+        c.name = name
+        if password:
+            c.set_password(password)
+        db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='edit_counselor', details=c.email, ip_address=_client_ip()))
+        db.session.commit()
+        flash('Counselor updated', 'success')
+        return redirect(url_for('admin.list_counselors'))
+    return render_template('admin/edit_counselor.html', counselor=c)
 
 @admin_bp.route('/api-keys', methods=['GET', 'POST'])
 @require_admin_auth
