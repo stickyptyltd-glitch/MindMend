@@ -5,6 +5,7 @@ Human counselor management, scheduling, and monetization
 """
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session
+from models.database import db, Counselor
 from datetime import datetime, timedelta
 import uuid
 
@@ -418,20 +419,19 @@ def professional_development():
 
 @counselor_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    """Counselor login"""
+    """Counselor login (DB-backed)."""
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        email = (request.form.get('email') or '').strip().lower()
+        password = request.form.get('password') or ''
 
-        # In production, verify against database
-        # For demo, accept any email ending with @mindmend.com.au
-        if email and email.endswith('@mindmend.com.au'):
-            session['counselor_id'] = 'demo_counselor'
-            session['counselor_email'] = email
+        user = Counselor.query.filter_by(email=email, is_active=True).first()
+        if user and user.check_password(password):
+            session['counselor_id'] = user.id
+            session['counselor_email'] = user.email
             flash('Logged in successfully', 'success')
             return redirect(url_for('counselor.dashboard'))
-        else:
-            flash('Invalid credentials or not authorized', 'error')
+
+        flash('Invalid credentials or not authorized', 'error')
 
     return render_template('counselor/login.html')
 

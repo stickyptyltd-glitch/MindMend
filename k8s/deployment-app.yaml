@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mindmend-backend
+  namespace: mindmend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mindmend-backend
+  template:
+    metadata:
+      labels:
+        app: mindmend-backend
+    spec:
+      containers:
+        - name: mindmend-app
+          image: australia-southeast1-docker.pkg.dev/mindmend-production/mindmend/mindmend-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: FLASK_ENV
+              value: production
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mindmend-secrets
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mindmend-secrets
+                  key: REDIS_URL
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mindmend-secrets
+                  key: OPENAI_API_KEY
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mindmend-secrets
+                  key: STRIPE_SECRET_KEY
+            - name: STRIPE_PUBLISHABLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mindmend-secrets
+                  key: STRIPE_PUBLISHABLE_KEY
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mindmend-secrets
+                  key: SESSION_SECRET
+          volumeMounts:
+            - name: uploads
+              mountPath: /var/www/mindmend/uploads
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: app-uploads
+

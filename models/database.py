@@ -9,6 +9,7 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 from datetime import datetime
 from sqlalchemy import Text
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Session(db.Model):
     """Model for therapy sessions"""
@@ -153,6 +154,58 @@ class TherapistSession(db.Model):
 
     def __repr__(self):
         return f'<TherapistSession {self.id}: {self.patient_id} - {self.therapist_name}>'
+
+
+class AdminUser(db.Model):
+    """Admin users for platform management (supports super-admin)."""
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(120))
+    password_hash = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(50), default='admin')  # admin, super_admin
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password: str):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
+
+    def __repr__(self):
+        return f'<AdminUser {self.email} ({self.role})>'
+
+
+class Counselor(db.Model):
+    """Counselor/therapist accounts for professional portal."""
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    name = db.Column(db.String(120))
+    password_hash = db.Column(db.String(255), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password: str):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
+
+    def __repr__(self):
+        return f'<Counselor {self.email}>'
+
+
+class AdminAudit(db.Model):
+    """Audit log for admin actions."""
+    id = db.Column(db.Integer, primary_key=True)
+    admin_email = db.Column(db.String(255))
+    action = db.Column(db.String(200), nullable=False)
+    details = db.Column(Text)
+    ip_address = db.Column(db.String(64))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<AdminAudit {self.admin_email} {self.action}>'
 
 class CounselorPosition(db.Model):
     """Model for configurable counselor positions and benefits"""

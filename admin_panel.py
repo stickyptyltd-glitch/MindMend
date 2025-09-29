@@ -1,4 +1,52 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session, flash
+import os
+from models.database import db, AdminUser, AdminAudit, Counselor
+from werkzeug.security import check_password_hash
+from datetime import datetime, timedelta
+from collections import deque
+
+# Simple in-memory rate limit store (per-IP for login); consider Redis in production
+_login_attempts = {}
+
+
+def _client_ip():
+    # Prefer X-Forwarded-For if present (ProxyFix may set this already)
+    from flask import request
+
+    xff = request.headers.get('X-Forwarded-For', '')
+    if xff:
+        return xff.split(',')[0].strip()
+    return request.remote_addr or 'unknown'
+
+
+@admin_bp.before_request
+def _enforce_ip_allowlist():
+    from flask import request
+
+    allowlist = os.getenv('ADMIN_IP_WHITELIST', '').strip()
+    if not allowlist:
+        return  # no restriction configured
+    client_ip = _client_ip()
+    allowed = {ip.strip() for ip in allowlist.split(',') if ip.strip()}
+    if client_ip not in allowed:
+        return ("Access restricted", 403)
+
+
+def _rate_limited(max_attempts=10, window_seconds=60):
+    def decorator(fn):
+        def wrapper(*args, **kwargs):
+            ip = _client_ip()
+            q = _login_attempts.setdefault(ip, deque())
+            now = datetime.utcnow()
+            # prune
+            while q and (now - q[0]).total_seconds() > window_seconds:
+                q.popleft()
+            if len(q) >= max_attempts:
+                return ("Too many attempts, please try again later", 429)
+            q.append(now)
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
 import logging
 from datetime import datetime, timedelta
 
@@ -25,26 +73,47 @@ def admin_index():
     return redirect(url_for('admin.admin_login'))
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
+@_rate_limited()
 def admin_login():
     """Admin login page"""
     if request.method == 'POST':
-        # Placeholder authentication - replace with proper auth
-        username = request.form.get('username')
-        password = request.form.get('password')
+        # Email-format admin login (DB-backed with env fallback)
+        email = (request.form.get('email') or '').strip().lower()
+        password = request.form.get('password') or ''
 
-        # Default admin credentials for testing
-        if username == 'admin' and password == 'mindmend123':
+        user = AdminUser.query.filter_by(email=email, is_active=True).first()
+        if user and user.check_password(password):
             session['admin_logged_in'] = True
+            session['admin_email'] = user.email
+            session['admin_role'] = user.role
+            db.session.add(AdminAudit(admin_email=user.email, action='login', ip_address=_client_ip()))
+            db.session.commit()
             return redirect(url_for('admin.dashboard'))
-        else:
-            flash('Invalid credentials')
+
+        # Fallback to env variables for bootstrap access
+        allowed_email = os.getenv('ADMIN_EMAIL', '').strip().lower()
+        allowed_password = os.getenv('ADMIN_PASSWORD', '')
+        if allowed_email and email == allowed_email and password == allowed_password:
+            session['admin_logged_in'] = True
+            session['admin_email'] = email
+            session['admin_role'] = 'super_admin'
+            db.session.add(AdminAudit(admin_email=email, action='login (env)', ip_address=_client_ip()))
+            db.session.commit()
+            return redirect(url_for('admin.dashboard'))
+
+        flash('Invalid credentials', 'error')
 
     return render_template('admin/login.html')
 
 @admin_bp.route('/logout')
 def logout():
     """Admin logout"""
+    admin_email = session.get('admin_email', 'unknown')
     session.pop('admin_logged_in', None)
+    session.pop('admin_email', None)
+    session.pop('admin_role', None)
+    db.session.add(AdminAudit(admin_email=admin_email, action='logout', ip_address=_client_ip()))
+    db.session.commit()
     flash('Logged out successfully', 'success')
     return redirect(url_for('admin.admin_login'))
 
@@ -84,6 +153,8 @@ def api_keys():
     """API key management"""
     if request.method == 'POST':
         flash('API keys updated successfully', 'success')
+        db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='update_api_keys', ip_address=_client_ip()))
+        db.session.commit()
         return redirect(url_for('admin.api_keys'))
 
     api_keys = {
@@ -100,6 +171,9 @@ def api_keys():
 @require_admin_auth
 def platform_upgrades():
     """Platform upgrade management"""
+    # Only super admins can view this page
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
     upgrade_options = {
         'level_3': {
             'name': 'Level 3 - Advanced AI',
@@ -114,6 +188,82 @@ def platform_upgrades():
     }
 
     return render_template('admin/platform_upgrades.html', upgrades=upgrade_options)
+
+
+@admin_bp.route('/counselors/create', methods=['GET', 'POST'])
+@require_admin_auth
+def create_counselor():
+    """Create a counselor account (super admin only)."""
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    if request.method == 'POST':
+        email = (request.form.get('email') or '').strip().lower()
+        name = request.form.get('name') or ''
+        password = request.form.get('password') or ''
+        if not email or not password:
+            flash('Email and password required', 'error')
+        else:
+            existing = Counselor.query.filter_by(email=email).first()
+            if existing:
+                flash('Counselor already exists', 'error')
+            else:
+                c = Counselor(email=email, name=name)
+                c.set_password(password)
+                db.session.add(c)
+                db.session.add(AdminAudit(admin_email=session.get('admin_email'), action='create_counselor', details=email, ip_address=_client_ip()))
+                db.session.commit()
+                flash('Counselor created', 'success')
+                return redirect(url_for('admin.create_counselor'))
+    # Minimal HTML form to avoid adding templates
+    return (
+        """
+        <h2>Create Counselor</h2>
+        <form method="POST">
+          <label>Email</label><br><input type="email" name="email" required><br>
+          <label>Name</label><br><input type="text" name="name"><br>
+          <label>Password</label><br><input type="password" name="password" required><br><br>
+          <button type="submit">Create</button>
+        </form>
+        <p><a href="/admin/dashboard">Back to Dashboard</a></p>
+        """,
+        200,
+        {"Content-Type": "text/html"},
+    )
+
+
+@admin_bp.route('/reset-password', methods=['GET', 'POST'])
+@require_admin_auth
+def reset_password():
+    """Allow current admin to change their password."""
+    if request.method == 'POST':
+        current = request.form.get('current') or ''
+        new = request.form.get('new') or ''
+        if not new:
+            flash('New password required', 'error')
+        else:
+            email = session.get('admin_email')
+            user = AdminUser.query.filter_by(email=email, is_active=True).first()
+            if user and user.check_password(current):
+                user.set_password(new)
+                db.session.add(AdminAudit(admin_email=email, action='reset_password', ip_address=_client_ip()))
+                db.session.commit()
+                flash('Password updated', 'success')
+                return redirect(url_for('admin.dashboard'))
+            else:
+                flash('Current password incorrect', 'error')
+    return (
+        """
+        <h2>Reset Password</h2>
+        <form method="POST">
+          <label>Current Password</label><br><input type="password" name="current" required><br>
+          <label>New Password</label><br><input type="password" name="new" required><br><br>
+          <button type="submit">Update</button>
+        </form>
+        <p><a href="/admin/dashboard">Back to Dashboard</a></p>
+        """,
+        200,
+        {"Content-Type": "text/html"},
+    )
 
 @admin_bp.route('/business-settings', methods=['GET', 'POST'])
 @require_admin_auth

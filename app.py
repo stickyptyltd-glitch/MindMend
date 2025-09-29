@@ -333,7 +333,6 @@ def home():
                         <a href="#testimonials">Success Stories</a>
                         <a href="/login">Login</a>
                         <a href="/register" class="btn" style="padding: 8px 20px; margin: 0;">Get Started</a>
-                        <a href="/admin" style="color: #dc3545; font-weight: bold;">🔐 Admin</a>
                     </div>
                 </div>
             </nav>
