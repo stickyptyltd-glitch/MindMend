@@ -4,6 +4,8 @@ from models.database import db, AdminUser, AdminAudit, Counselor
 from werkzeug.security import check_password_hash
 from datetime import datetime, timedelta
 from collections import deque
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from email_utils import send_email
 
 # Simple in-memory rate limit store (per-IP for login); consider Redis in production
 _login_attempts = {}
@@ -17,6 +19,12 @@ def _client_ip():
     if xff:
         return xff.split(',')[0].strip()
     return request.remote_addr or 'unknown'
+
+
+def _token_serializer():
+    from flask import current_app
+    secret = current_app.config.get('SECRET_KEY') or current_app.secret_key
+    return URLSafeTimedSerializer(secret_key=secret, salt='admin-reset')
 
 
 @admin_bp.before_request
@@ -260,6 +268,71 @@ def reset_password():
           <button type="submit">Update</button>
         </form>
         <p><a href="/admin/dashboard">Back to Dashboard</a></p>
+        """,
+        200,
+        {"Content-Type": "text/html"},
+    )
+
+
+@admin_bp.route('/forgot', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = (request.form.get('email') or '').strip().lower()
+        user = AdminUser.query.filter_by(email=email, is_active=True).first()
+        if user:
+            s = _token_serializer()
+            token = s.dumps({"email": email})
+            reset_link = url_for('admin.reset_with_token', token=token, _external=True)
+            try:
+                send_email(email, "MindMend Admin Password Reset", f"<p>Reset your password: <a href='{reset_link}'>Reset</a></p>")
+                flash('Password reset link sent', 'success')
+            except Exception as e:
+                flash(f'Email error: {e}', 'error')
+        else:
+            flash('If the email exists, a reset link has been sent', 'info')
+    return (
+        """
+        <h2>Forgot Password</h2>
+        <form method="POST">
+          <label>Email</label><br><input type="email" name="email" required><br><br>
+          <button type="submit">Send reset link</button>
+        </form>
+        <p><a href="/admin/login">Back to Login</a></p>
+        """,
+        200,
+        {"Content-Type": "text/html"},
+    )
+
+
+@admin_bp.route('/reset/<token>', methods=['GET', 'POST'])
+def reset_with_token(token):
+    s = _token_serializer()
+    try:
+        data = s.loads(token, max_age=3600)
+        email = data.get('email')
+    except (BadSignature, SignatureExpired):
+        return ("Invalid or expired token", 400)
+
+    if request.method == 'POST':
+        new = request.form.get('new') or ''
+        if not new:
+            return ("New password required", 400)
+        user = AdminUser.query.filter_by(email=email, is_active=True).first()
+        if not user:
+            return ("User not found", 404)
+        user.set_password(new)
+        db.session.add(AdminAudit(admin_email=email, action='reset_password_via_token', ip_address=_client_ip()))
+        db.session.commit()
+        flash('Password updated. Please login.', 'success')
+        return redirect(url_for('admin.admin_login'))
+
+    return (
+        """
+        <h2>Set New Password</h2>
+        <form method="POST">
+          <label>New Password</label><br><input type="password" name="new" required><br><br>
+          <button type="submit">Update</button>
+        </form>
         """,
         200,
         {"Content-Type": "text/html"},

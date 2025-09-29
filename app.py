@@ -3,6 +3,11 @@ import logging
 import stripe
 import secrets
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
+try:
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+except Exception:
+    Limiter = None
 from flask_socketio import SocketIO, emit
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -38,6 +43,14 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 # Initialize extensions
 db.init_app(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Optional rate limiter (backed by Redis if available)
+if Limiter:
+    redis_url = os.environ.get("REDIS_URL")
+    storage_uri = None
+    if redis_url:
+        storage_uri = f"redis://{redis_url.split('://',1)[1]}"
+    limiter = Limiter(get_remote_address, storage_uri=storage_uri, app=app, default_limits=["200 per minute"])
 
 # Login manager setup
 login_manager = LoginManager()

@@ -6,6 +6,8 @@ Human counselor management, scheduling, and monetization
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session
 from models.database import db, Counselor
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from email_utils import send_email
 from datetime import datetime, timedelta
 import uuid
 
@@ -443,3 +445,71 @@ def logout():
     session.pop('counselor_email', None)
     flash('Logged out successfully', 'success')
     return redirect(url_for('counselor.login'))
+
+
+def _serializer():
+    from flask import current_app
+    secret = current_app.config.get('SECRET_KEY') or current_app.secret_key
+    return URLSafeTimedSerializer(secret_key=secret, salt='counselor-reset')
+
+
+@counselor_bp.route('/forgot', methods=['GET', 'POST'])
+def forgot():
+    if request.method == 'POST':
+        email = (request.form.get('email') or '').strip().lower()
+        user = Counselor.query.filter_by(email=email, is_active=True).first()
+        if user:
+            s = _serializer()
+            token = s.dumps({"email": email})
+            link = url_for('counselor.reset', token=token, _external=True)
+            try:
+                send_email(email, "MindMend Counselor Password Reset", f"<p>Reset your password: <a href='{link}'>Reset</a></p>")
+                flash('Password reset link sent', 'success')
+            except Exception as e:
+                flash(f'Email error: {e}', 'error')
+        else:
+            flash('If the email exists, a reset link has been sent', 'info')
+    return (
+        """
+        <h2>Forgot Password</h2>
+        <form method=POST>
+          <label>Email</label><br><input type=email name=email required><br><br>
+          <button type=submit>Send reset link</button>
+        </form>
+        <p><a href="/counselor/login">Back to Login</a></p>
+        """,
+        200,
+        {"Content-Type": "text/html"},
+    )
+
+
+@counselor_bp.route('/reset/<token>', methods=['GET', 'POST'])
+def reset(token):
+    s = _serializer()
+    try:
+        data = s.loads(token, max_age=3600)
+        email = data.get('email')
+    except (BadSignature, SignatureExpired):
+        return ("Invalid or expired token", 400)
+    if request.method == 'POST':
+        new = request.form.get('new') or ''
+        if not new:
+            return ("New password required", 400)
+        user = Counselor.query.filter_by(email=email, is_active=True).first()
+        if not user:
+            return ("User not found", 404)
+        user.set_password(new)
+        db.session.commit()
+        flash('Password updated. Please login.', 'success')
+        return redirect(url_for('counselor.login'))
+    return (
+        """
+        <h2>Set New Password</h2>
+        <form method=POST>
+          <label>New Password</label><br><input type=password name=new required><br><br>
+          <button type=submit>Update</button>
+        </form>
+        """,
+        200,
+        {"Content-Type": "text/html"},
+    )
