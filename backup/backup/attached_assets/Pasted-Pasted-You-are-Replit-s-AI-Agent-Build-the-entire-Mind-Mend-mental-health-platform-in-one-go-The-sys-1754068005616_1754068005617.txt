@@ -1,0 +1,147 @@
+Pasted-You-are-Replit-s-AI-Agent-Build-the-entire-Mind-Mend-mental-health-platform-in-one-go-The-sys-1754065019754_1754065019754.txtYou are Replit’s AI Agent. Build the entire “Mind Mend” mental health platform in one go.  
+
+The system must be:
+
+✅ **AI-first** (GPT-powered sessions).
+✅ **Clinician-ready**: safe, ethical, with dashboards.
+✅ **Extensible**: easy to add new AI models, video, VR, biosensor modules.
+✅ **Secure**: encrypted DB, API key management, HIPAA-style privacy.
+✅ **Learning over time**: feedback-driven ML loop to improve diagnostic support.
+
+---
+
+📂 PROJECT STRUCTURE
+
+- app.py — Flask app main server
+- models/
+    - ai_manager.py — GPT + future AI model manager
+    - health_checker.py — scans input for risk words
+    - ml_trainer.py — incremental machine learning trainer for accuracy feedback
+    - future_ai_modules.py — placeholders for microexpression, biosensors, VR
+- templates/
+    - index.html
+    - session.html
+    - dashboard.html (therapist dashboard)
+    - video_assess.html (placeholder)
+- static/
+    - css/style.css
+- data/
+    - patients.db (encrypted SQLite)
+
+---
+
+### 🔐 SECURITY REQUIREMENTS
+
+- Use **SQLite with SQLCipher** (or note how to install it) for encryption.
+- All patient entries encrypted at rest.
+- Future hooks for secure OAuth login for therapists.
+
+---
+
+### 🧠 AI FEATURES
+
+✅ GPT-powered therapy sessions with **session type prompts** (individual, couple, group).  
+✅ **Early detection engine**:
+   - Flags social anxiety, psychopathy indicators, suicidal ideation, escalating distress.  
+✅ **Therapist dashboard**:
+   - View patients, AI red flags, session summaries.
+   - Approve or override AI suggestions.
+✅ **Self‑correcting ML layer**:
+   - Every therapist override feeds into `ml_trainer.py` to retrain a small ML model that adjusts AI recommendations and detection rules over time.
+   - Can log “false positives” or “false negatives” to improve screening.
+
+---
+
+### 🩺 FUTURE HOOKS
+
+- `/video_assess`: Placeholder for WebRTC-based video session for AI microexpression tracking.
+- `future_ai_modules.py`: 
+    - `MicroexpressionAnalyzer`
+    - `BioSensorIntegration`
+    - `VRTherapyModule`
+
+---
+
+### ⚙️ ROUTES
+
+- `/` → Home
+- `/session` → Therapy session form + AI answers
+- `/api/sessions` → JSON endpoint
+- `/dashboard` → Therapist dashboard (view patient data, risk alerts)
+- `/video_assess` → Placeholder video page
+- `/premium_session` → Placeholder for human counselors (future paywall)
+
+---
+
+### 📄 FILE DETAILS
+
+📜 app.py  
+- Flask routes as above.
+- OpenAI integration via `openai` library (key in Replit Secrets as `OPENAI_API_KEY`).
+- DB setup: encrypted SQLite (note instructions if SQLCipher needed).
+
+📜 models/ai_manager.py  
+- Handles GPT calls.
+- Uses different **system prompts** for session types.
+- Has a “hybrid” mode where GPT suggestion + ML‑adjusted risk score combined.
+
+📜 models/health_checker.py  
+- Scans text for keywords (suicide, harm).
+- Calls `ml_trainer` adjustments to refine detection.
+
+📜 models/ml_trainer.py  
+- Minimal incremental ML pipeline (sklearn or a small on-disk logistic regression model).
+- Stores feedback (therapist overrides) → retrains detection weightings.
+
+📜 models/future_ai_modules.py  
+- Placeholder for future:
+    - `MicroexpressionAnalyzer`
+    - `BioSensorIntegration`
+    - `VRTherapyModule`
+
+📜 templates/dashboard.html  
+- Shows:
+   - Table of patients + last session
+   - Any flagged risks
+   - Button to “Mark AI response correct/incorrect”
+
+📜 templates/video_assess.html  
+- Placeholder page describing future AI microexpression/bio‑sensor analysis.
+
+📜 templates/index.html & session.html  
+- Updated with cleaner layout + link to dashboard.
+
+📜 static/css/style.css  
+- Simple UI styling (rounded boxes, calming blues/greens).
+
+---
+
+### 🛠️ REQUIREMENTS
+
+- Flask
+- OpenAI
+- (Optional) sklearn for ML retraining
+- SQLCipher (for encryption)
+
+In Replit:
+- Install: `pip install flask openai sklearn`
+- Add `OPENAI_API_KEY` to Secrets.
+
+---
+
+### 📌 EXTRA NOTES
+
+- ⚠️ All AI outputs must include **safe language** disclaimer:
+    > “This is AI-generated support. Always consult a licensed therapist for medical emergencies.”
+- 🚨 If AI detects crisis keywords → generate immediate “HIGH RISK” alert in dashboard.
+
+---
+
+### ✅ DELIVERABLE
+
+Provide **all code and templates** fully written out, ready to run on Replit (fake encryption fallback if SQLCipher not installed).  
+
+Include **comments in every file** explaining:
+- where to add future modules (video, VR)
+- where therapist override data feeds ML retraining
+- how to swap AI models (GPT → Claude, etc.)

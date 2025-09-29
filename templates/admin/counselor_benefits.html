@@ -1,0 +1,519 @@
+{% extends "base.html" %}
+
+{% block title %}Counselor Benefits Management - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <h4 class="mb-4">Admin Panel</h4>
+                <nav class="nav flex-column">
+                    <li><a href="{{ url_for('admin.dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('admin.user_management') }}">
+                        <i class="fas fa-users me-2"></i>Users
+                    </a></li>
+                    <li><a href="{{ url_for('admin.counselor_benefits') }}" class="active">
+                        <i class="fas fa-briefcase me-2"></i>Counselor Benefits
+                    </a></li>
+                    <li><a href="{{ url_for('admin.financial_overview') }}">
+                        <i class="fas fa-chart-line me-2"></i>Finances
+                    </a></li>
+                    <li><a href="{{ url_for('admin.system_monitoring') }}">
+                        <i class="fas fa-server me-2"></i>Monitoring
+                    </a></li>
+                    <li><a href="{{ url_for('admin.api_keys') }}">
+                        <i class="fas fa-key me-2"></i>API Keys
+                    </a></li>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <div class="content-header">
+                    <h2><i class="fas fa-briefcase me-3"></i>Counselor Benefits Management</h2>
+                    <p class="text-muted">Configure wages, benefits, and requirements for counselor positions</p>
+                    <small class="text-info">Developer: Dayle Stueven (sticky.pty.ltd@gmail.com)</small>
+                </div>
+
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Create New Position Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-plus-circle me-2"></i>Create New Position</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('admin.counselor_benefits') }}">
+                            <input type="hidden" name="action" value="create_position">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Position Type</label>
+                                        <select class="form-select" name="position_type" required>
+                                            <option value="">Select Type</option>
+                                            <option value="full_time">Full Time</option>
+                                            <option value="contract">Contract</option>
+                                            <option value="part_time">Part Time</option>
+                                            <option value="casual">Casual</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label class="form-label">Position Title</label>
+                                        <input type="text" class="form-control" name="title" placeholder="e.g., Senior Mental Health Counselor" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Salary Min</label>
+                                        <input type="number" class="form-control" name="salary_range_min" placeholder="85000" step="1000">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Salary Max</label>
+                                        <input type="number" class="form-control" name="salary_range_max" placeholder="110000" step="1000">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Hourly Min</label>
+                                        <input type="number" class="form-control" name="hourly_rate_min" placeholder="100" step="5">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Hourly Max</label>
+                                        <input type="number" class="form-control" name="hourly_rate_max" placeholder="150" step="5">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Currency</label>
+                                        <select class="form-select" name="currency">
+                                            {% for currency in data.currencies %}
+                                            <option value="{{ currency }}" {{ 'selected' if currency == 'AUD' }}>{{ currency }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <button type="submit" class="btn btn-success mt-4">
+                                        <i class="fas fa-plus me-2"></i>Create Position
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Existing Positions -->
+                <div class="row">
+                    {% for position in data.positions %}
+                    <div class="col-md-12 mb-4">
+                        <div class="card position-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0">{{ position.title }}</h5>
+                                    <small class="text-muted">{{ position.position_type.replace('_', ' ').title() }}</small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-{{ 'success' if position.is_active else 'secondary' }}">
+                                        {{ 'Active' if position.is_active else 'Inactive' }}
+                                    </span>
+                                    <button class="btn btn-sm btn-outline-primary ms-2" onclick="editPosition({{ position.id }})">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- Compensation Info -->
+                                        <div class="compensation-info">
+                                            <h6><i class="fas fa-dollar-sign me-2"></i>Compensation</h6>
+                                            {% if position.salary_range_min > 0 or position.salary_range_max > 0 %}
+                                            <p class="mb-1"><strong>Salary:</strong>
+                                                ${{ "{:,.0f}".format(position.salary_range_min) if position.salary_range_min > 0 }}
+                                                - ${{ "{:,.0f}".format(position.salary_range_max) if position.salary_range_max > 0 }} {{ position.currency }}
+                                            </p>
+                                            {% endif %}
+                                            {% if position.hourly_rate_min > 0 or position.hourly_rate_max > 0 %}
+                                            <p class="mb-1"><strong>Hourly:</strong>
+                                                ${{ "{:,.0f}".format(position.hourly_rate_min) if position.hourly_rate_min > 0 }}
+                                                - ${{ "{:,.0f}".format(position.hourly_rate_max) if position.hourly_rate_max > 0 }} {{ position.currency }}/hour
+                                            </p>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Benefits -->
+                                        <div class="benefits-section">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6><i class="fas fa-gift me-2"></i>Benefits ({{ position.benefits|selectattr('is_active')|list|length }})</h6>
+                                                <button class="btn btn-sm btn-success" onclick="showAddBenefitModal({{ position.id }})">
+                                                    <i class="fas fa-plus"></i> Add Benefit
+                                                </button>
+                                            </div>
+                                            {% for benefit in position.benefits %}
+                                                {% if benefit.is_active %}
+                                                <div class="benefit-item d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <strong>{{ benefit.benefit_name }}</strong>
+                                                        {% if benefit.benefit_description %}
+                                                        <br><small class="text-muted">{{ benefit.benefit_description }}</small>
+                                                        {% endif %}
+                                                        <br><span class="badge bg-info">{{ benefit.benefit_category }}</span>
+                                                    </div>
+                                                    <form method="POST" class="d-inline">
+                                                        <input type="hidden" name="action" value="delete_benefit">
+                                                        <input type="hidden" name="benefit_id" value="{{ benefit.id }}">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this benefit?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <!-- Requirements -->
+                                        <div class="requirements-section">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6><i class="fas fa-clipboard-check me-2"></i>Requirements ({{ position.requirements|selectattr('is_active')|list|length }})</h6>
+                                                <button class="btn btn-sm btn-success" onclick="showAddRequirementModal({{ position.id }})">
+                                                    <i class="fas fa-plus"></i> Add Requirement
+                                                </button>
+                                            </div>
+                                            {% for requirement in position.requirements %}
+                                                {% if requirement.is_active %}
+                                                <div class="requirement-item d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <span class="{{ 'text-danger' if requirement.is_mandatory else 'text-muted' }}">
+                                                            {{ requirement.requirement_text }}
+                                                        </span>
+                                                        <br><span class="badge bg-{{ 'danger' if requirement.is_mandatory else 'secondary' }}">
+                                                            {{ 'Mandatory' if requirement.is_mandatory else 'Preferred' }}
+                                                        </span>
+                                                        <span class="badge bg-info">{{ requirement.requirement_category }}</span>
+                                                    </div>
+                                                    <form method="POST" class="d-inline">
+                                                        <input type="hidden" name="action" value="delete_requirement">
+                                                        <input type="hidden" name="requirement_id" value="{{ requirement.id }}">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this requirement?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">
+                                    Last updated: {{ position.updated_at.strftime('%Y-%m-%d %H:%M') if position.updated_at }}
+                                    by {{ position.updated_by if position.updated_by }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Benefit Modal -->
+<div class="modal fade" id="addBenefitModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Benefit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="add_benefit">
+                    <input type="hidden" name="position_id" id="benefit_position_id">
+
+                    <div class="mb-3">
+                        <label class="form-label">Benefit Name</label>
+                        <input type="text" class="form-control" name="benefit_name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="benefit_description" rows="3"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="benefit_category">
+                                    {% for category in data.benefit_categories %}
+                                    <option value="{{ category }}">{{ category.title() }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Display Order</label>
+                                <input type="number" class="form-control" name="display_order" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Benefit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Requirement Modal -->
+<div class="modal fade" id="addRequirementModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Requirement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="add_requirement">
+                    <input type="hidden" name="position_id" id="requirement_position_id">
+
+                    <div class="mb-3">
+                        <label class="form-label">Requirement Text</label>
+                        <textarea class="form-control" name="requirement_text" rows="3" required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="requirement_category">
+                                    {% for category in data.requirement_categories %}
+                                    <option value="{{ category }}">{{ category.title() }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Display Order</label>
+                                <input type="number" class="form-control" name="display_order" value="0">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3 form-check mt-4">
+                                <input type="checkbox" class="form-check-input" name="is_mandatory" checked>
+                                <label class="form-check-label">Mandatory</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add Requirement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Position Modal -->
+<div class="modal fade" id="editPositionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Position</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="update_position">
+                    <input type="hidden" name="position_id" id="edit_position_id">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Position Title</label>
+                                <input type="text" class="form-control" name="title" id="edit_title" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Salary Min</label>
+                                <input type="number" class="form-control" name="salary_range_min" id="edit_salary_min" step="1000">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Salary Max</label>
+                                <input type="number" class="form-control" name="salary_range_max" id="edit_salary_max" step="1000">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Hourly Min</label>
+                                <input type="number" class="form-control" name="hourly_rate_min" id="edit_hourly_min" step="5">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Hourly Max</label>
+                                <input type="number" class="form-control" name="hourly_rate_max" id="edit_hourly_max" step="5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Currency</label>
+                                <select class="form-select" name="currency" id="edit_currency">
+                                    {% for currency in data.currencies %}
+                                    <option value="{{ currency }}">{{ currency }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 form-check mt-4">
+                                <input type="checkbox" class="form-check-input" name="is_active" id="edit_is_active">
+                                <label class="form-check-label">Active Position</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Position</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-dashboard {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px 15px;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.position-card {
+    border-left: 5px solid #007bff;
+}
+
+.benefit-item, .requirement-item {
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 10px;
+    background: #f8f9fa;
+}
+
+.compensation-info {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.benefits-section, .requirements-section {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    background: white;
+}
+</style>
+
+<script>
+function showAddBenefitModal(positionId) {
+    document.getElementById('benefit_position_id').value = positionId;
+    new bootstrap.Modal(document.getElementById('addBenefitModal')).show();
+}
+
+function showAddRequirementModal(positionId) {
+    document.getElementById('requirement_position_id').value = positionId;
+    new bootstrap.Modal(document.getElementById('addRequirementModal')).show();
+}
+
+function editPosition(positionId) {
+    // Fetch position data and populate modal
+    fetch(`/admin/api/counselor-benefits/${positionId}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('edit_position_id').value = data.id;
+            document.getElementById('edit_title').value = data.title;
+            document.getElementById('edit_salary_min').value = data.salary_range_min || '';
+            document.getElementById('edit_salary_max').value = data.salary_range_max || '';
+            document.getElementById('edit_hourly_min').value = data.hourly_rate_min || '';
+            document.getElementById('edit_hourly_max').value = data.hourly_rate_max || '';
+            document.getElementById('edit_currency').value = data.currency;
+            document.getElementById('edit_is_active').checked = data.is_active;
+
+            new bootstrap.Modal(document.getElementById('editPositionModal')).show();
+        })
+        .catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}

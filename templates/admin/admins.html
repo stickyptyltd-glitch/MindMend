@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Admins</h2>
+    <a class="btn btn-primary" href="/admin/admins/create">Create Admin</a>
+  </div>
+  <table class="table table-striped">
+    <thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Active</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for a in admins %}
+      <tr>
+        <td>{{ a.email }}</td>
+        <td>{{ a.name }}</td>
+        <td>{{ a.role }}</td>
+        <td>{{ 'yes' if a.is_active else 'no' }}</td>
+        <td>
+          {% if a.is_active %}
+          <form method="POST" action="/admin/admins/{{ a.id }}/deactivate" style="display:inline">
+            <button class="btn btn-sm btn-warning" onclick="return confirm('Deactivate {{ a.email }}?')">Deactivate</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

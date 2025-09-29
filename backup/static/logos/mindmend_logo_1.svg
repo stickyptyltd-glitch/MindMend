@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80" width="300" height="80">
+  <defs>
+    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c5ce7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a29bfe;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2d3436;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#636e72;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Brain/Mind Icon -->
+  <g transform="translate(10, 10)">
+    <!-- Brain outline -->
+    <path d="M30 15 C35 10, 45 10, 50 15 C55 20, 55 30, 50 35 C45 40, 35 40, 30 35 C25 30, 25 20, 30 15 Z" 
+          fill="url(#brainGradient)" stroke="#6c5ce7" stroke-width="2"/>
+    
+    <!-- Neural connections -->
+    <circle cx="35" cy="20" r="2" fill="#ffffff" opacity="0.8"/>
+    <circle cx="45" cy="25" r="2" fill="#ffffff" opacity="0.8"/>
+    <circle cx="40" cy="30" r="2" fill="#ffffff" opacity="0.8"/>
+    
+    <!-- Connection lines -->
+    <line x1="35" y1="20" x2="45" y2="25" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+    <line x1="45" y1="25" x2="40" y2="30" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+    <line x1="40" y1="30" x2="35" y2="20" stroke="#ffffff" stroke-width="1" opacity="0.6"/>
+  </g>
+  
+  <!-- Company Name -->
+  <text x="85" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="url(#textGradient)">
+    Mind Mend
+  </text>
+  
+  <!-- Tagline -->
+  <text x="85" y="52" font-family="Arial, sans-serif" font-size="12" fill="#74b9ff" opacity="0.8">
+    AI-Powered Mental Health Platform
+  </text>
+</svg>

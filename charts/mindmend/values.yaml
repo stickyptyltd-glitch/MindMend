@@ -1,0 +1,17 @@
+namespace: mindmend
+image:
+  repository: australia-southeast1-docker.pkg.dev/mindmend-production/mindmend/mindmend-app
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+ingress:
+  enabled: true
+  host: mindmend.xyz
+  tlsSecret: mindmend-tls
+resources: {}
+uploads:
+  storageClass: filestore-rwx
+  size: 50Gi
+

@@ -1,0 +1,194 @@
+# MindMend Production Docker Compose
+# ==================================
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: mindmend_postgres
+    environment:
+      POSTGRES_DB: mindmend_production
+      POSTGRES_USER: mindmend_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - mindmend_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mindmend_user -d mindmend_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: mindmend_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - mindmend_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Main Application
+  app:
+    build: .
+    container_name: mindmend_app
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://mindmend_user:${POSTGRES_PASSWORD}@postgres:5432/mindmend_production
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+      - DOMAIN=mindmend.xyz
+    env_file:
+      - .env.production
+    volumes:
+      - app_uploads:/var/www/mindmend/uploads
+      - app_logs:/var/log/mindmend
+      - ./models:/app/models
+      - ./static:/app/static
+      - ./templates:/app/templates
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    networks:
+      - mindmend_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Ollama AI Models Server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: mindmend_ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - mindmend_network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: mindmend_nginx
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/ssl:/etc/nginx/ssl
+      - ./static:/var/www/static
+      - app_uploads:/var/www/uploads
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - app
+    networks:
+      - mindmend_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Celery Worker for Background Tasks
+  celery_worker:
+    build: .
+    container_name: mindmend_celery
+    command: celery -A app.celery worker --loglevel=info --concurrency=4
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://mindmend_user:${POSTGRES_PASSWORD}@postgres:5432/mindmend_production
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+    env_file:
+      - .env.production
+    volumes:
+      - app_uploads:/var/www/mindmend/uploads
+      - app_logs:/var/log/mindmend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mindmend_network
+    restart: unless-stopped
+
+  # Celery Beat Scheduler
+  celery_beat:
+    build: .
+    container_name: mindmend_celery_beat
+    command: celery -A app.celery beat --loglevel=info --schedule=/tmp/celerybeat-schedule
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://mindmend_user:${POSTGRES_PASSWORD}@postgres:5432/mindmend_production
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379/0
+    env_file:
+      - .env.production
+    volumes:
+      - celery_beat_data:/tmp
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mindmend_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+  app_uploads:
+    driver: local
+  app_logs:
+    driver: local
+  celery_beat_data:
+    driver: local
+
+networks:
+  mindmend_network:
+    driver: bridge

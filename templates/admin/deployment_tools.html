@@ -1,0 +1,276 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Deployment Tools - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="content-header">
+        <h1>Deployment Tools</h1>
+        <p>Manage deployments, environments, and hosting infrastructure</p>
+    </div>
+
+    <!-- Current Deployment Status -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-card deployment-{{ data.deployment_status }}">
+                <div class="stat-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ data.deployment_status|title }}</h3>
+                    <p>Current Status</p>
+                    <small>Version {{ data.current_version }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ (data.last_deployment.strftime('%b %d') if data.last_deployment else 'Never') }}</h3>
+                    <p>Last Deployment</p>
+                    <small>{{ (data.last_deployment.strftime('%I:%M %p') if data.last_deployment else '') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ data.hosting_recommendations.current }}</h3>
+                    <p>Current Hosting</p>
+                    <small>Development Environment</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Environment Status -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Environment Status</h5>
+                    <button class="btn btn-primary btn-sm" onclick="deployToProduction()">
+                        <i class="fas fa-deploy"></i> Deploy to Production
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for env_name, env_data in data.environments.items() %}
+                        <div class="col-md-4">
+                            <div class="environment-card">
+                                <div class="env-header">
+                                    <h6>{{ env_name|title }}</h6>
+                                    <span class="badge badge-{{ 'success' if env_data.status == 'healthy' else 'danger' }}">
+                                        {{ env_data.status|title }}
+                                    </span>
+                                </div>
+                                <div class="env-details">
+                                    <p><strong>Version:</strong> {{ env_data.version }}</p>
+                                    <p><strong>URL:</strong> <a href="{{ env_data.url }}" target="_blank">{{ env_data.url }}</a></p>
+                                </div>
+                                <div class="env-actions">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="checkEnvironment('{{ env_name }}')">
+                                        <i class="fas fa-check"></i> Health Check
+                                    </button>
+                                    {% if env_name != 'production' %}
+                                    <button class="btn btn-outline-success btn-sm" onclick="promoteToNext('{{ env_name }}')">
+                                        <i class="fas fa-arrow-up"></i> Promote
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hosting Recommendations -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Production Hosting Recommendations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for provider in data.hosting_recommendations.recommended_production %}
+                        <div class="col-md-6">
+                            <div class="hosting-option">
+                                <h6>{{ provider.provider }}</h6>
+                                <p class="cost">{{ provider.cost }}</p>
+                                <ul class="features-list">
+                                    {% for feature in provider.features %}
+                                    <li><i class="fas fa-check text-success"></i> {{ feature }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <p class="setup-time"><strong>Setup Time:</strong> {{ provider.setup_time }}</p>
+                                <button class="btn btn-primary btn-sm" onclick="contactForHosting('{{ provider.provider }}')">
+                                    Get Started
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deployment Scripts -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Quick Deployment Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button class="btn btn-success btn-block" onclick="runScript('quick_deploy')">
+                                <i class="fas fa-rocket"></i>
+                                Quick Deploy
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-warning btn-block" onclick="runScript('rollback')">
+                                <i class="fas fa-undo"></i>
+                                Rollback
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-info btn-block" onclick="runScript('backup')">
+                                <i class="fas fa-save"></i>
+                                Create Backup
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-secondary btn-block" onclick="runScript('maintenance')">
+                                <i class="fas fa-tools"></i>
+                                Maintenance Mode
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.deployment-stable .stat-icon {
+    color: #28a745;
+}
+
+.deployment-deploying .stat-icon {
+    color: #ffc107;
+}
+
+.deployment-failed .stat-icon {
+    color: #dc3545;
+}
+
+.environment-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.env-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.env-details p {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.env-actions {
+    margin-top: 15px;
+}
+
+.env-actions button {
+    margin-right: 10px;
+}
+
+.hosting-option {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    height: 100%;
+}
+
+.hosting-option h6 {
+    color: #0066cc;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.cost {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 15px;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 15px;
+}
+
+.features-list li {
+    margin-bottom: 5px;
+}
+
+.setup-time {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+</style>
+
+<script>
+function deployToProduction() {
+    if (confirm('Are you sure you want to deploy to production? This action cannot be undone.')) {
+        alert('Deployment initiated. This is a demo - actual deployment would start here.');
+    }
+}
+
+function checkEnvironment(envName) {
+    alert(`Running health check for ${envName} environment...`);
+}
+
+function promoteToNext(envName) {
+    alert(`Promoting ${envName} to the next environment...`);
+}
+
+function contactForHosting(provider) {
+    alert(`Contacting ${provider} for hosting setup. This would redirect to their contact form.`);
+}
+
+function runScript(scriptType) {
+    const actions = {
+        'quick_deploy': 'Quick deployment',
+        'rollback': 'Rollback to previous version',
+        'backup': 'Creating system backup',
+        'maintenance': 'Toggling maintenance mode'
+    };
+
+    alert(`${actions[scriptType]} initiated. This is a demo - actual script would run here.`);
+}
+</script>
+{% endblock %}

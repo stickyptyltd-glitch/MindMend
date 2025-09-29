@@ -1,0 +1,555 @@
+{% extends "base.html" %}
+
+{% block title %}Relationship Therapy - Mind Mend{% endblock %}
+
+{% block head %}
+<style>
+    .partner-section {
+        border: 2px solid var(--bs-border-color);
+        border-radius: 8px;
+        position: relative;
+    }
+    .partner-label {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background: var(--bs-body-bg);
+        padding: 0 10px;
+        font-weight: bold;
+        color: var(--bs-primary);
+    }
+    .communication-flow {
+        border: 1px dashed var(--bs-border-color);
+        border-radius: 8px;
+        background: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    .emotion-match {
+        background: rgba(var(--bs-success-rgb), 0.2);
+        border: 1px solid var(--bs-success);
+    }
+    .emotion-conflict {
+        background: rgba(var(--bs-danger-rgb), 0.2);
+        border: 1px solid var(--bs-danger);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-heart me-2"></i>Relationship Therapy Session</h2>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary" id="toggleDualVideo">
+                    <i class="fas fa-video me-1"></i>Dual Video Analysis
+                </button>
+                <button class="btn btn-outline-info" id="communicationAnalysis">
+                    <i class="fas fa-comments me-1"></i>Communication Patterns
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Partner Video Analysis -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="partner-section p-3">
+            <div class="partner-label">Partner 1</div>
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-user me-2"></i>Video & Emotion Analysis</h6>
+                </div>
+                <div class="card-body">
+                    <div class="video-container mb-3" style="height: 200px; background: #000; border-radius: 4px;">
+                        <video id="videoPartner1" width="100%" height="100%" style="object-fit: cover;" muted></video>
+                        <div class="emotion-overlay" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">
+                            <div id="emotion1">Neutral</div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between text-center">
+                        <div>
+                            <div class="h6 mb-0" id="engagement1">75%</div>
+                            <small class="text-muted">Engagement</small>
+                        </div>
+                        <div>
+                            <div class="h6 mb-0" id="stress1">Low</div>
+                            <small class="text-muted">Stress</small>
+                        </div>
+                        <div>
+                            <div class="h6 mb-0" id="receptivity1">High</div>
+                            <small class="text-muted">Receptivity</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="partner-section p-3">
+            <div class="partner-label">Partner 2</div>
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-user me-2"></i>Video & Emotion Analysis</h6>
+                </div>
+                <div class="card-body">
+                    <div class="video-container mb-3" style="height: 200px; background: #000; border-radius: 4px;">
+                        <video id="videoPartner2" width="100%" height="100%" style="object-fit: cover;" muted></video>
+                        <div class="emotion-overlay" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">
+                            <div id="emotion2">Neutral</div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between text-center">
+                        <div>
+                            <div class="h6 mb-0" id="engagement2">80%</div>
+                            <small class="text-muted">Engagement</small>
+                        </div>
+                        <div>
+                            <div class="h6 mb-0" id="stress2">Low</div>
+                            <small class="text-muted">Stress</small>
+                        </div>
+                        <div>
+                            <div class="h6 mb-0" id="receptivity2">High</div>
+                            <small class="text-muted">Receptivity</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Relationship Dynamics Dashboard -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>Relationship Dynamics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="h4 mb-1" id="emotionalSync">85%</div>
+                            <div class="text-muted">Emotional Sync</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="h4 mb-1" id="communicationQuality">72%</div>
+                            <div class="text-muted">Communication Quality</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-info" style="width: 72%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="h4 mb-1" id="conflictLevel">Low</div>
+                            <div class="text-muted">Conflict Level</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: 25%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="h4 mb-1" id="intimacyLevel">Good</div>
+                            <div class="text-muted">Intimacy Level</div>
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div class="progress-bar bg-danger" style="width: 78%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Session Input -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-comments me-2"></i>Relationship Session</h5>
+            </div>
+            <div class="card-body">
+                <form id="relationshipForm">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="partner1Name" class="form-label">Partner 1 Name</label>
+                            <input type="text" class="form-control" id="partner1Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="partner2Name" class="form-label">Partner 2 Name</label>
+                            <input type="text" class="form-control" id="partner2Name" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="relationshipLength" class="form-label">Relationship Length</label>
+                            <select class="form-select" id="relationshipLength">
+                                <option value="new">Less than 6 months</option>
+                                <option value="6months">6 months - 1 year</option>
+                                <option value="1year">1-2 years</option>
+                                <option value="2years">2-5 years</option>
+                                <option value="5years">5+ years</option>
+                                <option value="married">Married</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sessionFocus" class="form-label">Session Focus</label>
+                            <select class="form-select" id="sessionFocus">
+                                <option value="communication">Communication Issues</option>
+                                <option value="conflict">Conflict Resolution</option>
+                                <option value="intimacy">Intimacy & Connection</option>
+                                <option value="trust">Trust Issues</option>
+                                <option value="future">Future Planning</option>
+                                <option value="family">Family Dynamics</option>
+                                <option value="general">General Relationship Health</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="relationshipConcern" class="form-label">What's the main concern you'd like to discuss?</label>
+                        <textarea class="form-control" id="relationshipConcern" rows="4" 
+                                placeholder="Describe the issue you're facing as a couple..." required></textarea>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="partner1Perspective" class="form-label">Partner 1's Perspective</label>
+                            <textarea class="form-control" id="partner1Perspective" rows="3" 
+                                    placeholder="How does Partner 1 view this situation?"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="partner2Perspective" class="form-label">Partner 2's Perspective</label>
+                            <textarea class="form-control" id="partner2Perspective" rows="3" 
+                                    placeholder="How does Partner 2 view this situation?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="relationshipGoal" class="form-label">Relationship Goal</label>
+                            <select class="form-select" id="relationshipGoal">
+                                <option value="improve_communication">Improve Communication</option>
+                                <option value="resolve_conflict">Resolve Current Conflict</option>
+                                <option value="rebuild_trust">Rebuild Trust</option>
+                                <option value="increase_intimacy">Increase Intimacy</option>
+                                <option value="strengthen_bond">Strengthen Bond</option>
+                                <option value="prepare_commitment">Prepare for Commitment</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sessionPriority" class="form-label">Session Priority</label>
+                            <select class="form-select" id="sessionPriority">
+                                <option value="urgent">Urgent - Crisis</option>
+                                <option value="important">Important - Major Issue</option>
+                                <option value="moderate">Moderate - Ongoing Concern</option>
+                                <option value="maintenance">Maintenance - General Health</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-heart me-2"></i>Start Relationship Analysis
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Analysis Results -->
+<div class="row mt-4" id="analysisSection" style="display: none;">
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5><i class="fas fa-robot me-2"></i>AI Relationship Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div id="relationshipAnalysis"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Communication Patterns -->
+<div class="row mt-4" id="communicationSection" style="display: none;">
+    <div class="col-12">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-comments me-2"></i>Communication Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div id="communicationPatterns"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Relationship Exercises -->
+<div class="row mt-4" id="exercisesSection" style="display: none;">
+    <div class="col-12">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-heart me-2"></i>Relationship Exercises</h5>
+            </div>
+            <div class="card-body">
+                <div id="relationshipExercises"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video-processing.js') }}"></script>
+<script src="{{ url_for('static', filename='js/real-time-analysis.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const relationshipForm = document.getElementById('relationshipForm');
+    
+    relationshipForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            partner1_name: document.getElementById('partner1Name').value,
+            partner2_name: document.getElementById('partner2Name').value,
+            relationship_length: document.getElementById('relationshipLength').value,
+            session_focus: document.getElementById('sessionFocus').value,
+            main_concern: document.getElementById('relationshipConcern').value,
+            partner1_perspective: document.getElementById('partner1Perspective').value,
+            partner2_perspective: document.getElementById('partner2Perspective').value,
+            relationship_goal: document.getElementById('relationshipGoal').value,
+            session_priority: document.getElementById('sessionPriority').value,
+            session_type: 'relationship'
+        };
+
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing Relationship...';
+        submitBtn.disabled = true;
+
+        try {
+            const response = await fetch('/api/analyze-text', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: formData.main_concern,
+                    session_type: 'relationship',
+                    relationship_data: formData
+                })
+            });
+
+            const result = await response.json();
+            displayRelationshipAnalysis(result, formData);
+        } catch (error) {
+            console.error('Analysis error:', error);
+            alert('An error occurred during analysis. Please try again.');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    function displayRelationshipAnalysis(result, formData) {
+        // Display main analysis
+        const analysisHtml = `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-brain me-2"></i>AI Insights</h6>
+                    <div class="alert alert-info">
+                        ${result.ai_response || 'Relationship analysis complete.'}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-chart-pie me-2"></i>Relationship Health Score</h6>
+                    <div class="text-center">
+                        <div class="display-6 text-primary">${result.relationship_score || 75}%</div>
+                        <small class="text-muted">Overall relationship health</small>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-comments fa-2x text-info mb-2"></i>
+                            <h6>Communication Style</h6>
+                            <p class="mb-0">${result.communication_style || 'Collaborative'}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-handshake fa-2x text-warning mb-2"></i>
+                            <h6>Conflict Resolution</h6>
+                            <p class="mb-0">${result.conflict_style || 'Constructive'}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-dark border-0">
+                        <div class="card-body text-center">
+                            <i class="fas fa-heart fa-2x text-danger mb-2"></i>
+                            <h6>Emotional Connection</h6>
+                            <p class="mb-0">${result.emotional_connection || 'Strong'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('relationshipAnalysis').innerHTML = analysisHtml;
+
+        // Display communication patterns
+        if (result.communication_patterns) {
+            displayCommunicationPatterns(result.communication_patterns);
+        }
+
+        // Display exercises
+        if (result.exercises) {
+            displayRelationshipExercises(result.exercises);
+        }
+
+        // Show sections
+        document.getElementById('analysisSection').style.display = 'block';
+        document.getElementById('communicationSection').style.display = 'block';
+        document.getElementById('exercisesSection').style.display = 'block';
+    }
+
+    function displayCommunicationPatterns(patterns) {
+        const patternsHtml = `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6>Positive Patterns</h6>
+                    <ul class="list-group list-group-flush">
+                        ${patterns.positive ? patterns.positive.map(pattern => 
+                            `<li class="list-group-item bg-transparent border-success text-success">
+                                <i class="fas fa-check me-2"></i>${pattern}
+                            </li>`
+                        ).join('') : '<li class="list-group-item bg-transparent">Active listening observed</li>'}
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Areas for Improvement</h6>
+                    <ul class="list-group list-group-flush">
+                        ${patterns.improvements ? patterns.improvements.map(improvement => 
+                            `<li class="list-group-item bg-transparent border-warning text-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>${improvement}
+                            </li>`
+                        ).join('') : '<li class="list-group-item bg-transparent">Focus on emotional validation</li>'}
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('communicationPatterns').innerHTML = patternsHtml;
+    }
+
+    function displayRelationshipExercises(exercises) {
+        let exercisesHtml = '';
+
+        const defaultExercises = exercises && exercises.length > 0 ? exercises : [
+            {
+                title: "Daily Check-in Ritual",
+                description: "Establish a daily connection practice",
+                instructions: [
+                    "Set aside 10 minutes each day",
+                    "Share one thing you appreciated about your partner",
+                    "Share one thing that was challenging",
+                    "End with physical affection"
+                ],
+                duration_minutes: 10,
+                benefits: ["Improves communication", "Builds intimacy"]
+            },
+            {
+                title: "Conflict Resolution Framework",
+                description: "Structured approach to handling disagreements",
+                instructions: [
+                    "Each partner states their perspective (2 minutes each)",
+                    "Reflect back what you heard",
+                    "Identify common ground",
+                    "Brainstorm solutions together"
+                ],
+                duration_minutes: 20,
+                benefits: ["Reduces conflict", "Improves understanding"]
+            }
+        ];
+
+        defaultExercises.forEach((exercise, index) => {
+            exercisesHtml += `
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6><i class="fas fa-heart me-2"></i>${exercise.title}</h6>
+                        <small class="text-muted">${exercise.duration_minutes} minutes</small>
+                    </div>
+                    <div class="card-body">
+                        <p>${exercise.description}</p>
+                        <div class="mb-3">
+                            <strong>Steps:</strong>
+                            <ol class="mt-2">
+                                ${exercise.instructions.map(step => `<li>${step}</li>`).join('')}
+                            </ol>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Benefits:</strong> ${exercise.benefits.join(', ')}
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="startRelationshipExercise(${index})">
+                                <i class="fas fa-play me-1"></i>Start Together
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('relationshipExercises').innerHTML = exercisesHtml;
+    }
+
+    // Global function for exercise interaction
+    window.startRelationshipExercise = function(index) {
+        console.log('Starting relationship exercise:', index);
+        // Implementation for guided couple exercises
+    };
+
+    // Simulate real-time relationship dynamics (in a real app, this would come from video analysis)
+    function updateRelationshipDynamics() {
+        // This would be updated based on actual video and audio analysis
+        const dynamics = {
+            emotionalSync: Math.floor(Math.random() * 20) + 70,
+            communicationQuality: Math.floor(Math.random() * 30) + 60,
+            conflictLevel: Math.random() > 0.7 ? 'Medium' : 'Low',
+            intimacyLevel: Math.random() > 0.5 ? 'Good' : 'Excellent'
+        };
+
+        document.getElementById('emotionalSync').textContent = dynamics.emotionalSync + '%';
+        document.getElementById('communicationQuality').textContent = dynamics.communicationQuality + '%';
+        document.getElementById('conflictLevel').textContent = dynamics.conflictLevel;
+        document.getElementById('intimacyLevel').textContent = dynamics.intimacyLevel;
+    }
+
+    // Update dynamics every 30 seconds (in demo mode)
+    setInterval(updateRelationshipDynamics, 30000);
+});
+</script>
+{% endblock %}

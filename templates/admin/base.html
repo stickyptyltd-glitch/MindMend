@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mind Mend Admin{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+        
+        .admin-sidebar {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            min-height: 100vh;
+            padding: 20px 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-content {
+            padding: 20px;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-nav a {
+            display: block;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-left-color: #ffffff;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+        
+        .table {
+            color: #ffffff;
+        }
+        
+        .table thead th {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .table tbody td {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        
+        .form-control,
+        .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+        
+        .form-control:focus,
+        .form-select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #ffffff;
+            box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .company-logo {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .company-logo h4 {
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .company-logo small {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .alert-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 admin-sidebar">
+                <div class="company-logo">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <img src="/static/logos/mindmend_logo_4.svg" alt="Mind Mend" height="30" class="me-2">
+                        <h4 class="mb-0">Mind Mend</h4>
+                    </div>
+                    <small>Sticky Pty Ltd</small>
+                    <div class="mt-1">
+                        <small class="text-muted" style="font-size: 0.7rem;">
+                            Suite 329/98-100 Elizabeth St<br/>
+                            Melbourne, VIC 3000
+                        </small>
+                    </div>
+                </div>
+                
+                <ul class="sidebar-nav">
+                    <li><a href="{{ url_for('admin.dashboard') }}" {% if request.endpoint == 'admin.dashboard' %}class="active"{% endif %}>
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('admin.api_keys') }}" {% if request.endpoint == 'admin.api_keys' %}class="active"{% endif %}>
+                        <i class="fas fa-key me-2"></i>API Keys
+                    </a></li>
+                    <li><a href="{{ url_for('admin.platform_upgrades') }}" {% if request.endpoint == 'admin.platform_upgrades' %}class="active"{% endif %}>
+                        <i class="fas fa-rocket me-2"></i>Platform Upgrades
+                    </a></li>
+                    <li><a href="{{ url_for('admin.business_settings') }}" {% if request.endpoint == 'admin.business_settings' %}class="active"{% endif %}>
+                        <i class="fas fa-building me-2"></i>Business Settings
+                    </a></li>
+                    <li><a href="{{ url_for('admin.user_management') }}" {% if request.endpoint == 'admin.user_management' %}class="active"{% endif %}>
+                        <i class="fas fa-users me-2"></i>Users & Counselors
+                    </a></li>
+                    <li><a href="{{ url_for('admin.financial_overview') }}" {% if request.endpoint == 'admin.financial_overview' %}class="active"{% endif %}>
+                        <i class="fas fa-chart-line me-2"></i>Financial Overview
+                    </a></li>
+                    <li><a href="{{ url_for('admin.system_monitoring') }}" {% if request.endpoint == 'admin.system_monitoring' %}class="active"{% endif %}>
+                        <i class="fas fa-server me-2"></i>System Monitoring
+                    </a></li>
+                    <li><a href="{{ url_for('admin.deployment_tools') }}" {% if request.endpoint == 'admin.deployment_tools' %}class="active"{% endif %}>
+                        <i class="fas fa-cloud me-2"></i>Deployment Tools
+                    </a></li>
+                    <li><a href="{{ url_for('admin.ai_assistant') }}" {% if request.endpoint == 'admin.ai_assistant' %}class="active"{% endif %}>
+                        <i class="fas fa-robot me-2"></i>AI Assistant
+                    </a></li>
+                    <li><a href="{{ url_for('admin.research_management') }}" {% if request.endpoint == 'admin.research_management' %}class="active"{% endif %}>
+                        <i class="fas fa-microscope me-2"></i>Research & Data
+                    </a></li>
+                    <li><a href="{{ url_for('admin.ai_models') }}" {% if request.endpoint == 'admin.ai_models' %}class="active"{% endif %}>
+                        <i class="fas fa-brain me-2"></i>AI Models
+                    </a></li>
+                    <li><a href="{{ url_for('admin.company_documents') }}" {% if request.endpoint == 'admin.company_documents' %}class="active"{% endif %}>
+                        <i class="fas fa-file-contract me-2"></i>Company Documents
+                    </a></li>
+                </ul>
+                
+                <div class="mt-auto p-3">
+                    <a href="{{ url_for('admin.logout') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 admin-content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

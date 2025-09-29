@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mindmend-backend
+  namespace: mindmend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mindmend-backend
+  template:
+    metadata:
+      labels:
+        app: mindmend-backend
+    spec:
+      containers:
+        - name: mindmend-app
+          image: australia-southeast1-docker.pkg.dev/mindmend-production/mindmend/mindmend-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: FLASK_ENV
+              value: production
+          volumeMounts:
+            - name: uploads
+              mountPath: /var/www/mindmend/uploads
+          envFrom:
+            - secretRef:
+              name: mindmend-secrets-gsm
+          # Mount CSI volume to trigger sync of GSM secrets
+          volumeMounts:
+            - name: gsm-secrets
+              mountPath: /var/run/secrets/mindmend/gsm
+              readOnly: true
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: app-uploads
+        - name: gsm-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: mindmend-gsm

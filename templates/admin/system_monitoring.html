@@ -1,0 +1,224 @@
+{% extends "admin/base.html" %}
+
+{% block title %}System Monitoring - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="content-header">
+        <h1>System Monitoring</h1>
+        <p>Real-time system health, performance metrics, and security monitoring</p>
+    </div>
+
+    <!-- System Health Overview -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card health-{{ data.system_health.status }}">
+                <div class="stat-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ data.system_health.status|title }}</h3>
+                    <p>System Status</p>
+                    <small>Uptime: {{ data.system_health.uptime }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ data.system_health.response_time }}</h3>
+                    <p>Avg Response Time</p>
+                    <small>Last 24 hours</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ data.system_health.error_rate }}</h3>
+                    <p>Error Rate</p>
+                    <small>Last 24 hours</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ data.security.security_alerts }}</h3>
+                    <p>Security Alerts</p>
+                    <small>Active incidents</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resource Usage -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Resource Usage</h5>
+                </div>
+                <div class="card-body">
+                    <div class="resource-meter">
+                        <label>CPU Usage</label>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-primary" style="width: {{ data.resources.cpu_usage }}%">
+                                {{ data.resources.cpu_usage }}%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="resource-meter">
+                        <label>Memory Usage</label>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-warning" style="width: {{ data.resources.memory_usage }}%">
+                                {{ data.resources.memory_usage }}%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="resource-meter">
+                        <label>Disk Usage</label>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" style="width: {{ data.resources.disk_usage }}%">
+                                {{ data.resources.disk_usage }}%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="resource-meter">
+                        <label>Bandwidth Usage</label>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-info" style="width: {{ (data.resources.bandwidth / 300) * 100 }}%">
+                                {{ data.resources.bandwidth }} Mbps
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>AI Services Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="ai-service-status">
+                        <div class="service-item">
+                            <span class="service-name">OpenAI API</span>
+                            <span class="badge badge-{{ 'success' if data.ai_services.openai_status == 'operational' else 'danger' }}">
+                                {{ data.ai_services.openai_status|title }}
+                            </span>
+                        </div>
+                        <div class="service-detail">
+                            <small>Requests today: {{ data.ai_services.requests_today }}</small>
+                            <small>Quota remaining: {{ data.ai_services.quota_remaining }}</small>
+                        </div>
+                        <div class="service-detail">
+                            <small>Avg response time: {{ data.ai_services.average_response_time }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Monitoring -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Security Monitoring</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="security-metric">
+                                <h4>{{ data.security.failed_login_attempts }}</h4>
+                                <p>Failed Login Attempts (24h)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="security-metric">
+                                <h4>{{ data.security.blocked_ips }}</h4>
+                                <p>Blocked IP Addresses</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="security-metric">
+                                <h4>{{ data.security.security_alerts }}</h4>
+                                <p>Active Security Alerts</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="security-metric">
+                                <h4>{{ data.security.last_backup.strftime('%H:%M') }}</h4>
+                                <p>Last Backup</p>
+                                <small>{{ data.security.last_backup.strftime('%Y-%m-%d') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.health-healthy .stat-icon {
+    color: #28a745;
+}
+
+.health-warning .stat-icon {
+    color: #ffc107;
+}
+
+.health-critical .stat-icon {
+    color: #dc3545;
+}
+
+.resource-meter label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.service-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.security-metric {
+    text-align: center;
+    padding: 15px;
+}
+
+.security-metric h4 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    color: #0066cc;
+}
+
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+}
+</style>
+{% endblock %}

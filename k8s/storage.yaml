@@ -1,0 +1,24 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: filestore-rwx
+provisioner: filestore.csi.storage.gke.io
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+parameters:
+  tier: STANDARD
+  network: default
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-uploads
+  namespace: mindmend
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: filestore-rwx
+

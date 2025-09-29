@@ -1,0 +1,1191 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Mind Mend - Interactive Tutorial{% endblock %}
+
+{% block content %}
+<div class="onboarding-container">
+    <!-- Tutorial Progress Bar -->
+    <div class="tutorial-progress">
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text">
+            <span id="currentStep">1</span> of <span id="totalSteps">6</span>
+        </div>
+    </div>
+
+    <!-- Animated Character Guide -->
+    <div class="character-guide" id="characterGuide">
+        <div class="character-avatar">
+            <div class="avatar-face">
+                <div class="eyes">
+                    <div class="eye left-eye">
+                        <div class="pupil"></div>
+                    </div>
+                    <div class="eye right-eye">
+                        <div class="pupil"></div>
+                    </div>
+                </div>
+                <div class="mouth"></div>
+            </div>
+        </div>
+        <div class="speech-bubble" id="speechBubble">
+            <div class="bubble-content" id="bubbleContent">
+                Welcome to Mind Mend! I'm Alex, your personal guide. Let's explore how our AI-powered therapy platform can help you on your mental health journey.
+            </div>
+            <div class="bubble-arrow"></div>
+        </div>
+    </div>
+
+    <!-- Tutorial Steps Container -->
+    <div class="tutorial-steps" id="tutorialSteps">
+        
+        <!-- Step 1: Welcome -->
+        <div class="tutorial-step active" data-step="1">
+            <div class="step-content">
+                <h2>Welcome to Mind Mend</h2>
+                <p>Your AI-powered mental health companion that combines cutting-edge technology with evidence-based therapy approaches.</p>
+                <div class="feature-highlights">
+                    <div class="highlight-item">
+                        <i class="fas fa-brain"></i>
+                        <span>AI Therapists trained in CBT, DBT, and more</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-users"></i>
+                        <span>Individual, couple, and group sessions</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Crisis detection and 24/7 support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Choose Session Type -->
+        <div class="tutorial-step" data-step="2">
+            <div class="step-content">
+                <h2>Choose Your Session Type</h2>
+                <p>Select the type of therapy session that best fits your needs:</p>
+                <div class="session-types">
+                    <div class="session-card" data-type="individual">
+                        <div class="session-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Individual Therapy</h3>
+                        <p>One-on-one sessions with AI therapists specialized in your specific needs</p>
+                        <div class="session-features">
+                            <span>• Personalized treatment plans</span>
+                            <span>• Mood tracking</span>
+                            <span>• Progress monitoring</span>
+                        </div>
+                    </div>
+                    <div class="session-card" data-type="couples">
+                        <div class="session-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Couples Therapy</h3>
+                        <p>Relationship counseling with Gottman Method-trained AI</p>
+                        <div class="session-features">
+                            <span>• Communication strategies</span>
+                            <span>• Conflict resolution</span>
+                            <span>• Relationship strengthening</span>
+                        </div>
+                    </div>
+                    <div class="session-card" data-type="group">
+                        <div class="session-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Group Therapy</h3>
+                        <p>Connect with others in supportive group sessions</p>
+                        <div class="session-features">
+                            <span>• Peer support</span>
+                            <span>• Shared experiences</span>
+                            <span>• Community healing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: AI Therapists -->
+        <div class="tutorial-step" data-step="3">
+            <div class="step-content">
+                <h2>Meet Your AI Therapists</h2>
+                <p>Our AI therapists are trained in various therapeutic approaches to provide you with the best care:</p>
+                <div class="therapist-grid">
+                    <div class="therapist-card">
+                        <div class="therapist-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h4>Dr. Sarah Chen</h4>
+                        <p>Cognitive Behavioral Therapy (CBT)</p>
+                        <span class="specialty">Anxiety & Depression</span>
+                    </div>
+                    <div class="therapist-card">
+                        <div class="therapist-avatar">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h4>Dr. Michael Rivera</h4>
+                        <p>Dialectical Behavior Therapy (DBT)</p>
+                        <span class="specialty">Emotional Regulation</span>
+                    </div>
+                    <div class="therapist-card">
+                        <div class="therapist-avatar">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h4>Dr. Lisa Thompson</h4>
+                        <p>Mindfulness-Based Stress Reduction</p>
+                        <span class="specialty">Stress & Trauma</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Interactive Features -->
+        <div class="tutorial-step" data-step="4">
+            <div class="step-content">
+                <h2>Interactive Features</h2>
+                <p>Discover the powerful tools that enhance your therapy experience:</p>
+                <div class="features-demo">
+                    <div class="feature-demo" data-feature="video">
+                        <div class="demo-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h4>Video Assessment</h4>
+                        <p>AI analyzes facial expressions and emotions in real-time</p>
+                        <button class="demo-btn" onclick="demoFeature('video')">Try Demo</button>
+                    </div>
+                    <div class="feature-demo" data-feature="biometric">
+                        <div class="demo-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h4>Biometric Monitoring</h4>
+                        <p>Connect wearables to track stress, heart rate, and sleep</p>
+                        <button class="demo-btn" onclick="demoFeature('biometric')">Try Demo</button>
+                    </div>
+                    <div class="feature-demo" data-feature="exercises">
+                        <div class="demo-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h4>Therapeutic Exercises</h4>
+                        <p>AI-generated activities tailored to your progress</p>
+                        <button class="demo-btn" onclick="demoFeature('exercises')">Try Demo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Safety & Crisis Support -->
+        <div class="tutorial-step" data-step="5">
+            <div class="step-content">
+                <h2>Safety & Crisis Support</h2>
+                <p>Your safety is our priority. Here's how we provide 24/7 support:</p>
+                <div class="safety-features">
+                    <div class="safety-item">
+                        <div class="safety-icon">
+                            <i class="fas fa-shield-alt text-success"></i>
+                        </div>
+                        <div class="safety-content">
+                            <h4>AI Crisis Detection</h4>
+                            <p>Our AI continuously monitors conversations for signs of distress and immediately offers support resources.</p>
+                        </div>
+                    </div>
+                    <div class="safety-item">
+                        <div class="safety-icon">
+                            <i class="fas fa-phone text-warning"></i>
+                        </div>
+                        <div class="safety-content">
+                            <h4>Emergency Contacts</h4>
+                            <p>Quick access to crisis helplines and emergency services in your area.</p>
+                        </div>
+                    </div>
+                    <div class="safety-item">
+                        <div class="safety-icon">
+                            <i class="fas fa-user-md text-info"></i>
+                        </div>
+                        <div class="safety-content">
+                            <h4>Human Counselor Backup</h4>
+                            <p>When needed, you can be connected to licensed human therapists.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Get Started -->
+        <div class="tutorial-step" data-step="6">
+            <div class="step-content">
+                <h2>Ready to Begin Your Journey?</h2>
+                <p>You're all set! Choose how you'd like to start your mental health journey with Mind Mend:</p>
+                <div class="getting-started">
+                    <div class="start-option" onclick="startSession('individual')">
+                        <i class="fas fa-play-circle"></i>
+                        <h4>Start Individual Session</h4>
+                        <p>Begin with a personalized AI therapy session</p>
+                    </div>
+                    <div class="start-option" onclick="startSession('assessment')">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h4>Take Assessment</h4>
+                        <p>Complete a video assessment to personalize your experience</p>
+                    </div>
+                    <div class="start-option" onclick="startSession('explore')">
+                        <i class="fas fa-compass"></i>
+                        <h4>Explore Platform</h4>
+                        <p>Browse features and settings at your own pace</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="tutorial-navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousStep()" disabled>
+            <i class="fas fa-chevron-left"></i> Previous
+        </button>
+        <button class="nav-btn skip-btn" onclick="skipTutorial()">
+            Skip Tutorial
+        </button>
+        <button class="nav-btn primary" id="nextBtn" onclick="nextStep()">
+            Next <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.onboarding-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Tutorial Progress */
+.tutorial-progress {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    width: 16.67%; /* 1/6 steps */
+}
+
+.progress-text {
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Character Guide */
+.character-guide {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.character-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bounce 2s infinite;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-face {
+    color: white;
+    font-size: 1.5rem;
+}
+
+.eyes {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    justify-content: center;
+}
+
+.eye {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    animation: blink 3s infinite;
+}
+
+.pupil {
+    width: 4px;
+    height: 4px;
+    background: #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    animation: eyeMove 4s infinite;
+}
+
+.mouth {
+    width: 12px;
+    height: 6px;
+    border: 2px solid white;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    margin: 0 auto;
+    animation: talk 2s infinite;
+}
+
+.speech-bubble {
+    max-width: 300px;
+    background: white;
+    border-radius: 20px;
+    padding: 1rem 1.5rem;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.5s ease;
+}
+
+.bubble-content {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.bubble-arrow {
+    position: absolute;
+    bottom: -8px;
+    right: 2rem;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+}
+
+/* Tutorial Steps */
+.tutorial-steps {
+    max-width: 1000px;
+    margin: 8rem auto 6rem;
+    padding: 0 2rem;
+}
+
+.tutorial-step {
+    display: none;
+    animation: fadeInUp 0.6s ease;
+}
+
+.tutorial-step.active {
+    display: block;
+}
+
+.step-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.step-content h2 {
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.step-content p {
+    color: #666;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Feature Highlights */
+.feature-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 1rem 1.5rem;
+    border-radius: 50px;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.highlight-item i {
+    font-size: 1.2rem;
+}
+
+/* Session Types */
+.session-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.session-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 3px solid transparent;
+}
+
+.session-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.session-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.session-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.session-card p {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.session-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: left;
+}
+
+.session-features span {
+    color: #4CAF50;
+    font-size: 0.9rem;
+}
+
+/* Therapist Grid */
+.therapist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.therapist-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.therapist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.therapist-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 2rem;
+}
+
+.therapist-card h4 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.therapist-card p {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.specialty {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Features Demo */
+.features-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-demo {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.demo-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #FF6B6B, #EE5A52);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.demo-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.demo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* Safety Features */
+.safety-features {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.safety-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.safety-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.safety-content h4 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.safety-content p {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Getting Started */
+.getting-started {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.start-option {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 3px solid transparent;
+}
+
+.start-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    border-color: #4CAF50;
+}
+
+.start-option i {
+    font-size: 3rem;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+}
+
+.start-option h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.start-option p {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Navigation */
+.tutorial-navigation {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1rem 2rem;
+    z-index: 1000;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.nav-btn.primary {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+.nav-btn.skip-btn {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Animations */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes blink {
+    0%, 95%, 100% {
+        transform: scaleY(1);
+    }
+    97.5% {
+        transform: scaleY(0.1);
+    }
+}
+
+@keyframes eyeMove {
+    0%, 100% {
+        transform: translate(2px, 2px);
+    }
+    25% {
+        transform: translate(1px, 2px);
+    }
+    50% {
+        transform: translate(3px, 1px);
+    }
+    75% {
+        transform: translate(2px, 3px);
+    }
+}
+
+@keyframes talk {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(0.7);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .onboarding-container {
+        padding: 1rem;
+    }
+    
+    .tutorial-progress {
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .character-guide {
+        bottom: 8rem;
+        right: 1rem;
+    }
+    
+    .speech-bubble {
+        max-width: 250px;
+    }
+    
+    .tutorial-steps {
+        margin: 6rem auto 8rem;
+        padding: 0 1rem;
+    }
+    
+    .step-content {
+        padding: 2rem 1.5rem;
+    }
+    
+    .step-content h2 {
+        font-size: 2rem;
+    }
+    
+    .tutorial-navigation {
+        bottom: 1rem;
+        left: 1rem;
+        right: 1rem;
+        padding: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .safety-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .session-types,
+    .therapist-grid,
+    .features-demo,
+    .getting-started {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentStep = 1;
+const totalSteps = 6;
+
+const tutorialContent = {
+    1: "Welcome to Mind Mend! I'm Alex, your personal guide. Let's explore how our AI-powered therapy platform can help you on your mental health journey.",
+    2: "Choose the therapy type that feels right for you. Each option offers specialized support tailored to your unique needs.",
+    3: "Meet our AI therapists! Each one is trained in different therapeutic approaches. Don't worry - they're here to help, not replace human connection.",
+    4: "These interactive features make your therapy experience more engaging and effective. Try the demos to see how they work!",
+    5: "Your safety is our top priority. Our AI constantly monitors for signs of distress and can connect you with help immediately if needed.",
+    6: "Congratulations! You're ready to start your mental health journey. Choose your preferred way to begin, and remember - I'm always here to help guide you."
+};
+
+function updateProgress() {
+    const progressFill = document.getElementById('progressFill');
+    const currentStepSpan = document.getElementById('currentStep');
+    const percentage = (currentStep / totalSteps) * 100;
+    
+    progressFill.style.width = percentage + '%';
+    currentStepSpan.textContent = currentStep;
+}
+
+function updateCharacterSpeech() {
+    const bubbleContent = document.getElementById('bubbleContent');
+    const avatar = document.querySelector('.character-avatar');
+    
+    // Add talking animation
+    avatar.style.animation = 'bounce 0.5s ease, talk 0.3s ease infinite';
+    
+    // Type out the message
+    bubbleContent.textContent = '';
+    const message = tutorialContent[currentStep];
+    let i = 0;
+    
+    const typeInterval = setInterval(() => {
+        bubbleContent.textContent += message[i];
+        i++;
+        if (i >= message.length) {
+            clearInterval(typeInterval);
+            // Reset avatar animation
+            setTimeout(() => {
+                avatar.style.animation = 'bounce 2s infinite';
+            }, 1000);
+        }
+    }, 30);
+}
+
+function showStep(stepNumber) {
+    // Hide all steps
+    document.querySelectorAll('.tutorial-step').forEach(step => {
+        step.classList.remove('active');
+    });
+    
+    // Show current step
+    const currentStepElement = document.querySelector(`[data-step="${stepNumber}"]`);
+    if (currentStepElement) {
+        currentStepElement.classList.add('active');
+    }
+    
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    prevBtn.disabled = stepNumber === 1;
+    
+    if (stepNumber === totalSteps) {
+        nextBtn.textContent = 'Get Started!';
+        nextBtn.innerHTML = 'Get Started! <i class="fas fa-rocket"></i>';
+    } else {
+        nextBtn.innerHTML = 'Next <i class="fas fa-chevron-right"></i>';
+    }
+    
+    updateProgress();
+    updateCharacterSpeech();
+}
+
+function nextStep() {
+    if (currentStep < totalSteps) {
+        currentStep++;
+        showStep(currentStep);
+    } else {
+        // Tutorial completed
+        completeTutorial();
+    }
+}
+
+function previousStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+    }
+}
+
+function skipTutorial() {
+    if (confirm('Are you sure you want to skip the tutorial? You can always access it later from the help menu.')) {
+        window.location.href = '/';
+    }
+}
+
+function completeTutorial() {
+    // Mark tutorial as completed
+    localStorage.setItem('mindMendTutorialCompleted', 'true');
+    
+    // Show completion message
+    showCompletionMessage();
+}
+
+function showCompletionMessage() {
+    const container = document.querySelector('.onboarding-container');
+    container.innerHTML = `
+        <div class="completion-screen">
+            <div class="completion-content">
+                <div class="success-animation">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Tutorial Complete!</h2>
+                <p>You're now ready to explore Mind Mend and begin your mental health journey.</p>
+                <div class="completion-buttons">
+                    <button class="completion-btn primary" onclick="window.location.href='/individual'">
+                        <i class="fas fa-play"></i> Start First Session
+                    </button>
+                    <button class="completion-btn secondary" onclick="window.location.href='/'">
+                        <i class="fas fa-home"></i> Go to Homepage
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add completion styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .completion-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        
+        .completion-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 4rem;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-animation {
+            font-size: 5rem;
+            color: #4CAF50;
+            margin-bottom: 2rem;
+            animation: successPulse 1s ease infinite alternate;
+        }
+        
+        .completion-content h2 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .completion-content p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .completion-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .completion-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .completion-btn.primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .completion-btn.secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .completion-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes successPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function demoFeature(feature) {
+    const demoMessages = {
+        video: "This would activate your camera to demonstrate real-time emotion analysis!",
+        biometric: "This would show how to connect your smartwatch or fitness tracker!",
+        exercises: "This would generate a personalized breathing exercise based on your current mood!"
+    };
+    
+    alert(demoMessages[feature]);
+}
+
+function startSession(type) {
+    const routes = {
+        individual: '/individual',
+        assessment: '/video-assess',
+        explore: '/'
+    };
+    
+    localStorage.setItem('mindMendTutorialCompleted', 'true');
+    window.location.href = routes[type];
+}
+
+// Interactive elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tutorial
+    showStep(1);
+    
+    // Add click handlers for session cards
+    document.querySelectorAll('.session-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove active class from all cards
+            document.querySelectorAll('.session-card').forEach(c => c.classList.remove('selected'));
+            // Add active class to clicked card
+            this.classList.add('selected');
+            
+            // Add selected styling
+            const style = document.createElement('style');
+            style.textContent = `
+                .session-card.selected {
+                    border-color: #4CAF50 !important;
+                    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+                }
+            `;
+            if (!document.querySelector('#session-selected-style')) {
+                style.id = 'session-selected-style';
+                document.head.appendChild(style);
+            }
+        });
+    });
+    
+    // Add click handlers for therapist cards
+    document.querySelectorAll('.therapist-card').forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove active class from all cards
+            document.querySelectorAll('.therapist-card').forEach(c => c.classList.remove('selected'));
+            // Add active class to clicked card
+            this.classList.add('selected');
+            
+            // Add selected styling for therapist cards
+            const style = document.createElement('style');
+            style.textContent = `
+                .therapist-card.selected {
+                    border: 3px solid #4CAF50;
+                    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+                }
+            `;
+            if (!document.querySelector('#therapist-selected-style')) {
+                style.id = 'therapist-selected-style';
+                document.head.appendChild(style);
+            }
+        });
+    });
+    
+    // Eye tracking effect
+    document.addEventListener('mousemove', function(e) {
+        const eyes = document.querySelectorAll('.pupil');
+        eyes.forEach(eye => {
+            const rect = eye.getBoundingClientRect();
+            const eyeCenterX = rect.left + rect.width / 2;
+            const eyeCenterY = rect.top + rect.height / 2;
+            
+            const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
+            const distance = Math.min(2, Math.sqrt(Math.pow(e.clientX - eyeCenterX, 2) + Math.pow(e.clientY - eyeCenterY, 2)) / 10);
+            
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            
+            eye.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    });
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextStep();
+    } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        previousStep();
+    } else if (e.key === 'Escape') {
+        skipTutorial();
+    }
+});
+</script>
+{% endblock %}

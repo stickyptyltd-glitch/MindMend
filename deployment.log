@@ -1,0 +1,48 @@
+2025-09-12 21:02:28,454 - INFO - Created default deployment config: /home/sticky/Desktop/MindMend/MindMend/deployment_config.json
+2025-09-12 21:02:28,454 - INFO - 🔍 Running pre-deployment checks...
+2025-09-12 21:02:38,721 - INFO - \n📋 Pre-deployment Check Results:
+2025-09-12 21:02:38,721 - INFO -    ❌ Stripe keys not configured
+2025-09-12 21:02:38,721 - INFO -    ❌ OpenAI API key not configured
+2025-09-12 21:02:38,721 - INFO -    ✅ Database models working
+2025-09-12 21:02:38,722 - INFO -    ❌ Production SECRET_KEY not set
+2025-09-12 21:02:38,722 - INFO -    ⚠️  Cannot verify SSL certificate
+2025-09-12 22:27:10,470 - INFO - 🎯 Starting MindMend production deployment
+2025-09-12 22:27:10,470 - INFO -    Domain: mindmend.xyz
+2025-09-12 22:27:10,471 - INFO -    Server: your-server-ip
+2025-09-12 22:27:10,471 - INFO - 🔍 Running pre-deployment checks...
+2025-09-12 22:27:20,521 - INFO - \n📋 Pre-deployment Check Results:
+2025-09-12 22:27:20,521 - INFO -    ✅ Stripe keys configured
+2025-09-12 22:27:20,521 - INFO -    ❌ OpenAI API key not configured
+2025-09-12 22:27:20,521 - INFO -    ✅ Database models working
+2025-09-12 22:27:20,521 - INFO -    ❌ Production SECRET_KEY not set
+2025-09-12 22:27:20,521 - INFO -    ⚠️  Cannot verify SSL certificate
+2025-09-12 22:27:20,521 - ERROR - ❌ Pre-deployment checks failed. Fix issues before deploying.
+2025-09-12 22:27:53,526 - INFO - 🎯 Starting MindMend production deployment
+2025-09-12 22:27:53,526 - INFO -    Domain: mindmend.xyz
+2025-09-12 22:27:53,526 - INFO -    Server: your-server-ip
+2025-09-12 22:27:53,526 - INFO - 🚀 Deploying MindMend to production...
+2025-09-12 22:27:53,526 - INFO - Executing: ssh mindmend@your-server-ip 'sudo systemctl stop mindmend'
+2025-09-12 22:27:53,562 - ERROR - Deployment command failed: ssh: Could not resolve hostname your-server-ip: Name or service not known
+
+2025-09-12 22:27:53,562 - ERROR - ❌ Application deployment failed
+2025-09-12 22:43:47,798 - INFO - 🔍 Running pre-deployment checks...
+2025-09-12 22:43:57,845 - INFO - \n📋 Pre-deployment Check Results:
+2025-09-12 22:43:57,845 - INFO -    ✅ Stripe keys configured
+2025-09-12 22:43:57,845 - INFO -    ✅ OpenAI API key configured
+2025-09-12 22:43:57,845 - INFO -    ✅ Database models working
+2025-09-12 22:43:57,845 - INFO -    ❌ Production SECRET_KEY not set
+2025-09-12 22:43:57,845 - INFO -    ⚠️  Cannot verify SSL certificate
+2025-09-13 14:38:57,279 - INFO - 🔍 Running pre-deployment checks...
+2025-09-13 14:39:07,319 - INFO - \n📋 Pre-deployment Check Results:
+2025-09-13 14:39:07,320 - INFO -    ✅ Stripe keys configured
+2025-09-13 14:39:07,327 - INFO -    ✅ OpenAI API key configured
+2025-09-13 14:39:07,327 - INFO -    ✅ Database models working
+2025-09-13 14:39:07,327 - INFO -    ✅ Production SECRET_KEY configured
+2025-09-13 14:39:07,327 - INFO -    ⚠️  Cannot verify SSL certificate
+2025-09-13 14:52:46,712 - INFO - 🔍 Running pre-deployment checks...
+2025-09-13 14:52:56,753 - INFO - \n📋 Pre-deployment Check Results:
+2025-09-13 14:52:56,754 - INFO -    ✅ Stripe keys configured
+2025-09-13 14:52:56,754 - INFO -    ✅ OpenAI API key configured
+2025-09-13 14:52:56,754 - INFO -    ✅ Database models working
+2025-09-13 14:52:56,754 - INFO -    ✅ Production SECRET_KEY configured
+2025-09-13 14:52:56,754 - INFO -    ⚠️  Cannot verify SSL certificate

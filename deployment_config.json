@@ -1,0 +1,12 @@
+{
+  "domain": "mindmend.xyz",
+  "server_user": "mindmend",
+  "server_host": "67.219.102.9",
+  "app_directory": "/var/www/mindmend",
+  "python_version": "3.11",
+  "database_host": "localhost",
+  "database_name": "mindmend_production",
+  "ssl_enabled": true,
+  "backup_enabled": true,
+  "monitoring_enabled": true
+}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Couples Counseling - Mind Mend{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-heart me-2"></i>Couples Counseling Session</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Login Status Display -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card {% if partner1_logged_in %}bg-success text-white{% else %}bg-secondary{% endif %}">
+                                <div class="card-body text-center">
+                                    <h5><i class="fas fa-user me-2"></i>Partner 1</h5>
+                                    {% if partner1_logged_in %}
+                                        <p class="mb-0"><i class="fas fa-check-circle me-2"></i>{{ partner1_name }} - Logged In</p>
+                                    {% else %}
+                                        <p class="mb-0"><i class="fas fa-times-circle me-2"></i>Not Logged In</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card {% if partner2_logged_in %}bg-success text-white{% else %}bg-secondary{% endif %}">
+                                <div class="card-body text-center">
+                                    <h5><i class="fas fa-user me-2"></i>Partner 2</h5>
+                                    {% if partner2_logged_in %}
+                                        <p class="mb-0"><i class="fas fa-check-circle me-2"></i>{{ partner2_name }} - Logged In</p>
+                                    {% else %}
+                                        <p class="mb-0"><i class="fas fa-times-circle me-2"></i>Not Logged In</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if not (partner1_logged_in and partner2_logged_in) %}
+                    <!-- Login Forms -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Both partners need to log in to start the couples counseling session. You can log in on the same device or separate devices.
+                    </div>
+
+                    {% if not partner1_logged_in %}
+                    <div class="card mb-3">
+                        <div class="card-header bg-info">
+                            <h5 class="mb-0 text-dark">Partner 1 Login</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="{{ url_for('couples_login') }}">
+                                <input type="hidden" name="partner_role" value="partner1">
+                                <div class="mb-3">
+                                    <label for="partner1_name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="partner1_name" name="name" required placeholder="Enter your name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="partner1_email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="partner1_email" name="email" required placeholder="your@email.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="partner1_password" class="form-label">Password (Optional)</label>
+                                    <input type="password" class="form-control" id="partner1_password" name="password" placeholder="Leave blank for guest access">
+                                    <small class="form-text">For first-time users, leave blank for guest access</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login as Partner 1
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if not partner2_logged_in %}
+                    <div class="card">
+                        <div class="card-header bg-warning">
+                            <h5 class="mb-0 text-dark">Partner 2 Login</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="{{ url_for('couples_login') }}">
+                                <input type="hidden" name="partner_role" value="partner2">
+                                <div class="mb-3">
+                                    <label for="partner2_name" class="form-label">Your Name</label>
+                                    <input type="text" class="form-control" id="partner2_name" name="name" required placeholder="Enter your name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="partner2_email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="partner2_email" name="email" required placeholder="your@email.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="partner2_password" class="form-label">Password (Optional)</label>
+                                    <input type="password" class="form-control" id="partner2_password" name="password" placeholder="Leave blank for guest access">
+                                    <small class="form-text">For first-time users, leave blank for guest access</small>
+                                </div>
+                                <button type="submit" class="btn btn-warning text-dark">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login as Partner 2
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% else %}
+                    <!-- Both partners logged in - Show session options -->
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>Both partners are logged in! You can now start your couples counseling session.
+                    </div>
+
+                    <div class="text-center">
+                        <h4 class="mb-3">Welcome {{ partner1_name }} and {{ partner2_name }}!</h4>
+                        <p class="mb-4">You're ready to begin your couples counseling journey together.</p>
+                        
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ url_for('couples_session') }}" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-comments me-2"></i>Start Couples Session
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <button class="btn btn-danger btn-lg w-100" onclick="if(confirm('Are you sure you want to logout both partners?')) window.location.href='{{ url_for('couples_logout') }}'">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout Both Partners
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Instructions -->
+                    <div class="mt-4">
+                        <h5><i class="fas fa-question-circle me-2"></i>How It Works</h5>
+                        <ul>
+                            <li><strong>Same Device:</strong> Both partners can log in on the same computer or tablet. Simply complete both login forms above.</li>
+                            <li><strong>Separate Devices:</strong> Each partner can log in from their own device using the same session link.</li>
+                            <li><strong>Privacy:</strong> Your session is private and encrypted. Only you and your partner can access it.</li>
+                            <li><strong>AI Mediator:</strong> Our AI therapist will guide your conversation and provide helpful insights.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

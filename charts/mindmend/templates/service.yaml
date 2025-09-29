@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mindmend-backend-service
+  namespace: {{ .Values.namespace }}
+  annotations:
+    cloud.google.com/backend-config: '{"default":"mindmend-backendconfig"}'
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: mindmend-backend
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: 8000

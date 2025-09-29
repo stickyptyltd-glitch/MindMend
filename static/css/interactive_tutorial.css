@@ -1,0 +1,607 @@
+/* 🎨 Interactive Tutorial with Speaking Avatar Styles */
+
+.magical-onboarding-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    padding: 20px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ✨ Floating Particles Background */
+.floating-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-particles::before,
+.floating-particles::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: float 6s infinite linear;
+}
+
+.floating-particles::before {
+    top: 20%;
+    left: 20%;
+    animation-delay: -2s;
+}
+
+.floating-particles::after {
+    top: 80%;
+    right: 20%;
+    animation-delay: -4s;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+}
+
+/* 📊 Progress Ring */
+.progress-ring-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.progress-ring__circle {
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.progress-ring__progress {
+    stroke-dasharray: 327;
+    stroke-dashoffset: 327;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 8px #00d4aa);
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 700;
+    color: #333;
+    font-size: 16px;
+}
+
+/* 🤖 Speaking Avatar Container */
+.speaking-avatar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    padding-top: 50px;
+}
+
+/* 👤 Avatar Character */
+.avatar-character {
+    position: relative;
+    transform-origin: center bottom;
+    animation: breathe 4s infinite ease-in-out;
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.02) translateY(-5px); }
+}
+
+.avatar-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Avatar Head */
+.avatar-head {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(145deg, #ffd89b 0%, #19547b 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+/* Avatar Hair */
+.avatar-hair {
+    position: absolute;
+    top: -20px;
+    left: 10px;
+    right: 10px;
+    height: 40px;
+    background: linear-gradient(145deg, #4a4a4a, #2c2c2c);
+    border-radius: 50px 50px 20px 20px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Avatar Eyes */
+.avatar-eyes {
+    display: flex;
+    gap: 20px;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.eye {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: blink 6s infinite;
+}
+
+@keyframes blink {
+    0%, 90%, 100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.1); }
+}
+
+.eyeball {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.pupil {
+    width: 12px;
+    height: 12px;
+    background: #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.shine {
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 25%;
+    right: 25%;
+}
+
+/* Avatar Mouth with Talking Animation */
+.avatar-mouth {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25px;
+    height: 15px;
+}
+
+.mouth-shape {
+    width: 100%;
+    height: 100%;
+    background: #ff6b6b;
+    border-radius: 0 0 25px 25px;
+    transition: all 0.15s ease;
+}
+
+.avatar-mouth.talking .mouth-shape {
+    animation: mouthTalk 0.3s infinite alternate;
+}
+
+@keyframes mouthTalk {
+    0% { height: 15px; border-radius: 0 0 25px 25px; }
+    100% { height: 8px; border-radius: 25px; }
+}
+
+/* Avatar Torso */
+.avatar-torso {
+    width: 80px;
+    height: 60px;
+    background: linear-gradient(145deg, #4facfe, #00f2fe);
+    border-radius: 25px 25px 0 0;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.shirt {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 0;
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    border-radius: 20px 20px 0 0;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.1); }
+}
+
+/* 🌊 Speaking Waves */
+.speaking-waves {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.speaking-waves.active {
+    opacity: 1;
+}
+
+.speaking-waves span {
+    width: 4px;
+    height: 20px;
+    background: #00d4aa;
+    border-radius: 2px;
+    animation: soundWave 0.6s infinite;
+}
+
+.speaking-waves span:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.speaking-waves span:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+@keyframes soundWave {
+    0%, 100% { height: 4px; }
+    50% { height: 20px; }
+}
+
+/* 💬 Interactive Speech Bubble */
+.interactive-speech-bubble {
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 0;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.interactive-speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: 50px;
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-right: 15px solid rgba(255, 255, 255, 0.95);
+}
+
+.bubble-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avatar-name {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.voice-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.voice-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.voice-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.bubble-content {
+    padding: 25px;
+    min-height: 100px;
+}
+
+.typing-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+    min-height: 50px;
+}
+
+.typing-cursor {
+    animation: blink-cursor 1s infinite;
+}
+
+@keyframes blink-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.bubble-actions {
+    padding: 15px 25px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.action-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.skip-btn {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #e9ecef;
+}
+
+.skip-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.next-btn {
+    background: linear-gradient(135deg, #00d4aa, #01c3a7);
+    color: white;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+}
+
+.next-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
+}
+
+.next-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ✨ Tutorial Steps */
+.tutorial-steps {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.95);
+    margin-top: 50px;
+    border-radius: 25px 25px 0 0;
+    min-height: 400px;
+    backdrop-filter: blur(10px);
+}
+
+.tutorial-step {
+    display: none;
+    padding: 40px;
+    text-align: center;
+}
+
+.tutorial-step.active {
+    display: block;
+    animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 🎯 Welcome Animation */
+.welcome-animation {
+    margin-bottom: 40px;
+}
+
+.glowing-title {
+    font-size: 3rem;
+    background: linear-gradient(45deg, #667eea, #764ba2, #00d4aa);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 3s ease-in-out infinite;
+    margin-bottom: 15px;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.subtitle-animation {
+    font-size: 1.5rem;
+    color: #666;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.5s forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* 🚀 Epic Features */
+.epic-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(20px);
+    opacity: 0;
+    animation: cardAppear 0.6s ease-out forwards;
+    transition: all 0.3s ease;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.2s; }
+.feature-card:nth-child(2) { animation-delay: 0.4s; }
+.feature-card:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes cardAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    animation: bounce 2s infinite;
+}
+
+.feature-card:nth-child(2) .feature-icon { animation-delay: 0.3s; }
+.feature-card:nth-child(3) .feature-icon { animation-delay: 0.6s; }
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+.feature-card h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+.feature-card p {
+    color: #666;
+    line-height: 1.5;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+    .speaking-avatar-container {
+        flex-direction: column;
+        gap: 20px;
+        padding-top: 30px;
+    }
+    
+    .interactive-speech-bubble {
+        max-width: 90vw;
+        margin-top: 20px;
+    }
+    
+    .glowing-title {
+        font-size: 2rem;
+    }
+    
+    .epic-features {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .progress-ring-container {
+        top: 10px;
+        right: 10px;
+        transform: scale(0.8);
+    }
+}
+
+/* 🎭 Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

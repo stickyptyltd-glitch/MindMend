@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <defs>
+    <linearGradient id="leafGradientIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00b894;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#6c5ce7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fd79a8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon-only version for small spaces -->
+  <g transform="translate(5, 5)">
+    <!-- Leaf shape representing growth/healing -->
+    <path d="M10,45 Q5,35 10,25 Q15,15 25,20 Q35,25 35,35 Q30,45 25,45 Q17,47 10,45 Z" 
+          fill="url(#leafGradientIcon)" stroke="#6c5ce7" stroke-width="2"/>
+    
+    <!-- Leaf veins as tech circuits -->
+    <path d="M12,35 Q20,30 28,35" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.8"/>
+    <path d="M15,40 Q22,37 29,40" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.7"/>
+    <path d="M18,30 Q22,28 26,30" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.7"/>
+    
+    <!-- Tech nodes -->
+    <circle cx="20" cy="30" r="1.5" fill="#ffffff" opacity="0.9"/>
+    <circle cx="25" cy="35" r="1.5" fill="#ffffff" opacity="0.9"/>
+    <circle cx="22" cy="40" r="1.5" fill="#ffffff" opacity="0.9"/>
+  </g>
+</svg>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Mind Mend</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-sidebar {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .admin-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .alert-item {
+            border-left: 4px solid #ffc107;
+            background: #fff3cd;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0 5px 5px 0;
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-nav a {
+            color: #bdc3c7;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            display: block;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: #3498db;
+            color: white;
+        }
+        .company-logo {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 admin-sidebar">
+                <div class="company-logo">
+                    <h4><i class="fas fa-brain me-2"></i>Mind Mend</h4>
+                    <small>Sticky Pty Ltd</small>
+                </div>
+                
+                <ul class="sidebar-nav">
+                    <li><a href="{{ url_for('admin.dashboard') }}" class="active">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a></li>
+                    <li><a href="{{ url_for('admin.api_keys') }}">
+                        <i class="fas fa-key me-2"></i>API Keys
+                    </a></li>
+                    <li><a href="{{ url_for('admin.platform_upgrades') }}">
+                        <i class="fas fa-rocket me-2"></i>Platform Upgrades
+                    </a></li>
+                    <li><a href="{{ url_for('admin.business_settings') }}">
+                        <i class="fas fa-building me-2"></i>Business Settings
+                    </a></li>
+                    <li><a href="{{ url_for('admin.user_management') }}">
+                        <i class="fas fa-users me-2"></i>Users & Counselors
+                    </a></li>
+                    <li><a href="{{ url_for('admin.counselor_benefits') }}">
+                        <i class="fas fa-briefcase me-2"></i>Counselor Benefits
+                    </a></li>
+                    <li><a href="{{ url_for('admin.ai_model_manager') }}">
+                        <i class="fas fa-brain me-2"></i>AI Models
+                    </a></li>
+                    <li><a href="{{ url_for('admin.enhancement_manager') }}">
+                        <i class="fas fa-rocket me-2"></i>Enhancements
+                    </a></li>
+                    <li><a href="{{ url_for('admin.social_connection_manager') }}">
+                        <i class="fas fa-users-line me-2"></i>Social Connections
+                    </a></li>
+                    <li><a href="{{ url_for('admin.therapeutic_tools_manager') }}">
+                        <i class="fas fa-vr-cardboard me-2"></i>Therapeutic Tools
+                    </a></li>
+                    <li><a href="{{ url_for('admin.financial_overview') }}">
+                        <i class="fas fa-chart-line me-2"></i>Financial Overview
+                    </a></li>
+                    <li><a href="{{ url_for('admin.system_monitoring') }}">
+                        <i class="fas fa-server me-2"></i>System Monitoring
+                    </a></li>
+                    <li><a href="{{ url_for('admin.deployment_tools') }}">
+                        <i class="fas fa-cloud me-2"></i>Deployment Tools
+                    </a></li>
+                    <li><a href="{{ url_for('admin.ai_assistant') }}">
+                        <i class="fas fa-robot me-2"></i>AI Assistant
+                    </a></li>
+                    <li><a href="{{ url_for('admin.research_management') }}">
+                        <i class="fas fa-microscope me-2"></i>Research & Data
+                    </a></li>
+                    <li><a href="{{ url_for('admin.ai_models') }}">
+                        <i class="fas fa-brain me-2"></i>AI Models
+                    </a></li>
+                </ul>
+                
+                <div class="mt-auto p-3">
+                    <a href="{{ url_for('admin.logout') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 admin-content">
+                <div class="p-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+                        <div>
+                            <span class="badge bg-success me-2">Version {{ data.platform_config.platform_settings.version }}</span>
+                            <span class="badge bg-info">Uptime: {{ data.system_stats.platform_uptime }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Alerts -->
+                    {% if data.alerts %}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5><i class="fas fa-exclamation-triangle me-2"></i>System Alerts</h5>
+                            {% for alert in data.alerts %}
+                            <div class="alert-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ alert.message }}</span>
+                                    <a href="{{ alert.action_url }}" class="btn btn-warning btn-sm">Take Action</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">{{ data.system_stats.total_users }}</div>
+                                <div class="text-muted">Total Users</div>
+                                <small class="text-success"><i class="fas fa-arrow-up"></i> +12% this month</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">{{ data.system_stats.active_sessions }}</div>
+                                <div class="text-muted">Active Sessions</div>
+                                <small class="text-info"><i class="fas fa-clock"></i> Live now</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">{{ data.system_stats.total_counselors }}</div>
+                                <div class="text-muted">Licensed Counselors</div>
+                                <small class="text-primary"><i class="fas fa-user-md"></i> 5 pending approval</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">${{ "{:,.0f}".format(data.system_stats.revenue_this_month) }}</div>
+                                <div class="text-muted">Revenue This Month</div>
+                                <small class="text-success"><i class="fas fa-dollar-sign"></i> AUD</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-key fa-2x text-primary mb-2"></i>
+                                            <h6>Configure API Keys</h6>
+                                            <p class="small text-muted">Set up payment gateways and AI services</p>
+                                            <a href="{{ url_for('admin.api_keys') }}" class="btn btn-primary btn-sm">Configure</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-rocket fa-2x text-success mb-2"></i>
+                                            <h6>Upgrade Platform</h6>
+                                            <p class="small text-muted">Enable Level 3 features and mobile apps</p>
+                                            <a href="{{ url_for('admin.platform_upgrades') }}" class="btn btn-success btn-sm">Upgrade</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-cloud fa-2x text-info mb-2"></i>
+                                            <h6>Deploy to Production</h6>
+                                            <p class="small text-muted">Move to secure hosting with custom domain</p>
+                                            <a href="{{ url_for('admin.deployment_tools') }}" class="btn btn-info btn-sm">Deploy</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activities -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-history me-2"></i>Recent Activities</h6>
+                                </div>
+                                <div class="card-body">
+                                    {% for activity in data.recent_activities %}
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="me-3">
+                                            {% if activity.type == 'user' %}
+                                                <i class="fas fa-user-plus text-primary"></i>
+                                            {% elif activity.type == 'payment' %}
+                                                <i class="fas fa-credit-card text-success"></i>
+                                            {% else %}
+                                                <i class="fas fa-user-md text-info"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-bold">{{ activity.action }}</div>
+                                            <small class="text-muted">{{ activity.details }}</small>
+                                        </div>
+                                        <small class="text-muted">{{ activity.timestamp.strftime('%H:%M') }}</small>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6><i class="fas fa-cog me-2"></i>Platform Status</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>AI Features</span>
+                                            <span class="badge bg-success">Enabled</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Payment Processing</span>
+                                            <span class="badge bg-warning">Setup Required</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Video Assessment</span>
+                                            <span class="badge bg-success">Enabled</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Counselor Platform</span>
+                                            <span class="badge bg-secondary">Level 3+</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Mobile Apps</span>
+                                            <span class="badge bg-secondary">Available for Purchase</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-refresh system stats every 30 seconds
+        setInterval(function() {
+            fetch('/admin/api/system-stats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update stat cards with fresh data
+                    console.log('Stats updated:', data);
+                })
+                .catch(error => console.log('Stats update failed:', error));
+        }, 30000);
+    </script>
+</body>
+</html>

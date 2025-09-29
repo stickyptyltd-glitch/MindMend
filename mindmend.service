@@ -1,0 +1,36 @@
+# MindMend Systemd Service Configuration
+# =====================================
+# Place this file in /etc/systemd/system/mindmend.service
+
+[Unit]
+Description=MindMend Mental Health Platform
+After=network.target postgresql.service redis.service
+Wants=postgresql.service redis.service
+
+[Service]
+Type=exec
+User=mindmend
+Group=www-data
+WorkingDirectory=/var/www/mindmend
+Environment=PATH=/var/www/mindmend/venv/bin
+ExecStart=/var/www/mindmend/venv/bin/gunicorn --workers 4 --bind 127.0.0.1:8000 --timeout 120 --max-requests 10000 --access-logfile /var/log/mindmend/access.log --error-logfile /var/log/mindmend/error.log app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=always
+RestartSec=3
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/www/mindmend /var/log/mindmend /tmp
+
+# Environment
+EnvironmentFile=/var/www/mindmend/.env.production
+
+# Logging
+StandardOutput=append:/var/log/mindmend/systemd.log
+StandardError=append:/var/log/mindmend/systemd.log
+
+[Install]
+WantedBy=multi-user.target
