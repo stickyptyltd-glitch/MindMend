@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session, flash
 import os
 from models.database import db, AdminUser, AdminAudit, Counselor
+from models.subscription import NewsletterSubscription
 from werkzeug.security import check_password_hash
 from datetime import datetime, timedelta
 from collections import deque
@@ -263,6 +264,26 @@ def deactivate_counselor(c_id):
     db.session.commit()
     flash('Counselor deactivated', 'success')
     return redirect(url_for('admin.list_counselors'))
+
+
+@admin_bp.route('/newsletter/export')
+@require_admin_auth
+def export_newsletter():
+    """Export newsletter subscriptions as CSV (super_admin only)."""
+    if session.get('admin_role') != 'super_admin':
+        return ("Forbidden", 403)
+    import csv
+    from io import StringIO
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["email", "consent", "created_at"])
+    for s in NewsletterSubscription.query.order_by(NewsletterSubscription.created_at.desc()).all():
+        writer.writerow([s.email, 'yes' if s.consent else 'no', s.created_at.isoformat()])
+    resp = output.getvalue()
+    return (resp, 200, {
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': 'attachment; filename="newsletter_subscribers.csv"'
+    })
 
 
 @admin_bp.route('/admins/send-verification', methods=['POST'])
