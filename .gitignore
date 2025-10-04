@@ -17,3 +17,85 @@ local.properties
 # Replit specific
 .replit
 replit.nix
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.*.production
+.env.backup
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+venv.bak/
+ENV/
+
+# Virtualenv / pipenv / poetry
+.venv/
+pip-wheel-metadata/
+.python-version
+poetry.lock
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.jks
+
+# Archives, deployments, build artefacts
+*.tar.gz
+*.zip
+*.egg
+dist/
+build/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database files
+*.sqlite3
+*.db
+
+# Secrets / credentials (explicit)
+ADMIN_CREDENTIALS.txt
+*_CREDENTIALS*
+credentials/
+secrets/
+secrets.*.json
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+.env.docker
+
+# Misc
+coverage/
+.coverage
+htmlcov/
+.pycharm/
+
+# Kubernetes / cloud config local files
+kubeconfig
+kubeconfig.*
+gcloud-credentials.json
+google-credentials.json
