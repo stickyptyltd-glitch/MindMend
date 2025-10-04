@@ -34,11 +34,27 @@ STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
 YOUR_DOMAIN = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')
 
 # Configure the database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///data/patients.db")
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+# Default to SQLite for local/dev to avoid hangs when a remote DB is unreachable.
+env_db_url = os.environ.get("DATABASE_URL")
+is_production = os.environ.get("FLASK_ENV") == "production" or os.environ.get("ENV") == "production"
+force_sqlite = os.environ.get("FORCE_SQLITE") == "1"
+
+if env_db_url and is_production and not force_sqlite:
+    app.config["SQLALCHEMY_DATABASE_URI"] = env_db_url
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data/patients.db"
+
+engine_options = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
+
+# Add a short connect timeout for Postgres to avoid long hangs
+db_uri = app.config["SQLALCHEMY_DATABASE_URI"]
+if isinstance(db_uri, str) and db_uri.startswith("postgresql"):
+    engine_options["connect_args"] = {"connect_timeout": 5}
+
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = engine_options
 
 # Initialize extensions
 db.init_app(app)
