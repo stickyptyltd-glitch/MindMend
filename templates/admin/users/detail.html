@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details - {{ user.name }} - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .user-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50px, -50px);
+        }
+
+        .user-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .progress-ring {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+            position: relative;
+        }
+
+        .progress-ring circle {
+            fill: transparent;
+            stroke-width: 8;
+            r: 40;
+            cx: 50;
+            cy: 50;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-ring .background {
+            stroke: #e9ecef;
+        }
+
+        .progress-ring .progress {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .engagement-high { stroke: var(--success-color); }
+        .engagement-medium { stroke: var(--warning-color); }
+        .engagement-low { stroke: var(--danger-color); }
+
+        .timeline-item {
+            border-left: 3px solid var(--secondary-color);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            position: absolute;
+            left: -7.5px;
+            top: 0.5rem;
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .badge-risk-low { background: var(--success-color); }
+        .badge-risk-medium { background: var(--warning-color); }
+        .badge-risk-high { background: var(--danger-color); }
+        .badge-risk-critical { background: #8b0000; }
+
+        .session-card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .session-card:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+        }
+
+        .mood-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .mood-1, .mood-2 { background: var(--danger-color); }
+        .mood-3, .mood-4 { background: var(--warning-color); }
+        .mood-5, .mood-6, .mood-7 { background: var(--secondary-color); }
+        .mood-8, .mood-9, .mood-10 { background: var(--success-color); }
+
+        .action-buttons {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.users_list') }}">Users</a></li>
+                        <li class="breadcrumb-item active">{{ user.name }}</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <div class="action-buttons">
+                <div class="btn-group">
+                    <a href="{{ url_for('admin.user_edit', user_id=user.id) }}" class="btn btn-primary">
+                        <i class="fas fa-edit me-1"></i>Edit User
+                    </a>
+                    <button class="btn btn-outline-info" onclick="exportUserData()">
+                        <i class="fas fa-download me-1"></i>Export Data
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="impersonateUser()">
+                        <i class="fas fa-user-ninja me-1"></i>Impersonate
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteUser()">
+                        <i class="fas fa-trash me-1"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Header Card -->
+        <div class="user-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="user-avatar-large">
+                        {{ user.name[0].upper() if user.name else 'U' }}
+                    </div>
+                    <h2 class="mb-2">{{ user.name }}</h2>
+                    <p class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>{{ user.email }}
+                        {% if user.phone %}
+                            <i class="fas fa-phone ms-3 me-2"></i>{{ user.phone }}
+                        {% endif %}
+                    </p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="badge bg-light text-dark">
+                            <i class="fas fa-crown me-1"></i>{{ user.subscription_tier.title() }}
+                        </span>
+                        <span class="badge badge-risk-{{ user.risk_level }}">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ user.risk_level.title() }} Risk
+                        </span>
+                        {% if user.created_at %}
+                            <span class="badge bg-light text-dark">
+                                <i class="fas fa-calendar me-1"></i>Joined {{ user.created_at.strftime('%B %Y') }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="progress-ring">
+                        <svg width="100" height="100">
+                            <circle class="background" />
+                            <circle class="progress engagement-{{ 'high' if metrics.engagement_score > 70 else 'medium' if metrics.engagement_score > 40 else 'low' }}" />
+                        </svg>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center">
+                            <div class="h4 mb-0">{{ metrics.engagement_score }}%</div>
+                            <small>Engagement</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-number text-primary">{{ metrics.total_sessions }}</div>
+                <div class="metric-label">Total Sessions</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number text-success">{{ metrics.avg_session_duration }}</div>
+                <div class="metric-label">Avg Duration (min)</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number {{ 'text-success' if metrics.mood_improvement_avg > 0 else 'text-danger' if metrics.mood_improvement_avg < 0 else 'text-muted' }}">
+                    {{ '+' if metrics.mood_improvement_avg > 0 }}{{ metrics.mood_improvement_avg }}
+                </div>
+                <div class="metric-label">Mood Improvement</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number text-info">
+                    {% if metrics.last_session_date %}
+                        {{ (now() - metrics.last_session_date).days }}
+                    {% else %}
+                        ∞
+                    {% endif %}
+                </div>
+                <div class="metric-label">Days Since Last Session</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-md-8">
+                <!-- Recent Sessions -->
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-comments me-2 text-primary"></i>Recent Sessions
+                        <span class="badge bg-primary ms-2">{{ sessions|length }}</span>
+                    </h5>
+
+                    {% if sessions %}
+                        {% for session in sessions[:10] %}
+                        <div class="session-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6 class="mb-1">{{ session.session_type.title() }} Session</h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>{{ session.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                        {% if session.duration_minutes %}
+                                            • {{ session.duration_minutes }} minutes
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="col-md-3">
+                                    {% if session.mood_before and session.mood_after %}
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mood-indicator mood-{{ session.mood_before }}">{{ session.mood_before }}</div>
+                                        <i class="fas fa-arrow-right text-muted"></i>
+                                        <div class="mood-indicator mood-{{ session.mood_after }}">{{ session.mood_after }}</div>
+                                    </div>
+                                    <small class="text-muted">Mood Change</small>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3 text-end">
+                                    {% if session.alerts %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>Alert
+                                        </span>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewSession({{ session.id }})">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-comments fa-3x mb-3"></i>
+                            <p>No sessions recorded yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Session Analytics Chart -->
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-chart-line me-2 text-primary"></i>Session Analytics
+                    </h5>
+                    <div class="chart-container">
+                        <canvas id="sessionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-4">
+                <!-- User Information -->
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-user me-2 text-primary"></i>User Information
+                    </h5>
+
+                    <div class="mb-3">
+                        <strong>Email:</strong><br>
+                        <span class="text-muted">{{ user.email }}</span>
+                    </div>
+
+                    {% if user.phone %}
+                    <div class="mb-3">
+                        <strong>Phone:</strong><br>
+                        <span class="text-muted">{{ user.phone }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if user.emergency_contact %}
+                    <div class="mb-3">
+                        <strong>Emergency Contact:</strong><br>
+                        <span class="text-muted">{{ user.emergency_contact }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <strong>Account Created:</strong><br>
+                        <span class="text-muted">{{ user.created_at.strftime('%B %d, %Y at %H:%M') if user.created_at else 'Unknown' }}</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Last Session:</strong><br>
+                        <span class="text-muted">
+                            {% if user.last_session %}
+                                {{ user.last_session.strftime('%B %d, %Y at %H:%M') }}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Consent Settings:</strong><br>
+                        <div class="mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" disabled {{ 'checked' if user.consent_video_analysis }}>
+                                <label class="form-check-label">Video Analysis</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" disabled {{ 'checked' if user.consent_biometric_tracking }}>
+                                <label class="form-check-label">Biometric Tracking</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" disabled {{ 'checked' if user.consent_data_sharing }}>
+                                <label class="form-check-label">Data Sharing</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Info -->
+                {% if subscription %}
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-crown me-2 text-primary"></i>Subscription
+                    </h5>
+
+                    <div class="mb-3">
+                        <strong>Current Tier:</strong><br>
+                        <span class="badge subscription-{{ subscription.tier }} fs-6">{{ subscription.tier.title() }}</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Status:</strong><br>
+                        <span class="badge {{ 'bg-success' if subscription.status == 'active' else 'bg-danger' }} fs-6">
+                            {{ subscription.status.title() }}
+                        </span>
+                    </div>
+
+                    {% if subscription.current_period_end %}
+                    <div class="mb-3">
+                        <strong>Next Billing:</strong><br>
+                        <span class="text-muted">{{ subscription.current_period_end.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <strong>Since:</strong><br>
+                        <span class="text-muted">{{ subscription.created_at.strftime('%B %d, %Y') if subscription.created_at else 'Unknown' }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Payment History -->
+                {% if payments %}
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-credit-card me-2 text-primary"></i>Recent Payments
+                    </h5>
+
+                    {% for payment in payments[:5] %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <small class="text-muted">{{ payment.created_at.strftime('%m/%d/%Y') if payment.created_at }}</small><br>
+                            <strong>${{ "%.2f"|format(payment.amount) }}</strong>
+                        </div>
+                        <span class="badge {{ 'bg-success' if payment.status == 'succeeded' else 'bg-danger' }}">
+                            {{ payment.status.title() }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Medical Information -->
+                {% if user.medical_history or user.therapy_goals %}
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-heartbeat me-2 text-primary"></i>Medical Information
+                        <span class="badge bg-warning ms-2" title="Protected Health Information">PHI</span>
+                    </h5>
+
+                    {% if user.medical_history %}
+                    <div class="mb-3">
+                        <strong>Medical History:</strong><br>
+                        <p class="text-muted mt-2">{{ user.medical_history }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if user.therapy_goals %}
+                    <div class="mb-3">
+                        <strong>Therapy Goals:</strong><br>
+                        <p class="text-muted mt-2">{{ user.therapy_goals }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Animate engagement ring
+        document.addEventListener('DOMContentLoaded', function() {
+            const engagementScore = {{ metrics.engagement_score }};
+            const progressRing = document.querySelector('.progress-ring .progress');
+            const circumference = 2 * Math.PI * 40; // radius = 40
+            const offset = circumference - (engagementScore / 100) * circumference;
+
+            setTimeout(() => {
+                progressRing.style.strokeDashoffset = offset;
+            }, 500);
+        });
+
+        // Session Analytics Chart
+        const ctx = document.getElementById('sessionChart').getContext('2d');
+        const sessionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for session in sessions[:10]|reverse %}
+                        '{{ session.timestamp.strftime("%m/%d") }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Mood Before',
+                    data: [
+                        {% for session in sessions[:10]|reverse %}
+                            {{ session.mood_before or 'null' }},
+                        {% endfor %}
+                    ],
+                    borderColor: '#f39c12',
+                    backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'Mood After',
+                    data: [
+                        {% for session in sessions[:10]|reverse %}
+                            {{ session.mood_after or 'null' }},
+                        {% endfor %}
+                    ],
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'Mood Rating'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Mood Tracking Over Recent Sessions'
+                    }
+                }
+            }
+        });
+
+        function viewSession(sessionId) {
+            // Implement session detail view
+            alert('Session detail view - Session ID: ' + sessionId);
+        }
+
+        function exportUserData() {
+            if (confirm('Export all user data? This action will be logged for audit purposes.')) {
+                window.location.href = `/admin/users/{{ user.id }}/export`;
+            }
+        }
+
+        function impersonateUser() {
+            if (confirm('Impersonate this user? This action will be logged for audit purposes.')) {
+                window.location.href = `/admin/users/{{ user.id }}/impersonate`;
+            }
+        }
+
+        function deleteUser() {
+            if (confirm('Are you sure you want to permanently delete this user account? This action cannot be undone!')) {
+                if (confirm('This will delete ALL user data including sessions, payments, and medical records. Continue?')) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/admin/users/{{ user.id }}/delete`;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

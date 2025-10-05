@@ -1,0 +1,596 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Upload Training Dataset - MindMend Admin{% endblock %}
+
+{% block extra_head %}
+<style>
+    .upload-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .upload-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .upload-section h4 {
+        color: #495057;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .file-drop-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 12px;
+        padding: 3rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .file-drop-area:hover {
+        border-color: #007bff;
+        background: #e7f3ff;
+    }
+
+    .file-drop-area.dragover {
+        border-color: #28a745;
+        background: #e8f5e8;
+        transform: scale(1.02);
+    }
+
+    .file-drop-icon {
+        font-size: 3rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+
+    .file-drop-area.dragover .file-drop-icon {
+        color: #28a745;
+    }
+
+    .file-info {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #e7f1ff;
+        border-radius: 8px;
+        display: none;
+    }
+
+    .file-info.show {
+        display: block;
+    }
+
+    .data-type-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .data-type-option {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .data-type-option:hover {
+        border-color: #17a2b8;
+        background: #e6f7ff;
+    }
+
+    .data-type-option.selected {
+        border-color: #17a2b8;
+        background: #e6f7ff;
+        box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+    }
+
+    .data-type-option i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .template-section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .template-preview {
+        background: #2d3748;
+        color: #e2e8f0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        margin-top: 1rem;
+        white-space: pre;
+    }
+
+    .format-guidelines {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .format-guidelines h6 {
+        color: #856404;
+        margin-bottom: 1rem;
+    }
+
+    .format-guidelines ul {
+        color: #856404;
+        margin-bottom: 0;
+    }
+
+    .format-guidelines li {
+        margin-bottom: 0.5rem;
+    }
+
+    .progress-bar {
+        height: 6px;
+        background: #e9ecef;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 1rem;
+        display: none;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #007bff, #28a745);
+        border-radius: 3px;
+        transition: width 0.3s ease;
+        width: 0%;
+    }
+
+    .form-actions {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .info-box {
+        background: #e7f3ff;
+        border: 1px solid #bee5eb;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-box i {
+        color: #0c5460;
+        margin-right: 0.5rem;
+    }
+
+    .sample-data-tabs {
+        margin-top: 1rem;
+    }
+
+    .tab-content {
+        background: white;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+    }
+
+    @media (max-width: 768px) {
+        .data-type-selector {
+            grid-template-columns: 1fr;
+        }
+
+        .file-drop-area {
+            padding: 2rem 1rem;
+        }
+
+        .template-preview {
+            font-size: 0.75rem;
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">📊 Upload Training Dataset</h2>
+            <p class="text-muted mb-0">Upload data to train your custom AI models</p>
+        </div>
+        <a href="{{ url_for('admin.ai_builder_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Builder
+        </a>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+        <!-- Basic Information -->
+        <div class="upload-section">
+            <h4><i class="fas fa-info-circle"></i> Dataset Information</h4>
+
+            <div class="info-box">
+                <i class="fas fa-lightbulb"></i>
+                <strong>Dataset Requirements:</strong> Upload JSON files with structured training data.
+                Your dataset should contain text samples and their corresponding labels or values.
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="datasetName" class="form-label">Dataset Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="datasetName" name="name" required
+                               placeholder="e.g., Therapy Session Classifications">
+                        <div class="form-text">Choose a descriptive name for your dataset</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="targetColumn" class="form-label">Target Column <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="targetColumn" name="target_column" required
+                               placeholder="e.g., category, severity, score">
+                        <div class="form-text">The column name containing the labels/values to predict</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="datasetDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="datasetDescription" name="description" rows="3"
+                          placeholder="Describe the dataset contents and intended use..."></textarea>
+                <div class="form-text">Optional description of your dataset</div>
+            </div>
+        </div>
+
+        <!-- Data Type Selection -->
+        <div class="upload-section">
+            <h4><i class="fas fa-database"></i> Data Type</h4>
+
+            <input type="hidden" name="data_type" id="selectedDataType" value="text">
+
+            <div class="data-type-selector">
+                <div class="data-type-option selected" data-type="text">
+                    <i class="fas fa-file-alt" style="color: #007bff;"></i>
+                    <h6>Text Data</h6>
+                    <p>Natural language text for NLP tasks</p>
+                </div>
+                <div class="data-type-option" data-type="tabular">
+                    <i class="fas fa-table" style="color: #28a745;"></i>
+                    <h6>Tabular Data</h6>
+                    <p>Structured data with multiple columns</p>
+                </div>
+                <div class="data-type-option" data-type="image">
+                    <i class="fas fa-image" style="color: #ffc107;"></i>
+                    <h6>Image Data</h6>
+                    <p>Image files with labels</p>
+                </div>
+                <div class="data-type-option" data-type="audio">
+                    <i class="fas fa-volume-up" style="color: #dc3545;"></i>
+                    <h6>Audio Data</h6>
+                    <p>Audio files for speech analysis</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Upload -->
+        <div class="upload-section">
+            <h4><i class="fas fa-upload"></i> Upload File</h4>
+
+            <div class="file-drop-area" id="fileDropArea">
+                <i class="fas fa-cloud-upload-alt file-drop-icon"></i>
+                <h5>Drag & Drop your dataset file here</h5>
+                <p class="text-muted">or click to browse and select a file</p>
+                <p><strong>Supported formats:</strong> JSON (.json)</p>
+                <input type="file" id="datasetFile" name="dataset_file" accept=".json" style="display: none;" required>
+            </div>
+
+            <div class="file-info" id="fileInfo">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1" id="fileName">Selected File</h6>
+                        <p class="text-muted mb-0" id="fileSize">Size: 0 KB</p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearFile()">
+                        <i class="fas fa-times"></i> Remove
+                    </button>
+                </div>
+
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Data Template -->
+        <div class="template-section">
+            <h4><i class="fas fa-code"></i> Data Format Template</h4>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <strong>Format Guidelines:</strong> Your dataset should follow this JSON structure for best results.
+                Each record should contain the text data and corresponding target values.
+            </div>
+
+            <!-- Template Tabs -->
+            <ul class="nav nav-tabs sample-data-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="therapy-tab" data-bs-toggle="tab" data-bs-target="#therapy" type="button" role="tab">
+                        Therapy Template
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="custom-tab" data-bs-toggle="tab" data-bs-target="#custom" type="button" role="tab">
+                        Custom Format
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="therapy" role="tabpanel">
+                    <h6>Therapy Session Classification Template:</h6>
+                    <div class="template-preview">{{ template_data }}</div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="downloadTemplate('therapy')">
+                        <i class="fas fa-download"></i> Download Template
+                    </button>
+                </div>
+
+                <div class="tab-pane fade" id="custom" role="tabpanel">
+                    <h6>Custom Data Format:</h6>
+                    <div class="template-preview">[
+  {
+    "text": "Your input text here",
+    "category": "your_target_label",
+    "additional_field": "optional_data"
+  },
+  {
+    "text": "Another text sample",
+    "category": "another_label",
+    "additional_field": "more_data"
+  }
+]</div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="downloadTemplate('custom')">
+                        <i class="fas fa-download"></i> Download Template
+                    </button>
+                </div>
+            </div>
+
+            <div class="format-guidelines">
+                <h6><i class="fas fa-exclamation-triangle"></i> Important Guidelines</h6>
+                <ul>
+                    <li>File must be in valid JSON format</li>
+                    <li>Each record should have a "text" field containing the input data</li>
+                    <li>Target column name should match what you specify above</li>
+                    <li>Ensure consistent field names across all records</li>
+                    <li>Remove any personally identifiable information (PII)</li>
+                    <li>Recommended minimum: 100 samples for basic training</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success btn-lg" id="uploadButton">
+                <i class="fas fa-upload"></i> Upload Dataset
+            </button>
+            <div class="mt-2">
+                <small class="text-muted">
+                    Your dataset will be processed and validated after upload
+                </small>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setupFileUpload();
+    setupDataTypeSelection();
+});
+
+function setupFileUpload() {
+    const dropArea = document.getElementById('fileDropArea');
+    const fileInput = document.getElementById('datasetFile');
+    const fileInfo = document.getElementById('fileInfo');
+
+    // Click to select file
+    dropArea.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop handlers
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.classList.add('dragover');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('dragover');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelection(files[0]);
+        }
+    });
+
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelection(e.target.files[0]);
+        }
+    });
+}
+
+function setupDataTypeSelection() {
+    document.querySelectorAll('.data-type-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.data-type-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('selectedDataType').value = this.dataset.type;
+        });
+    });
+}
+
+function handleFileSelection(file) {
+    // Validate file type
+    if (!file.name.toLowerCase().endsWith('.json')) {
+        alert('Please select a JSON file (.json)');
+        return;
+    }
+
+    // Update file info
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = `Size: ${formatFileSize(file.size)}`;
+    document.getElementById('fileInfo').classList.add('show');
+
+    // Update file input
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    document.getElementById('datasetFile').files = dataTransfer.files;
+
+    // Validate JSON content
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (Array.isArray(data) && data.length > 0) {
+                showAlert(`Valid JSON file with ${data.length} records`, 'success');
+            } else {
+                showAlert('JSON file should contain an array of records', 'warning');
+            }
+        } catch (error) {
+            showAlert('Invalid JSON format. Please check your file.', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function clearFile() {
+    document.getElementById('datasetFile').value = '';
+    document.getElementById('fileInfo').classList.remove('show');
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function downloadTemplate(type) {
+    let templateData;
+    if (type === 'therapy') {
+        templateData = {{ template_data|tojson }};
+    } else {
+        templateData = `[
+  {
+    "text": "Your input text here",
+    "category": "your_target_label",
+    "additional_field": "optional_data"
+  },
+  {
+    "text": "Another text sample",
+    "category": "another_label",
+    "additional_field": "more_data"
+  }
+]`;
+    }
+
+    const blob = new Blob([templateData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${type}_dataset_template.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function showAlert(message, type) {
+    const alertClass = type === 'error' ? 'alert-danger' : type === 'warning' ? 'alert-warning' : 'alert-success';
+    const alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+
+    const container = document.querySelector('.upload-container');
+    container.insertAdjacentHTML('afterbegin', alertHtml);
+
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert && bootstrap.Alert.getOrCreateInstance) {
+            bootstrap.Alert.getOrCreateInstance(alert).close();
+        }
+    }, 5000);
+}
+
+// Form submission with progress
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Validate form
+    const name = document.getElementById('datasetName').value.trim();
+    const targetColumn = document.getElementById('targetColumn').value.trim();
+    const file = document.getElementById('datasetFile').files[0];
+
+    if (!name || !targetColumn || !file) {
+        showAlert('Please fill in all required fields and select a file', 'error');
+        return;
+    }
+
+    // Show progress
+    const uploadButton = document.getElementById('uploadButton');
+    const originalText = uploadButton.innerHTML;
+    uploadButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    uploadButton.disabled = true;
+
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
+    progressBar.style.display = 'block';
+
+    // Simulate upload progress (in real implementation, use XMLHttpRequest for real progress)
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 95) progress = 95;
+        progressFill.style.width = progress + '%';
+    }, 100);
+
+    // Submit form
+    setTimeout(() => {
+        clearInterval(interval);
+        progressFill.style.width = '100%';
+        this.submit();
+    }, 2000);
+});
+</script>
+{% endblock %}

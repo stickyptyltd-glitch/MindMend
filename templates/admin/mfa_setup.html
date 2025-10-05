@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup MFA - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .setup-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 3rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .step {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #28a745;
+        }
+        .qr-code {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            margin: 1rem 0;
+        }
+        .manual-code {
+            background: #2d3436;
+            color: #74b9ff;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            margin: 1rem 0;
+        }
+        .verification-form {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .btn-enable {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-enable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+        .token-input {
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.3rem;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+        .app-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .app-icon:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="text-center mb-4">
+            <i class="fas fa-shield-alt fa-3x text-success mb-3"></i>
+            <h2>Enable Multi-Factor Authentication</h2>
+            <p class="text-muted">Secure your admin account with an additional layer of protection</p>
+        </div>
+
+        <div class="step">
+            <h5><i class="fas fa-mobile-alt me-2 text-success"></i>Step 1: Install an Authenticator App</h5>
+            <p class="mb-3">Download one of these authenticator apps on your mobile device:</p>
+
+            <div class="app-icons">
+                <div class="app-icon" title="Google Authenticator">
+                    <i class="fab fa-google fa-2x" style="color: #4285f4;"></i>
+                </div>
+                <div class="app-icon" title="Microsoft Authenticator">
+                    <i class="fab fa-microsoft fa-2x" style="color: #00a4ef;"></i>
+                </div>
+                <div class="app-icon" title="Authy">
+                    <i class="fas fa-lock fa-2x" style="color: #ec1c24;"></i>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <small class="text-muted d-block">
+                        <i class="fab fa-apple me-1"></i>
+                        <a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank">iOS App Store</a>
+                    </small>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted d-block">
+                        <i class="fab fa-google-play me-1"></i>
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Google Play</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <h5><i class="fas fa-qrcode me-2 text-success"></i>Step 2: Scan QR Code or Enter Secret</h5>
+            <p>Use your authenticator app to scan this QR code:</p>
+
+            <div class="qr-code">
+                {% if qr_code %}
+                    <img src="data:image/png;base64,{{ qr_code }}" alt="MFA QR Code" class="img-fluid">
+                {% else %}
+                    <i class="fas fa-qrcode fa-3x text-muted"></i>
+                    <p class="text-muted mt-2">QR Code loading...</p>
+                {% endif %}
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-outline-secondary btn-sm" onclick="toggleManualSetup()">
+                    <i class="fas fa-keyboard me-1"></i>Enter code manually instead
+                </button>
+            </div>
+
+            <div id="manualSetup" style="display: none;">
+                <p class="mt-3 mb-2"><strong>Manual Setup:</strong></p>
+                <p class="small text-muted">If you can't scan the QR code, enter this secret key in your app:</p>
+                <div class="manual-code">
+                    <strong>Account:</strong> {{ user_email }}<br>
+                    <strong>Key:</strong> {{ secret }}<br>
+                    <strong>Type:</strong> Time-based (TOTP)
+                </div>
+                <button class="btn btn-outline-primary btn-sm" onclick="copyToClipboard('{{ secret }}')">
+                    <i class="fas fa-copy me-1"></i>Copy Secret Key
+                </button>
+            </div>
+        </div>
+
+        <div class="verification-form">
+            <h5><i class="fas fa-check-circle me-2 text-success"></i>Step 3: Verify Setup</h5>
+            <p>Enter the 6-digit code from your authenticator app to complete setup:</p>
+
+            <form method="POST" action="{{ url_for('admin.mfa_enable') }}">
+                <input type="hidden" name="secret" value="{{ secret }}">
+
+                <div class="mb-3">
+                    <input type="text" class="form-control token-input" name="token"
+                           placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autocomplete="off" autofocus>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-enable">
+                        <i class="fas fa-shield-alt me-2"></i>Enable MFA Protection
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-3">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Once enabled, you'll need to enter a code from your app every time you log in.
+                </small>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Skip for Now
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleManualSetup() {
+            const manualSetup = document.getElementById('manualSetup');
+            if (manualSetup.style.display === 'none') {
+                manualSetup.style.display = 'block';
+            } else {
+                manualSetup.style.display = 'none';
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+                btn.classList.add('btn-success');
+                btn.classList.remove('btn-outline-primary');
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-primary');
+                }, 2000);
+            });
+        }
+
+        // Auto-submit when 6 digits are entered
+        document.querySelector('input[name="token"]').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            if (this.value.length === 6) {
+                // Optional: auto-submit after a short delay
+                setTimeout(() => {
+                    // Could auto-submit here if desired
+                    // this.closest('form').submit();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

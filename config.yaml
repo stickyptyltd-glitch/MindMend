@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mindmend-secrets
+type: Opaque
+data:
+  POSTGRES_PASSWORD: YUxvMGFQUj57I1JwNntTS3B4MCxkUHlSZDkkKzotZD4=
+  REDIS_PASSWORD: IXhLcCxKMj1LdXd8VV42TlRoQHZjfEs4Ti4rUCt0O3A=
+  STRIPE_SECRET_KEY: c2tfbGl2ZV95b3VyLXN0cmlwZS1zZWNyZXQta2V5
+  OPENAI_API_KEY: c2steW91ci1vcGVuYWktYXBpLWtleS1oZXJl
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mindmend-config
+data:
+  FLASK_ENV: production
+  DATABASE_URL: postgresql://mindmend_user:aLo0aPR>{#Rp6{SKpx0,dPyRd9$+:-d>@postgres:5432/mindmend_production
+  REDIS_URL: redis://:!xKp,J2=Kuw|U^6NTh@vc|K8N.+P+t;p@redis:6379/0
+  DOMAIN: mindmend.xyz

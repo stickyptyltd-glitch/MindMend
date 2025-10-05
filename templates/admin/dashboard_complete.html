@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMend Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --dark-color: #34495e;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-container {
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 5px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-healthy {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-warning {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-error {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger-color);
+        }
+
+        .metric-item {
+            padding: 15px;
+            border-left: 3px solid var(--secondary-color);
+            background: rgba(52, 152, 219, 0.05);
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-color);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-brain me-3"></i>MindMend Admin Dashboard
+            </h1>
+            <div class="user-info">
+                <div class="me-3">
+                    <span class="badge bg-success">{{ session.get('admin_tier', 'enterprise').title() }}</span>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-2"></i>{{ session.get('admin_email', 'Admin') }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('admin.security_center') }}">
+                            <i class="fas fa-shield-alt me-2"></i>Security Center
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin.logout') }}">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2">
+                <nav class="sidebar">
+                    <div class="p-4">
+                        <h5 class="text-white mb-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Navigation
+                        </h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-home me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.user_management') }}">
+                                    <i class="fas fa-users me-2"></i>User Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.financial_dashboard') }}">
+                                    <i class="fas fa-chart-line me-2"></i>Financial Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.ai_management') }}">
+                                    <i class="fas fa-robot me-2"></i>AI Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.system_monitoring') }}">
+                                    <i class="fas fa-server me-2"></i>System Monitoring
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.content_management') }}">
+                                    <i class="fas fa-file-alt me-2"></i>Content Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.analytics_center') }}">
+                                    <i class="fas fa-analytics me-2"></i>Analytics Center
+                                </a>
+                            </li>
+                            {% if session.get('admin_tier') == 'enterprise' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.custom_ai_builder_dashboard') }}">
+                                    <i class="fas fa-brain me-2"></i>AI Model Builder
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% if session.get('admin_tier') == 'enterprise' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.security_center') }}">
+                                    <i class="fas fa-shield-alt me-2"></i>Security Center
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content">
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Key Performance Indicators -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon" style="background: var(--success-color);">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h3 class="mb-0">{{ stats.get('total_users', 0) }}</h3>
+                                        <p class="text-muted mb-0">Total Users</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon" style="background: var(--secondary-color);">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h3 class="mb-0">{{ stats.get('ai_sessions', 0) }}</h3>
+                                        <p class="text-muted mb-0">AI Sessions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon" style="background: var(--warning-color);">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h3 class="mb-0">${{ "%.2f"|format(stats.get('monthly_revenue', 0)) }}</h3>
+                                        <p class="text-muted mb-0">Monthly Revenue</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon" style="background: var(--danger-color);">
+                                        <i class="fas fa-heartbeat"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h3 class="mb-0">{{ "%.1f"|format(stats.get('system_uptime', 99.8)) }}%</h3>
+                                        <p class="text-muted mb-0">System Uptime</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="chart-container">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-chart-line me-2"></i>Revenue Analytics
+                                </h5>
+                                <canvas id="revenueChart" height="300"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="chart-container">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-chart-pie me-2"></i>Subscription Distribution
+                                </h5>
+                                <canvas id="subscriptionChart"></canvas>
+                                <div class="mt-3">
+                                    <div class="metric-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Free Users</span>
+                                            <strong>{{ stats.get('subscription_breakdown', {}).get('free', 0) }}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Premium Users</span>
+                                            <strong>{{ stats.get('subscription_breakdown', {}).get('premium', 0) }}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Enterprise Users</span>
+                                            <strong>{{ stats.get('subscription_breakdown', {}).get('enterprise', 0) }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Status and AI Insights -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-server me-2"></i>System Status
+                                </h5>
+                                {% for service, status in system_status.items() %}
+                                {% if service != 'last_check' %}
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span>{{ service.replace('_', ' ').title() }}</span>
+                                    <span class="status-badge {% if status == 'healthy' or status == 'operational' %}status-healthy{% else %}status-warning{% endif %}">
+                                        {{ status }}
+                                    </span>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                                <small class="text-muted">
+                                    Last checked: {{ system_status.get('last_check', 'Unknown') }}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-lightbulb me-2"></i>AI Insights
+                                </h5>
+                                <div class="metric-item">
+                                    <h6>Therapy Success Rate</h6>
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar bg-success" style="width: {{ ai_insights.get('success_rate', 85) }}%"></div>
+                                    </div>
+                                    <small>{{ ai_insights.get('success_rate', 85) }}% of sessions show positive outcomes</small>
+                                </div>
+                                <div class="metric-item">
+                                    <h6>Crisis Detection</h6>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Alerts this month</span>
+                                        <strong class="text-danger">{{ ai_insights.get('crisis_alerts', 12) }}</strong>
+                                    </div>
+                                </div>
+                                <div class="metric-item">
+                                    <h6>AI Performance</h6>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Average Response Time</span>
+                                        <strong>{{ ai_insights.get('response_time', '1.2s') }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="table-container">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-clock me-2"></i>Recent Therapy Sessions
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Patient</th>
+                                                <th>Session Type</th>
+                                                <th>Duration</th>
+                                                <th>Status</th>
+                                                <th>Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for session in recent_sessions %}
+                                            <tr>
+                                                <td>{{ session.patient_name }}</td>
+                                                <td>{{ session.session_type }}</td>
+                                                <td>{{ session.duration_minutes or 'N/A' }} min</td>
+                                                <td>
+                                                    <span class="status-badge status-healthy">Completed</span>
+                                                </td>
+                                                <td>{{ session.timestamp.strftime('%H:%M %d/%m') }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="table-container">
+                                <h5 class="mb-4">
+                                    <i class="fas fa-user-plus me-2"></i>Recent Registrations
+                                </h5>
+                                {% for patient in recent_patients %}
+                                <div class="d-flex align-items-center mb-3 p-3 bg-light rounded">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">{{ patient.name }}</h6>
+                                        <small class="text-muted">{{ patient.subscription_tier.title() }} Plan</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted">{{ patient.created_at.strftime('%m/%d') if patient.created_at else 'Unknown' }}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refresh Button -->
+    <button class="refresh-btn" onclick="refreshDashboard()">
+        <i class="fas fa-sync-alt"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script>
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [12000, 15000, 18000, 22000, 26000, {{ stats.get('monthly_revenue', 0) }}],
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Subscription Chart
+        const subscriptionCtx = document.getElementById('subscriptionChart').getContext('2d');
+        const subscriptionChart = new Chart(subscriptionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Free', 'Premium', 'Enterprise'],
+                datasets: [{
+                    data: [
+                        {{ stats.get('subscription_breakdown', {}).get('free', 0) }},
+                        {{ stats.get('subscription_breakdown', {}).get('premium', 0) }},
+                        {{ stats.get('subscription_breakdown', {}).get('enterprise', 0) }}
+                    ],
+                    backgroundColor: ['#95a5a6', '#3498db', '#2c3e50']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Auto-refresh functionality
+        function refreshDashboard() {
+            const btn = document.querySelector('.refresh-btn');
+            btn.classList.add('pulse');
+
+            fetch('/admin/api/dashboard-stats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update stats without full page reload
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error refreshing dashboard:', error);
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        btn.classList.remove('pulse');
+                    }, 1000);
+                });
+        }
+
+        // Auto-refresh every 5 minutes
+        setInterval(refreshDashboard, 300000);
+
+        // Real-time updates
+        function updateSystemStatus() {
+            fetch('/admin/api/system-health')
+                .then(response => response.json())
+                .then(data => {
+                    // Update system status indicators
+                    console.log('System status updated');
+                })
+                .catch(error => console.error('Error updating system status:', error));
+        }
+
+        // Update system status every 30 seconds
+        setInterval(updateSystemStatus, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>Pricing Management</h1>
+<form method="POST">
+    <label for="basic_price">Basic Plan Price:</label>
+    <input type="text" id="basic_price" name="basic_price" value="$9.99">
+    <br>
+    <label for="premium_price">Premium Plan Price:</label>
+    <input type="text" id="premium_price" name="premium_price" value="$19.99">
+    <br>
+    <input type="submit" value="Update Pricing">
+</form>
+{% endblock %}

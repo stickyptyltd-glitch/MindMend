@@ -1,0 +1,557 @@
+{% extends "admin/base.html" %}
+
+{% block title %}AI Model Management Dashboard - Admin Panel{% endblock %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+.ai-model-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.ai-model-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.model-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-deployed { background-color: #d4edda; color: #155724; }
+.status-training { background-color: #fff3cd; color: #856404; }
+.status-ready { background-color: #cce5f4; color: #004085; }
+.status-error { background-color: #f8d7da; color: #721c24; }
+
+.performance-indicator {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.performance-excellent { color: #28a745; }
+.performance-good { color: #17a2b8; }
+.performance-fair { color: #ffc107; }
+.performance-poor { color: #dc3545; }
+
+.activity-item {
+    border-left: 3px solid #007bff;
+    padding-left: 12px;
+    margin-bottom: 12px;
+}
+
+.activity-timestamp {
+    font-size: 0.8em;
+    color: #6c757d;
+}
+
+.ai-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.trend-up { color: #28a745; }
+.trend-down { color: #dc3545; }
+.trend-stable { color: #6c757d; }
+
+.ai-not-available {
+    background-color: #f8f9fa;
+    border: 1px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.model-type-builtin { border-left: 4px solid #28a745; }
+.model-type-custom { border-left: 4px solid #007bff; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">AI Model Management Dashboard</h1>
+            <p class="text-muted">Monitor, test, and manage AI models for the MindMend platform</p>
+        </div>
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('admin.ai_models_list') }}" class="btn btn-primary">
+                <i class="fas fa-list"></i> View All Models
+            </a>
+            <a href="{{ url_for('admin.ai_builder_dashboard') }}" class="btn btn-success">
+                <i class="fas fa-hammer"></i> Model Builder
+            </a>
+            <button class="btn btn-info" onclick="refreshDashboard()">
+                <i class="fas fa-sync"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    {% if not ai_available %}
+    <!-- AI System Not Available -->
+    <div class="ai-not-available">
+        <i class="fas fa-robot fa-3x mb-3"></i>
+        <h4>AI Model System Unavailable</h4>
+        <p>The AI model management system is currently unavailable. This may be due to missing dependencies or configuration issues.</p>
+        <button class="btn btn-outline-primary" onclick="checkAIStatus()">Check System Status</button>
+    </div>
+    {% else %}
+
+    <!-- Key Metrics Overview -->
+    <div class="ai-metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value">{{ model_stats.total_models }}</div>
+            <div class="metric-label">Total Models</div>
+            <div class="mt-2">
+                <small>{{ model_stats.custom_models }} custom + builtin</small>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ model_stats.active_models }}</div>
+            <div class="metric-label">Active Models</div>
+            <div class="mt-2">
+                <small>Currently deployed</small>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ "{:.1%}".format(model_stats.average_accuracy) }}</div>
+            <div class="metric-label">Avg Accuracy</div>
+            <div class="mt-2">
+                <small>Across all models</small>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">{{ "{:,}".format(model_stats.total_predictions) }}</div>
+            <div class="metric-label">Total Predictions</div>
+            <div class="mt-2">
+                <small>All-time usage</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Performance Overview -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Model Performance Overview</h6>
+                </div>
+                <div class="card-body">
+                    {% if performance_metrics.best_model %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">Best Performing Model</h6>
+                            <p class="mb-1">{{ performance_metrics.best_model.name }}</p>
+                            <div class="performance-indicator performance-excellent">
+                                {{ "{:.1%}".format(performance_metrics.best_model.score) }} accuracy
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold">Performance Trend</h6>
+                            <div class="d-flex align-items-center">
+                                {% if performance_metrics.performance_trend == 'improving' %}
+                                <i class="fas fa-arrow-up trend-up me-2"></i>
+                                <span class="trend-up">Improving</span>
+                                {% elif performance_metrics.performance_trend == 'declining' %}
+                                <i class="fas fa-arrow-down trend-down me-2"></i>
+                                <span class="trend-down">Declining</span>
+                                {% else %}
+                                <i class="fas fa-minus trend-stable me-2"></i>
+                                <span class="trend-stable">Stable</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Performance Chart -->
+                    <div class="mt-3">
+                        <canvas id="performanceChart" width="100%" height="50"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                </div>
+                <div class="card-body">
+                    {% if recent_activity %}
+                    {% for activity in recent_activity %}
+                    <div class="activity-item">
+                        <div class="font-weight-bold">{{ activity.details }}</div>
+                        <div class="activity-timestamp">{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted">No recent activity to display.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Models -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Active AI Models</h6>
+                    <div class="text-muted">
+                        <i class="fas fa-clock"></i> Last updated: <span id="lastUpdated">{{ moment().format('HH:mm:ss') }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if active_models %}
+                    <div class="row">
+                        {% for model in active_models %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="ai-model-card model-type-{{ model.type }}" onclick="viewModelDetails({{ model.id if model.type == 'custom' else 'null' }}, '{{ model.name }}')">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0">{{ model.name }}</h6>
+                                        {% if model.type == 'custom' %}
+                                        <span class="badge badge-primary">Custom</span>
+                                        {% else %}
+                                        <span class="badge badge-success">Built-in</span>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if model.type == 'custom' %}
+                                    <p class="text-muted small mb-2">{{ model.algorithm|title }} Algorithm</p>
+                                    {% endif %}
+
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <div class="performance-indicator
+                                                {% if model.accuracy >= 0.9 %}performance-excellent
+                                                {% elif model.accuracy >= 0.8 %}performance-good
+                                                {% elif model.accuracy >= 0.7 %}performance-fair
+                                                {% else %}performance-poor{% endif %}">
+                                                {{ "{:.1%}".format(model.accuracy) }}
+                                            </div>
+                                            <small class="text-muted">Accuracy</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="font-weight-bold text-info">{{ "{:,}".format(model.predictions) }}</div>
+                                            <small class="text-muted">Predictions</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="font-weight-bold text-secondary">
+                                                {% if model.last_used %}
+                                                {{ model.last_used.strftime('%m/%d') if model.last_used is not string else model.last_used }}
+                                                {% else %}
+                                                Never
+                                                {% endif %}
+                                            </div>
+                                            <small class="text-muted">Last Used</small>
+                                        </div>
+                                    </div>
+
+                                    {% if model.type == 'custom' %}
+                                    <div class="mt-3">
+                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="testModel({{ model.id }}, event)">
+                                            <i class="fas fa-vial"></i> Test
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info me-1" onclick="viewMetrics({{ model.id }}, event)">
+                                            <i class="fas fa-chart-bar"></i> Metrics
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="manageModel({{ model.id }}, event)">
+                                            <i class="fas fa-cog"></i> Manage
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-robot fa-3x mb-3"></i>
+                        <h5>No Active Models</h5>
+                        <p>Create and deploy your first AI model to get started.</p>
+                        <button class="btn btn-primary" onclick="createNewModel()">
+                            <i class="fas fa-plus"></i> Create Your First Model
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+
+<!-- Model Quick Actions Modal -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quick Actions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group list-group-flush">
+                    <a href="#" class="list-group-item list-group-item-action" onclick="quickTest()">
+                        <i class="fas fa-vial text-primary"></i> Quick Test Model
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" onclick="viewPerformance()">
+                        <i class="fas fa-chart-line text-success"></i> View Performance Metrics
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" onclick="downloadModel()">
+                        <i class="fas fa-download text-info"></i> Download Model Export
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action" onclick="cloneModel()">
+                        <i class="fas fa-copy text-secondary"></i> Clone Model
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let performanceChart;
+let refreshInterval;
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    initializePerformanceChart();
+    startAutoRefresh();
+});
+
+function initializePerformanceChart() {
+    const ctx = document.getElementById('performanceChart');
+    if (!ctx) return;
+
+    // Sample performance data - in production this would come from API
+    const performanceData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'Average Model Accuracy',
+            data: [0.78, 0.82, 0.85, 0.84, 0.87, 0.89],
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    };
+
+    performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: performanceData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 0.5,
+                    max: 1.0,
+                    ticks: {
+                        callback: function(value) {
+                            return (value * 100).toFixed(0) + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function startAutoRefresh() {
+    refreshInterval = setInterval(refreshModelStats, 30000); // Refresh every 30 seconds
+}
+
+function refreshDashboard() {
+    location.reload();
+}
+
+function refreshModelStats() {
+    fetch('/admin/api/ai/models/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateLastRefreshTime();
+                // Update metrics if needed
+                console.log('Model stats refreshed', data);
+            }
+        })
+        .catch(error => {
+            console.error('Failed to refresh model stats:', error);
+        });
+}
+
+function updateLastRefreshTime() {
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+}
+
+function viewModelDetails(modelId, modelName) {
+    if (modelId) {
+        window.location.href = `/admin/ai/models/${modelId}`;
+    } else {
+        alert(`Built-in model: ${modelName}\nManagement interface coming soon.`);
+    }
+}
+
+function testModel(modelId, event) {
+    event.stopPropagation();
+    window.location.href = `/admin/ai/models/${modelId}/test`;
+}
+
+function viewMetrics(modelId, event) {
+    event.stopPropagation();
+    // Open metrics in modal or new page
+    fetch(`/admin/api/ai/models/${modelId}/performance`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showMetricsModal(data);
+            } else {
+                alert('Failed to load metrics: ' + data.error);
+            }
+        });
+}
+
+function manageModel(modelId, event) {
+    event.stopPropagation();
+    // Show quick actions modal
+    const modal = new bootstrap.Modal(document.getElementById('quickActionsModal'));
+    modal.show();
+}
+
+function createNewModel() {
+    window.location.href = '/admin/ai/models/create';
+}
+
+function checkAIStatus() {
+    fetch('/admin/api/ai/models/status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('AI system is now available! Refreshing page...');
+                location.reload();
+            } else {
+                alert('AI system is still unavailable: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Failed to check AI system status: ' + error.message);
+        });
+}
+
+function showMetricsModal(data) {
+    // Create and show metrics modal
+    const modalHtml = `
+        <div class="modal fade" id="metricsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Model Metrics: ${data.model_name}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Real-time Metrics</h6>
+                                <ul class="list-unstyled">
+                                    <li>Current Load: ${data.realtime_metrics.current_load}%</li>
+                                    <li>Avg Response Time: ${data.realtime_metrics.response_time_avg}s</li>
+                                    <li>Error Rate: ${(data.realtime_metrics.error_rate * 100).toFixed(2)}%</li>
+                                    <li>Memory Usage: ${data.realtime_metrics.memory_usage}%</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Usage Statistics</h6>
+                                <p>Requests per minute: ${data.realtime_metrics.requests_per_minute}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remove existing modal if present
+    const existingModal = document.getElementById('metricsModal');
+    if (existingModal) existingModal.remove();
+
+    // Add new modal to DOM
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('metricsModal'));
+    modal.show();
+
+    // Remove modal from DOM when hidden
+    modal._element.addEventListener('hidden.bs.modal', function() {
+        modal._element.remove();
+    });
+}
+
+// Quick action functions
+function quickTest() {
+    alert('Quick test functionality would open a test interface');
+}
+
+function viewPerformance() {
+    alert('Performance view would show detailed analytics');
+}
+
+function downloadModel() {
+    alert('Model download would export the trained model');
+}
+
+function cloneModel() {
+    alert('Model cloning would create a copy for experimentation');
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+    }
+});
+</script>
+{% endblock %}

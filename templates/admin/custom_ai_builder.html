@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom AI Model Builder - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-container {
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
+            padding: 30px;
+        }
+
+        .ai-builder-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .model-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .model-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dataset-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .dataset-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-ready { background: rgba(39, 174, 96, 0.2); color: var(--success-color); }
+        .status-training { background: rgba(243, 156, 18, 0.2); color: var(--warning-color); }
+        .status-deployed { background: rgba(52, 152, 219, 0.2); color: var(--secondary-color); }
+        .status-error { background: rgba(231, 76, 60, 0.2); color: var(--danger-color); }
+
+        .algorithm-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .algorithm-option {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .algorithm-option:hover,
+        .algorithm-option.selected {
+            border-color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .progress-bar-animated {
+            animation: progress-bar-stripes 1s linear infinite;
+        }
+
+        .model-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+        }
+
+        .json-editor {
+            font-family: 'Courier New', monospace;
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        .training-log {
+            background: #1a202c;
+            color: #68d391;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .enterprise-badge {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #2d3436;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .training { animation: pulse 2s infinite; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="text-primary">
+                    <i class="fas fa-brain me-3"></i>Custom AI Model Builder
+                </h1>
+                <p class="text-muted">Build and train custom AI models for personalized therapy</p>
+            </div>
+            <div>
+                <span class="enterprise-badge">
+                    <i class="fas fa-crown me-2"></i>Enterprise Feature
+                </span>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary ms-3">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="ai-builder-card text-center">
+                    <h3 class="text-primary">{{ models|length }}</h3>
+                    <p class="text-muted mb-0">Total Models</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ai-builder-card text-center">
+                    <h3 class="text-success">{{ models|selectattr("status", "equalto", "deployed")|list|length }}</h3>
+                    <p class="text-muted mb-0">Deployed Models</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ai-builder-card text-center">
+                    <h3 class="text-info">{{ datasets|length }}</h3>
+                    <p class="text-muted mb-0">Training Datasets</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="ai-builder-card text-center">
+                    <h3 class="text-warning">{{ models|selectattr("status", "equalto", "training")|list|length }}</h3>
+                    <p class="text-muted mb-0">Training</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Tabs -->
+        <ul class="nav nav-pills mb-4" id="aiBuilderTabs">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#models-tab">
+                    <i class="fas fa-robot me-2"></i>My Models
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#create-model-tab">
+                    <i class="fas fa-plus-circle me-2"></i>Create Model
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#datasets-tab">
+                    <i class="fas fa-database me-2"></i>Datasets
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#training-tab">
+                    <i class="fas fa-cogs me-2"></i>Training Center
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Models Tab -->
+            <div class="tab-pane fade show active" id="models-tab">
+                <div class="ai-builder-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-robot me-2"></i>Your Custom AI Models
+                    </h5>
+
+                    {% if models %}
+                    <div class="row">
+                        {% for model in models %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="model-card">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h6 class="mb-0">{{ model.name }}</h6>
+                                    <span class="status-badge status-{{ model.status }}">{{ model.status }}</span>
+                                </div>
+                                <p class="mb-2 opacity-75">{{ model.description or "No description" }}</p>
+                                <small class="opacity-50">Algorithm: {{ model.algorithm.replace('_', ' ').title() }}</small>
+
+                                {% if model.accuracy %}
+                                <div class="model-metrics mt-3">
+                                    <div class="metric-item">
+                                        <span class="metric-value">{{ "%.1f"|format(model.accuracy * 100) }}%</span>
+                                        <span class="metric-label">Accuracy</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-value">{{ model.prediction_count or 0 }}</span>
+                                        <span class="metric-label">Predictions</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <div class="mt-3">
+                                    {% if model.status == 'ready' %}
+                                    <button class="btn btn-sm btn-light me-2" onclick="deployModel({{ model.id }})">
+                                        <i class="fas fa-rocket me-1"></i>Deploy
+                                    </button>
+                                    {% endif %}
+                                    {% if model.status == 'deployed' %}
+                                    <button class="btn btn-sm btn-light me-2" onclick="testModel({{ model.id }})">
+                                        <i class="fas fa-vial me-1"></i>Test
+                                    </button>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-outline-light me-2" onclick="viewPerformance({{ model.id }})">
+                                        <i class="fas fa-chart-line me-1"></i>Metrics
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteModel({{ model.id }})">
+                                        <i class="fas fa-trash me-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-robot text-muted" style="font-size: 48px;"></i>
+                        <h5 class="text-muted mt-3">No Custom Models Yet</h5>
+                        <p class="text-muted">Create your first AI model to get started</p>
+                        <button class="btn btn-ai" onclick="document.querySelector('[data-bs-target=&quot;#create-model-tab&quot;]').click()">
+                            <i class="fas fa-plus me-2"></i>Create Your First Model
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Create Model Tab -->
+            <div class="tab-pane fade" id="create-model-tab">
+                <div class="ai-builder-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-plus-circle me-2"></i>Create New AI Model
+                    </h5>
+
+                    <form action="{{ url_for('admin.create_custom_model') }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Model Name</label>
+                                    <input type="text" class="form-control" name="name" required
+                                           placeholder="e.g., Anxiety Detection Model">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Model Type</label>
+                                    <select class="form-select" name="model_type" required>
+                                        <option value="classification">Classification (Categories/Labels)</option>
+                                        <option value="regression">Regression (Numerical Prediction)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="3"
+                                      placeholder="Describe what this model will do..."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Choose Algorithm</label>
+                            <div class="algorithm-selector">
+                                {% for algo_key, algo_info in algorithms.items() %}
+                                <div class="algorithm-option" onclick="selectAlgorithm('{{ algo_key }}', this)">
+                                    <input type="radio" name="algorithm" value="{{ algo_key }}" style="display: none;">
+                                    <h6>{{ algo_info.name }}</h6>
+                                    <p class="text-muted small mb-0">{{ algo_info.description }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-ai">
+                            <i class="fas fa-plus me-2"></i>Create Model
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Datasets Tab -->
+            <div class="tab-pane fade" id="datasets-tab">
+                <div class="ai-builder-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">
+                            <i class="fas fa-database me-2"></i>Training Datasets
+                        </h5>
+                        <button class="btn btn-ai" data-bs-toggle="modal" data-bs-target="#uploadDatasetModal">
+                            <i class="fas fa-upload me-2"></i>Upload Dataset
+                        </button>
+                    </div>
+
+                    {% if datasets %}
+                    <div class="row">
+                        {% for dataset in datasets %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="dataset-card">
+                                <h6>{{ dataset.name }}</h6>
+                                <p class="mb-2 opacity-75">{{ dataset.description or "No description" }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="opacity-50">{{ dataset.size }} records</small>
+                                    <small class="opacity-50">{{ dataset.data_type }}</small>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="opacity-50">Created: {{ dataset.created_at }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-database text-muted" style="font-size: 48px;"></i>
+                        <h5 class="text-muted mt-3">No Datasets Available</h5>
+                        <p class="text-muted">Upload your first training dataset</p>
+                        <button class="btn btn-ai" data-bs-toggle="modal" data-bs-target="#uploadDatasetModal">
+                            <i class="fas fa-upload me-2"></i>Upload Dataset
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Training Tab -->
+            <div class="tab-pane fade" id="training-tab">
+                <div class="ai-builder-card">
+                    <h5 class="mb-4">
+                        <i class="fas fa-cogs me-2"></i>Training Center
+                    </h5>
+
+                    <form id="trainingForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Select Model</label>
+                                    <select class="form-select" name="model_id" required>
+                                        <option value="">Choose a model to train...</option>
+                                        {% for model in models %}
+                                        {% if model.status in ['created', 'ready'] %}
+                                        <option value="{{ model.id }}">{{ model.name }} ({{ model.algorithm }})</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Select Training Dataset</label>
+                                    <select class="form-select" name="dataset_id" required>
+                                        <option value="">Choose a dataset...</option>
+                                        {% for dataset in datasets %}
+                                        <option value="{{ dataset.id }}">{{ dataset.name }} ({{ dataset.size }} records)</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Training Parameters (Optional JSON)</label>
+                            <textarea class="form-control json-editor" name="parameters" rows="4"
+                                      placeholder='{"max_iter": 1000, "C": 1.0}'></textarea>
+                            <small class="text-muted">Leave empty for default parameters</small>
+                        </div>
+
+                        <button type="button" class="btn btn-ai" onclick="startTraining()">
+                            <i class="fas fa-play me-2"></i>Start Training
+                        </button>
+                    </form>
+
+                    <!-- Training Progress -->
+                    <div id="trainingProgress" style="display: none;" class="mt-4">
+                        <h6>Training in Progress...</h6>
+                        <div class="progress mb-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                 style="width: 100%"></div>
+                        </div>
+                        <div class="training-log" id="trainingLog">
+                            <div>Initializing training...</div>
+                            <div>Loading dataset...</div>
+                            <div>Preprocessing data...</div>
+                            <div>Training model...</div>
+                        </div>
+                    </div>
+
+                    <!-- Training Results -->
+                    <div id="trainingResults" style="display: none;" class="mt-4">
+                        <h6>Training Results</h6>
+                        <div class="alert alert-success" id="trainingSuccess"></div>
+                        <div class="model-metrics" id="resultsMetrics"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Dataset Modal -->
+        <div class="modal fade" id="uploadDatasetModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-upload me-2"></i>Upload Training Dataset
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ url_for('admin.upload_training_dataset') }}" method="POST" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Dataset Name</label>
+                                        <input type="text" class="form-control" name="name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Data Type</label>
+                                        <select class="form-select" name="data_type">
+                                            <option value="text">Text</option>
+                                            <option value="tabular">Tabular</option>
+                                            <option value="mixed">Mixed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description" rows="2"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Target Column (Label Field)</label>
+                                <input type="text" class="form-control" name="target_column"
+                                       placeholder="e.g., category, label, sentiment">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Upload Method</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="upload_method" id="file_upload" value="file" checked>
+                                    <label class="btn btn-outline-primary" for="file_upload">
+                                        <i class="fas fa-file me-1"></i>File Upload
+                                    </label>
+                                    <input type="radio" class="btn-check" name="upload_method" id="text_input" value="text">
+                                    <label class="btn btn-outline-primary" for="text_input">
+                                        <i class="fas fa-keyboard me-1"></i>Text Input
+                                    </label>
+                                    <button type="button" class="btn btn-outline-info" onclick="loadTemplate()">
+                                        <i class="fas fa-magic me-1"></i>Load Template
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="fileUploadSection" class="mb-3">
+                                <label class="form-label">Dataset File (JSON format)</label>
+                                <input type="file" class="form-control" name="dataset_file" accept=".json">
+                            </div>
+
+                            <div id="textInputSection" class="mb-3" style="display: none;">
+                                <label class="form-label">Dataset JSON</label>
+                                <textarea class="form-control json-editor" name="dataset_text" rows="10"
+                                          placeholder='[{"text": "I feel anxious", "category": "anxiety"}, ...]'></textarea>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-ai">
+                                    <i class="fas fa-upload me-2"></i>Upload Dataset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Test Modal -->
+        <div class="modal fade" id="testModelModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-vial me-2"></i>Test Model
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="testModelForm">
+                            <input type="hidden" id="test_model_id" name="model_id">
+                            <div class="mb-3">
+                                <label class="form-label">Test Input</label>
+                                <textarea class="form-control" id="test_input" name="input_text" rows="4"
+                                          placeholder="Enter text to test the model..."></textarea>
+                            </div>
+                            <div id="testResults" style="display: none;">
+                                <h6>Prediction Results</h6>
+                                <div class="alert alert-info" id="predictionResult"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-ai" onclick="runPrediction()">
+                            <i class="fas fa-play me-2"></i>Test Model
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function selectAlgorithm(algorithm, element) {
+            document.querySelectorAll('.algorithm-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            element.querySelector('input[type="radio"]').checked = true;
+        }
+
+        function startTraining() {
+            const form = document.getElementById('trainingForm');
+            const formData = new FormData(form);
+
+            // Show progress
+            document.getElementById('trainingProgress').style.display = 'block';
+            document.getElementById('trainingResults').style.display = 'none';
+
+            fetch('{{ url_for("admin.train_custom_model") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide progress, show results
+                    document.getElementById('trainingProgress').style.display = 'none';
+                    document.getElementById('trainingResults').style.display = 'block';
+
+                    document.getElementById('trainingSuccess').innerHTML =
+                        `Training completed successfully! Accuracy: ${(data.accuracy * 100).toFixed(1)}%`;
+
+                    // Show metrics
+                    const metrics = document.getElementById('resultsMetrics');
+                    metrics.innerHTML = `
+                        <div class="metric-item">
+                            <span class="metric-value">${(data.accuracy * 100).toFixed(1)}%</span>
+                            <span class="metric-label">Test Accuracy</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value">${(data.cv_score * 100).toFixed(1)}%</span>
+                            <span class="metric-label">CV Score</span>
+                        </div>
+                    `;
+
+                    // Refresh models list
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    alert('Training failed: ' + data.error);
+                    document.getElementById('trainingProgress').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                alert('Training error: ' + error);
+                document.getElementById('trainingProgress').style.display = 'none';
+            });
+        }
+
+        function deployModel(modelId) {
+            if (confirm('Deploy this model for production use?')) {
+                fetch('{{ url_for("admin.deploy_custom_model") }}', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `model_id=${modelId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Model deployed successfully!');
+                        location.reload();
+                    } else {
+                        alert('Deployment failed: ' + data.error);
+                    }
+                });
+            }
+        }
+
+        function testModel(modelId) {
+            document.getElementById('test_model_id').value = modelId;
+            document.getElementById('testResults').style.display = 'none';
+            new bootstrap.Modal(document.getElementById('testModelModal')).show();
+        }
+
+        function runPrediction() {
+            const form = document.getElementById('testModelForm');
+            const formData = new FormData(form);
+
+            fetch('{{ url_for("admin.test_model_prediction") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const confidence = data.confidence ? ` (Confidence: ${(data.confidence * 100).toFixed(1)}%)` : '';
+                    document.getElementById('predictionResult').innerHTML =
+                        `<strong>Prediction:</strong> ${data.prediction}${confidence}<br>
+                         <strong>Model:</strong> ${data.model_name}`;
+                    document.getElementById('testResults').style.display = 'block';
+                } else {
+                    alert('Prediction failed: ' + data.error);
+                }
+            });
+        }
+
+        function deleteModel(modelId) {
+            if (confirm('Are you sure you want to delete this model? This action cannot be undone.')) {
+                fetch(`{{ url_for("admin.delete_custom_model", model_id=0) }}`.replace('0', modelId), {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Failed to delete model: ' + data.error);
+                    }
+                });
+            }
+        }
+
+        function viewPerformance(modelId) {
+            fetch(`{{ url_for("admin.get_model_performance", model_id=0) }}`.replace('0', modelId))
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error loading performance data: ' + data.error);
+                } else {
+                    // Show performance modal with detailed metrics
+                    alert('Performance data loaded successfully!'); // Placeholder
+                }
+            });
+        }
+
+        function loadTemplate() {
+            fetch('{{ url_for("admin.get_dataset_template") }}')
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('textarea[name="dataset_text"]').value = data.template;
+                document.getElementById('text_input').checked = true;
+                toggleUploadMethod();
+            });
+        }
+
+        // Toggle upload method
+        document.querySelectorAll('input[name="upload_method"]').forEach(radio => {
+            radio.addEventListener('change', toggleUploadMethod);
+        });
+
+        function toggleUploadMethod() {
+            const method = document.querySelector('input[name="upload_method"]:checked').value;
+            if (method === 'file') {
+                document.getElementById('fileUploadSection').style.display = 'block';
+                document.getElementById('textInputSection').style.display = 'none';
+            } else {
+                document.getElementById('fileUploadSection').style.display = 'none';
+                document.getElementById('textInputSection').style.display = 'block';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select first algorithm by default
+            const firstAlgorithm = document.querySelector('.algorithm-option');
+            if (firstAlgorithm) {
+                selectAlgorithm(firstAlgorithm.querySelector('input').value, firstAlgorithm);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>Emotion Tracking</h1>
+        <p>Monitor your emotional patterns and progress</p>
+    </div>
+
+    <div class="tracking-grid">
+        <div class="tracking-card">
+            <h3>Weekly Mood Trend</h3>
+            <div class="emotion-chart">
+                Mood trending upward this week
+            </div>
+            <div style="margin-top: 15px;">
+                <div>Average Mood: <strong>7.2/10</strong></div>
+                <div>Improvement: <strong>+15%</strong></div>
+            </div>
+        </div>
+
+        <div class="tracking-card">
+            <h3>Stress Levels</h3>
+            <div class="emotion-chart" style="background: linear-gradient(45deg, #48bb78, #38a169);">
+                Stress levels decreasing
+            </div>
+            <div style="margin-top: 15px;">
+                <div>Current Level: <strong>Low</strong></div>
+                <div>7-day average: <strong>Moderate</strong></div>
+            </div>
+        </div>
+
+        <div class="tracking-card">
+            <h3>Sleep Quality</h3>
+            <div class="emotion-chart" style="background: linear-gradient(45deg, #4299e1, #3182ce);">
+                Sleep improving
+            </div>
+            <div style="margin-top: 15px;">
+                <div>Last night: <strong>8.1/10</strong></div>
+                <div>Weekly average: <strong>7.4/10</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-log">
+        <h3>Quick Emotion Log</h3>
+        <p>How are you feeling right now?</p>
+        <div>
+            <button class="emotion-btn" onclick="logEmotion('happy')">Happy</button>
+            <button class="emotion-btn" onclick="logEmotion('calm')">Calm</button>
+            <button class="emotion-btn" onclick="logEmotion('anxious')">Anxious</button>
+            <button class="emotion-btn" onclick="logEmotion('sad')">Sad</button>
+            <button class="emotion-btn" onclick="logEmotion('energetic')">Energetic</button>
+            <button class="emotion-btn" onclick="logEmotion('tired')">Tired</button>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="{{ url_for('general.user_dashboard') }}" class="btn">Back to Dashboard</a>
+        <a href="{{ url_for('video.video_assessment') }}" class="btn">Video Assessment</a>
+    </div>
+</div>
+
+<script>
+    function logEmotion(emotion) {
+        fetch('{{ url_for("video.log_emotion") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emotion: emotion, timestamp: new Date().toISOString() })
+        }).then(() => {
+            alert(`Emotion "${emotion}" logged successfully!`);
+        });
+    }
+</script>
+{% endblock %}

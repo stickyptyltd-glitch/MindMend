@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Management - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .subscriptions-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease;
+        }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .subscriptions-table {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .filter-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .tier-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .tier-free { background: #6c757d; color: white; }
+        .tier-basic { background: #17a2b8; color: white; }
+        .tier-premium { background: #28a745; color: white; }
+        .tier-enterprise { background: #6f42c1; color: white; }
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-canceled { background: #f8d7da; color: #721c24; }
+        .status-past_due { background: #fff3cd; color: #856404; }
+        .status-unpaid { background: #f8d7da; color: #721c24; }
+        .status-trialing { background: #cce5ff; color: #004085; }
+        .revenue-highlight {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .action-buttons .btn {
+            margin: 0.2rem;
+        }
+        .subscription-row {
+            transition: background-color 0.2s ease;
+        }
+        .subscription-row:hover {
+            background-color: rgba(40, 167, 69, 0.05);
+        }
+        .bulk-actions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .bulk-actions.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="subscriptions-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-credit-card me-3"></i>Subscription Management</h1>
+                    <p class="mb-0">Monitor and manage all user subscriptions and billing</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="text-white-50 small">
+                        Total Active: {{ subscription_stats.active_subscriptions }}
+                    </div>
+                    <div class="text-white">
+                        <i class="fas fa-dollar-sign me-2"></i>MRR: ${{ "{:,.2f}".format(subscription_stats.monthly_revenue) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Key Metrics -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-value">{{ subscription_stats.total_subscriptions }}</div>
+                    <div class="stat-label">Total Subscriptions</div>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i>
+                        {{ subscription_stats.active_subscriptions }} Active
+                    </small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-value">${{ "{:,.0f}".format(subscription_stats.monthly_revenue) }}</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                    <small class="text-muted">
+                        <i class="fas fa-chart-line"></i>
+                        Recurring Revenue
+                    </small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-value">${{ "{:.2f}".format(subscription_stats.average_revenue_per_user) }}</div>
+                    <div class="stat-label">Average Revenue</div>
+                    <small class="text-muted">
+                        <i class="fas fa-user-dollar"></i>
+                        Per User (ARPU)
+                    </small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-value">{{ subscription_stats.canceled_subscriptions }}</div>
+                    <div class="stat-label">Canceled</div>
+                    <small class="text-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Churn Analysis
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier Distribution -->
+        <div class="revenue-highlight">
+            <h5><i class="fas fa-chart-pie me-2"></i>Active Subscription Distribution</h5>
+            <div class="row">
+                {% for tier, count in subscription_stats.tier_breakdown.items() %}
+                <div class="col-md-3 text-center">
+                    <div class="display-6 fw-bold">{{ count }}</div>
+                    <div>{{ tier.title() }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-section">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Subscription Tier</label>
+                    <select name="tier" class="form-select">
+                        <option value="">All Tiers</option>
+                        {% for tier in subscription_tiers %}
+                        <option value="{{ tier }}" {{ 'selected' if current_filters.tier == tier else '' }}>
+                            {{ tier.title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        {% for status in subscription_statuses %}
+                        <option value="{{ status }}" {{ 'selected' if current_filters.status == status else '' }}>
+                            {{ status.replace('_', ' ').title() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="search" class="form-control"
+                           placeholder="User name, email, or Stripe ID"
+                           value="{{ current_filters.search }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bulk Actions -->
+        <div class="bulk-actions" id="bulkActions">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <strong>Bulk Actions:</strong>
+                    <span id="selectedCount">0</span> subscriptions selected
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-warning" onclick="bulkAction('change_tier')">
+                            <i class="fas fa-layer-group"></i> Change Tier
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="bulkAction('cancel')">
+                            <i class="fas fa-ban"></i> Cancel Selected
+                        </button>
+                        <button class="btn btn-outline-info" onclick="bulkAction('export')">
+                            <i class="fas fa-download"></i> Export Selected
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscriptions Table -->
+        <div class="subscriptions-table">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5><i class="fas fa-list me-2 text-success"></i>All Subscriptions ({{ total_subscriptions }})</h5>
+                <div class="action-buttons">
+                    <a href="{{ url_for('admin.subscription_create') }}" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>New Subscription
+                    </a>
+                    <a href="{{ url_for('admin.subscription_analytics') }}" class="btn btn-outline-info">
+                        <i class="fas fa-chart-bar me-1"></i>Analytics
+                    </a>
+                    <a href="{{ url_for('admin.subscriptions_export') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-download me-1"></i>Export All
+                    </a>
+                </div>
+            </div>
+
+            {% if subscriptions.items %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="3%">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
+                            <th>User</th>
+                            <th>Tier</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Billing</th>
+                            <th>Created</th>
+                            <th>Next Billing</th>
+                            <th width="15%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subscription, user in subscriptions.items %}
+                        <tr class="subscription-row">
+                            <td>
+                                <input type="checkbox" class="subscription-checkbox" value="{{ subscription.id }}" onchange="updateBulkActions()">
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                        {{ user.name[0].upper() if user and user.name else 'U' }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ user.name if user else 'Unknown User' }}</strong>
+                                        <br><small class="text-muted">{{ user.email if user else 'No email' }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="tier-badge tier-{{ subscription.tier }}">
+                                    {{ subscription.tier.upper() }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ subscription.status }}">
+                                    {{ subscription.status.replace('_', ' ').title() }}
+                                </span>
+                            </td>
+                            <td>
+                                <strong>${{ "{:.2f}".format(subscription.amount) if subscription.amount else '0.00' }}</strong>
+                                {% if subscription.billing_cycle %}
+                                <br><small class="text-muted">{{ subscription.billing_cycle }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ subscription.billing_cycle.title() if subscription.billing_cycle else 'N/A' }}
+                            </td>
+                            <td>
+                                {{ subscription.created_at.strftime('%b %d, %Y') if subscription.created_at else 'N/A' }}
+                                <br><small class="text-muted">{{ subscription.created_at.strftime('%I:%M %p') if subscription.created_at else '' }}</small>
+                            </td>
+                            <td>
+                                {% if subscription.current_period_end %}
+                                    {{ subscription.current_period_end.strftime('%b %d, %Y') }}
+                                    {% set days_until = (subscription.current_period_end - moment.utcnow()).days %}
+                                    <br><small class="text-{{ 'danger' if days_until < 7 else 'warning' if days_until < 14 else 'success' }}">
+                                        {{ days_until }} days
+                                    </small>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{{ url_for('admin.subscription_detail', subscription_id=subscription.id) }}"
+                                       class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin.subscription_edit', subscription_id=subscription.id) }}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% if subscription.status == 'active' %}
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            onclick="cancelSubscription({{ subscription.id }}, '{{ user.name if user else "Unknown" }}')">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                    {% elif subscription.status == 'canceled' %}
+                                    <button class="btn btn-sm btn-outline-success"
+                                            onclick="reactivateSubscription({{ subscription.id }}, '{{ user.name if user else "Unknown" }}')">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if subscriptions.pages > 1 %}
+            <nav aria-label="Subscription pagination">
+                <ul class="pagination justify-content-center">
+                    {% if subscriptions.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.subscriptions_list', page=subscriptions.prev_num, **current_filters) }}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for page_num in subscriptions.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != subscriptions.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('admin.subscriptions_list', page=page_num, **current_filters) }}">
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if subscriptions.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.subscriptions_list', page=subscriptions.next_num, **current_filters) }}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-credit-card fa-3x text-muted mb-3"></i>
+                <h5>No Subscriptions Found</h5>
+                <p class="text-muted">No subscriptions match your current filters.</p>
+                <a href="{{ url_for('admin.subscription_create') }}" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i>Create First Subscription
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Bulk selection management
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.subscription-checkbox');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+
+            updateBulkActions();
+        }
+
+        function updateBulkActions() {
+            const checkboxes = document.querySelectorAll('.subscription-checkbox:checked');
+            const bulkActions = document.getElementById('bulkActions');
+            const selectedCount = document.getElementById('selectedCount');
+
+            selectedCount.textContent = checkboxes.length;
+
+            if (checkboxes.length > 0) {
+                bulkActions.classList.add('show');
+            } else {
+                bulkActions.classList.remove('show');
+            }
+        }
+
+        // Subscription actions
+        function cancelSubscription(subscriptionId, userName) {
+            const reason = prompt(`Cancel subscription for ${userName}?\n\nPlease provide a reason:`);
+            if (reason && reason.trim()) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/subscriptions/${subscriptionId}/cancel`;
+
+                const reasonInput = document.createElement('input');
+                reasonInput.type = 'hidden';
+                reasonInput.name = 'reason';
+                reasonInput.value = reason.trim();
+
+                form.appendChild(reasonInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function reactivateSubscription(subscriptionId, userName) {
+            if (confirm(`Reactivate subscription for ${userName}?\n\nThis will restore their subscription benefits.`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/subscriptions/${subscriptionId}/reactivate`;
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        function bulkAction(action) {
+            const selectedCheckboxes = document.querySelectorAll('.subscription-checkbox:checked');
+            const subscriptionIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+            if (subscriptionIds.length === 0) {
+                alert('Please select at least one subscription');
+                return;
+            }
+
+            switch(action) {
+                case 'change_tier':
+                    const newTier = prompt('Enter new tier (free, basic, premium, enterprise):');
+                    if (newTier && ['free', 'basic', 'premium', 'enterprise'].includes(newTier.toLowerCase())) {
+                        // Implement bulk tier change
+                        alert(`Feature coming soon: Change ${subscriptionIds.length} subscriptions to ${newTier}`);
+                    }
+                    break;
+
+                case 'cancel':
+                    const reason = prompt(`Cancel ${subscriptionIds.length} subscriptions?\n\nPlease provide a reason:`);
+                    if (reason && reason.trim()) {
+                        // Implement bulk cancellation
+                        alert(`Feature coming soon: Cancel ${subscriptionIds.length} subscriptions`);
+                    }
+                    break;
+
+                case 'export':
+                    // Implement bulk export
+                    alert(`Feature coming soon: Export ${subscriptionIds.length} selected subscriptions`);
+                    break;
+            }
+        }
+
+        // Auto-refresh revenue stats every 5 minutes
+        setInterval(function() {
+            fetch('/admin/api/subscriptions/stats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update stats if needed
+                    console.log('Stats refreshed');
+                })
+                .catch(error => console.log('Stats refresh failed'));
+        }, 5 * 60 * 1000);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'n':
+                        e.preventDefault();
+                        window.location.href = '/admin/subscriptions/create';
+                        break;
+                    case 'a':
+                        e.preventDefault();
+                        window.location.href = '/admin/subscriptions/analytics';
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

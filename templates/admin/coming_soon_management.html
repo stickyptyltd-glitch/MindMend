@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Coming Soon Management</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-cogs me-1"></i>
+            Coming Soon Settings
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="counselor_signup" name="counselor_signup" {% if coming_soon_settings.counselor_signup %}checked{% endif %}>
+                    <label class="form-check-label" for="counselor_signup">Counselor Signup</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="premium_session" name="premium_session" {% if coming_soon_settings.premium_session %}checked{% endif %}>
+                    <label class="form-check-label" for="premium_session">Premium Session</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="user_dashboard" name="user_dashboard" {% if coming_soon_settings.user_dashboard %}checked{% endif %}>
+                    <label class="form-check-label" for="user_dashboard">User Dashboard</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="forgot_password" name="forgot_password" {% if coming_soon_settings.forgot_password %}checked{% endif %}>
+                    <label class="form-check-label" for="forgot_password">Forgot Password</label>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Save Settings</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

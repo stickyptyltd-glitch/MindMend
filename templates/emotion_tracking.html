@@ -1,0 +1,91 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Emotion Tracking - MindMend</title>
+        <style>
+            body { font-family: Arial; margin: 0; background: #f8f9fa; }
+            .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+            .header { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
+            .tracking-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+            .tracking-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+            .emotion-chart { width: 100%; height: 200px; background: linear-gradient(45deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+            .quick-log { background: #e6fffa; padding: 20px; border-radius: 10px; margin-top: 20px; }
+            .emotion-btn { background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 20px; margin: 5px; cursor: pointer; }
+            .emotion-btn:hover { background: #5a67d8; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>📈 Emotion Tracking</h1>
+                <p>Monitor your emotional patterns and progress</p>
+            </div>
+
+            <div class="tracking-grid">
+                <div class="tracking-card">
+                    <h3>Weekly Mood Trend</h3>
+                    <div class="emotion-chart">
+                        📊 Mood trending upward this week
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div>Average Mood: <strong>7.2/10</strong></div>
+                        <div>Improvement: <strong>+15%</strong></div>
+                    </div>
+                </div>
+
+                <div class="tracking-card">
+                    <h3>Stress Levels</h3>
+                    <div class="emotion-chart" style="background: linear-gradient(45deg, #48bb78, #38a169);">
+                        🧘 Stress levels decreasing
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div>Current Level: <strong>Low</strong></div>
+                        <div>7-day average: <strong>Moderate</strong></div>
+                    </div>
+                </div>
+
+                <div class="tracking-card">
+                    <h3>Sleep Quality</h3>
+                    <div class="emotion-chart" style="background: linear-gradient(45deg, #4299e1, #3182ce);">
+                        😴 Sleep improving
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div>Last night: <strong>8.1/10</strong></div>
+                        <div>Weekly average: <strong>7.4/10</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-log">
+                <h3>📝 Quick Emotion Log</h3>
+                <p>How are you feeling right now?</p>
+                <div>
+                    <button class="emotion-btn" onclick="logEmotion('happy')">😊 Happy</button>
+                    <button class="emotion-btn" onclick="logEmotion('calm')">😌 Calm</button>
+                    <button class="emotion-btn" onclick="logEmotion('anxious')">😰 Anxious</button>
+                    <button class="emotion-btn" onclick="logEmotion('sad')">😢 Sad</button>
+                    <button class="emotion-btn" onclick="logEmotion('energetic')">⚡ Energetic</button>
+                    <button class="emotion-btn" onclick="logEmotion('tired')">😴 Tired</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="/" style="background: #6c757d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px;">← Back to Home</a>
+                <a href="/video-assessment" style="background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; margin-left: 10px;">📹 Video Assessment</a>
+            </div>
+        </div>
+
+        <script>
+            function logEmotion(emotion) {
+                fetch('/api/log-emotion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emotion: emotion, timestamp: new Date().toISOString() })
+                }).then(() => {
+                    alert(`Emotion "${emotion}" logged successfully!`);
+                });
+            }
+        </script>
+    </body>
+    </html>

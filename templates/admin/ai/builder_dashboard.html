@@ -1,0 +1,657 @@
+{% extends "admin/base.html" %}
+
+{% block title %}AI Model Builder - MindMend Admin{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js" rel="preload" as="script">
+<style>
+    .builder-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .builder-stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        transition: transform 0.3s ease;
+    }
+
+    .builder-stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .builder-stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .builder-stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .model-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .model-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+    }
+
+    .model-card:hover {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .model-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .model-status.ready { background: #d4edda; color: #155724; }
+    .model-status.deployed { background: #cce7ff; color: #0056b3; }
+    .model-status.training { background: #fff3cd; color: #856404; }
+    .model-status.error { background: #f8d7da; color: #721c24; }
+    .model-status.created { background: #e2e3e5; color: #495057; }
+
+    .model-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+
+    .model-metric {
+        text-align: center;
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .model-metric-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .model-metric-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.85rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-action { background: #007bff; color: white; }
+    .btn-success-action { background: #28a745; color: white; }
+    .btn-warning-action { background: #ffc107; color: #212529; }
+    .btn-danger-action { background: #dc3545; color: white; }
+    .btn-info-action { background: #17a2b8; color: white; }
+
+    .btn-action:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .builder-actions {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .builder-actions h3 {
+        margin-bottom: 1rem;
+        color: #495057;
+    }
+
+    .quick-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .quick-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .quick-action-btn:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .datasets-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .dataset-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .dataset-item {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+        display: flex;
+        justify-content: between;
+        align-items: center;
+    }
+
+    .dataset-info h5 {
+        margin: 0;
+        color: #495057;
+    }
+
+    .dataset-info p {
+        margin: 0.25rem 0 0 0;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .training-activity {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-item {
+        padding: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: between;
+        align-items: center;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-info h6 {
+        margin: 0;
+        color: #495057;
+    }
+
+    .activity-info p {
+        margin: 0.25rem 0 0 0;
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    .loading-indicator {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+        color: #6c757d;
+    }
+
+    @media (max-width: 768px) {
+        .builder-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .model-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">🔧 AI Model Builder</h2>
+        <p class="text-muted mb-0">Create, train, and deploy custom AI models</p>
+    </div>
+    <a href="{{ url_for('admin.ai_dashboard') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to AI Dashboard
+    </a>
+</div>
+
+{% if not ai_available %}
+<div class="alert alert-warning" role="alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>AI Functionality Unavailable:</strong>
+    The AI model building system is currently unavailable. Please check system configuration.
+</div>
+{% endif %}
+
+<!-- Builder Statistics -->
+<div class="builder-stats-grid">
+    <div class="builder-stat-card">
+        <span class="builder-stat-number">{{ builder_stats.total_models }}</span>
+        <span class="builder-stat-label">Total Models</span>
+    </div>
+    <div class="builder-stat-card">
+        <span class="builder-stat-number">{{ builder_stats.trained_models }}</span>
+        <span class="builder-stat-label">Trained Models</span>
+    </div>
+    <div class="builder-stat-card">
+        <span class="builder-stat-number">{{ builder_stats.total_datasets }}</span>
+        <span class="builder-stat-label">Datasets</span>
+    </div>
+    <div class="builder-stat-card">
+        <span class="builder-stat-number">{{ builder_stats.training_in_progress }}</span>
+        <span class="builder-stat-label">Training</span>
+    </div>
+    <div class="builder-stat-card">
+        <span class="builder-stat-number">{{ builder_stats.deployed_models }}</span>
+        <span class="builder-stat-label">Deployed</span>
+    </div>
+    <div class="builder-stat-card">
+        <span class="builder-stat-number">{{ builder_stats.error_models }}</span>
+        <span class="builder-stat-label">Errors</span>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="builder-actions">
+    <h3><i class="fas fa-rocket"></i> Quick Actions</h3>
+    <div class="quick-actions">
+        <a href="{{ url_for('admin.create_new_model') }}" class="quick-action-btn">
+            <i class="fas fa-plus-circle"></i>
+            Create New Model
+        </a>
+        <a href="{{ url_for('admin.upload_training_dataset') }}" class="quick-action-btn" style="background: linear-gradient(135deg, #17a2b8, #007bff);">
+            <i class="fas fa-upload"></i>
+            Upload Dataset
+        </a>
+        <a href="#" id="refreshStatsBtn" class="quick-action-btn" style="background: linear-gradient(135deg, #6f42c1, #e83e8c);">
+            <i class="fas fa-sync-alt"></i>
+            Refresh Stats
+        </a>
+    </div>
+</div>
+
+<!-- Models Grid -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4><i class="fas fa-brain"></i> Custom Models</h4>
+            <small class="text-muted">{{ models|length }} total models</small>
+        </div>
+
+        {% if models %}
+        <div class="model-grid">
+            {% for model in models %}
+            <div class="model-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="mb-0">{{ model.name }}</h5>
+                    <span class="model-status {{ model.status }}">{{ model.status }}</span>
+                </div>
+
+                {% if model.description %}
+                <p class="text-muted small mb-2">{{ model.description }}</p>
+                {% endif %}
+
+                <div class="model-metrics">
+                    <div class="model-metric">
+                        <div class="model-metric-value">{{ model.algorithm|title }}</div>
+                        <div class="model-metric-label">Algorithm</div>
+                    </div>
+                    <div class="model-metric">
+                        <div class="model-metric-value">
+                            {% if model.accuracy %}{{ "%.1f"|format(model.accuracy * 100) }}%{% else %}--{% endif %}
+                        </div>
+                        <div class="model-metric-label">Accuracy</div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
+                    <span>{{ model.prediction_count }} predictions</span>
+                    <span>{{ model.created_at[:10] }}</span>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="{{ url_for('admin.view_model_details', model_id=model.id) }}" class="btn-action btn-info-action">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+
+                    {% if model.status == 'created' %}
+                    <a href="{{ url_for('admin.train_custom_model', model_id=model.id) }}" class="btn-action btn-primary-action">
+                        <i class="fas fa-play"></i> Train
+                    </a>
+                    {% endif %}
+
+                    {% if model.status == 'ready' %}
+                    <button class="btn-action btn-success-action" onclick="deployModel({{ model.id }})">
+                        <i class="fas fa-rocket"></i> Deploy
+                    </button>
+                    {% endif %}
+
+                    {% if model.status == 'deployed' %}
+                    <button class="btn-action btn-warning-action" onclick="testModel({{ model.id }})">
+                        <i class="fas fa-test-tube"></i> Test
+                    </button>
+                    {% endif %}
+
+                    <button class="btn-action btn-danger-action" onclick="deleteModel({{ model.id }}, '{{ model.name }}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-brain fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No Custom Models Yet</h5>
+            <p class="text-muted">Create your first custom AI model to get started</p>
+            <a href="{{ url_for('admin.create_new_model') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create First Model
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <!-- Training Datasets -->
+        <div class="datasets-section mb-4">
+            <h5><i class="fas fa-database"></i> Training Datasets</h5>
+            {% if datasets %}
+            <div class="dataset-list">
+                {% for dataset in datasets[:5] %}
+                <div class="dataset-item">
+                    <div class="dataset-info">
+                        <h6>{{ dataset.name }}</h6>
+                        <p>{{ dataset.size }} records • {{ dataset.data_type|title }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if datasets|length > 5 %}
+                <div class="text-center mt-2">
+                    <small class="text-muted">+{{ datasets|length - 5 }} more datasets</small>
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="text-center py-3">
+                <i class="fas fa-database text-muted fa-2x mb-2"></i>
+                <p class="text-muted mb-2">No datasets uploaded</p>
+                <a href="{{ url_for('admin.upload_training_dataset') }}" class="btn btn-sm btn-primary">Upload Dataset</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="training-activity">
+            <h5><i class="fas fa-clock"></i> Recent Activity</h5>
+            {% if recent_models %}
+            {% for model in recent_models %}
+            <div class="activity-item">
+                <div class="activity-info">
+                    <h6>{{ model.name }}</h6>
+                    <p>Created {{ model.created_at[:10] }} • {{ model.status|title }}</p>
+                </div>
+                <span class="model-status {{ model.status }}">{{ model.status }}</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="text-center py-3">
+                <i class="fas fa-clock text-muted fa-2x mb-2"></i>
+                <p class="text-muted">No recent activity</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Loading Indicator -->
+<div class="loading-indicator" id="loadingIndicator">
+    <i class="fas fa-spinner fa-spin fa-2x"></i>
+    <p class="mt-2">Processing...</p>
+</div>
+
+<!-- Test Model Modal -->
+<div class="modal fade" id="testModelModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Test Model</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="testInput" class="form-label">Test Input</label>
+                    <textarea class="form-control" id="testInput" rows="3" placeholder="Enter text to test the model..."></textarea>
+                </div>
+                <div id="testResults" class="d-none">
+                    <h6>Prediction Results:</h6>
+                    <div class="alert alert-info" id="predictionResult"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="runModelTest()">Run Test</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+<script>
+let currentTestModelId = null;
+
+// Auto-refresh stats every 30 seconds
+setInterval(refreshStats, 30000);
+
+function refreshStats() {
+    fetch('/admin/api/ai/builder/stats')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error refreshing stats:', data.error);
+                return;
+            }
+
+            // Update stat cards
+            document.querySelectorAll('.builder-stat-number').forEach((element, index) => {
+                const stats = [
+                    data.total_models,
+                    data.trained_models,
+                    data.total_datasets,
+                    data.training_in_progress,
+                    data.deployed_models,
+                    data.error_models
+                ];
+                if (stats[index] !== undefined) {
+                    element.textContent = stats[index];
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error refreshing stats:', error);
+        });
+}
+
+function deployModel(modelId) {
+    if (!confirm('Are you sure you want to deploy this model?')) return;
+
+    showLoading(true);
+
+    fetch(`/admin/ai/builder/model/${modelId}/deploy`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showLoading(false);
+        if (data.success) {
+            showAlert('Model deployed successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showAlert('Error deploying model: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        showLoading(false);
+        showAlert('Error deploying model: ' + error.message, 'error');
+    });
+}
+
+function testModel(modelId) {
+    currentTestModelId = modelId;
+    document.getElementById('testInput').value = '';
+    document.getElementById('testResults').classList.add('d-none');
+    new bootstrap.Modal(document.getElementById('testModelModal')).show();
+}
+
+function runModelTest() {
+    const input = document.getElementById('testInput').value.trim();
+    if (!input) {
+        showAlert('Please enter test input', 'error');
+        return;
+    }
+
+    showLoading(true);
+
+    fetch(`/admin/ai/builder/model/${currentTestModelId}/test`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input_text: input })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showLoading(false);
+        if (data.success) {
+            const resultDiv = document.getElementById('predictionResult');
+            resultDiv.innerHTML = `
+                <strong>Prediction:</strong> ${data.prediction}<br>
+                ${data.confidence ? `<strong>Confidence:</strong> ${(data.confidence * 100).toFixed(1)}%<br>` : ''}
+                <strong>Model:</strong> ${data.model_name}
+            `;
+            document.getElementById('testResults').classList.remove('d-none');
+        } else {
+            showAlert('Error testing model: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        showLoading(false);
+        showAlert('Error testing model: ' + error.message, 'error');
+    });
+}
+
+function deleteModel(modelId, modelName) {
+    if (!confirm(`Are you sure you want to delete "${modelName}"? This action cannot be undone.`)) return;
+
+    showLoading(true);
+
+    fetch(`/admin/ai/builder/model/${modelId}/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showLoading(false);
+        if (data.success) {
+            showAlert('Model deleted successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showAlert('Error deleting model: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        showLoading(false);
+        showAlert('Error deleting model: ' + error.message, 'error');
+    });
+}
+
+function showLoading(show) {
+    document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+}
+
+function showAlert(message, type) {
+    const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+    const alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+
+    const container = document.querySelector('.container-fluid');
+    container.insertAdjacentHTML('afterbegin', alertHtml);
+
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) {
+            bootstrap.Alert.getOrCreateInstance(alert).close();
+        }
+    }, 5000);
+}
+
+// Refresh stats button
+document.getElementById('refreshStatsBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    refreshStats();
+    showAlert('Statistics refreshed!', 'success');
+});
+</script>
+{% endblock %}

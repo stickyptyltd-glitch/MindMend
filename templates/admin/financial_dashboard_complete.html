@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Dashboard - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-container {
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            min-height: 100vh;
+        }
+
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 5px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            padding: 30px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .revenue-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-title {
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .revenue-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-chart-line me-3"></i>Financial Dashboard
+            </h1>
+            <div>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2">
+                <nav class="sidebar">
+                    <div class="p-4">
+                        <h5 class="text-white mb-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Navigation
+                        </h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-home me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.user_management') }}">
+                                    <i class="fas fa-users me-2"></i>User Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.financial_dashboard') }}">
+                                    <i class="fas fa-chart-line me-2"></i>Financial Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.ai_management') }}">
+                                    <i class="fas fa-robot me-2"></i>AI Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.system_monitoring') }}">
+                                    <i class="fas fa-server me-2"></i>System Monitoring
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content">
+                    <!-- Revenue Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="revenue-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="revenue-icon bg-success me-3">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">${{ "%.2f"|format(revenue_data.monthly_recurring_revenue or 0) }}</h3>
+                                        <p class="text-muted mb-0">Monthly Recurring Revenue</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="revenue-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="revenue-icon bg-info me-3">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">${{ "%.2f"|format(revenue_data.annual_recurring_revenue or 0) }}</h3>
+                                        <p class="text-muted mb-0">Annual Recurring Revenue</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="revenue-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="revenue-icon bg-warning me-3">
+                                        <i class="fas fa-user-dollar"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">${{ "%.2f"|format(revenue_data.average_revenue_per_user or 0) }}</h3>
+                                        <p class="text-muted mb-0">ARPU</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="revenue-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="revenue-icon bg-primary me-3">
+                                        <i class="fas fa-trending-up"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">{{ "%.1f"|format(revenue_data.revenue_growth_rate or 0) }}%</h3>
+                                        <p class="text-muted mb-0">Growth Rate</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="row mb-4">
+                        <!-- Revenue Chart -->
+                        <div class="col-md-8">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-chart-line me-2"></i>Revenue Trends</h5>
+                                <canvas id="revenueChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Subscription Distribution -->
+                        <div class="col-md-4">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-chart-pie me-2"></i>Subscription Distribution</h5>
+                                <canvas id="subscriptionChart" width="200" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversion & Payment Analytics -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-funnel-dollar me-2"></i>Conversion Funnel</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td>Trial to Paid Conversion</td>
+                                                <td><span class="badge bg-success">{{ "%.1f"|format(conversion_data.trial_to_paid or 65.3) }}%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Free to Premium Upgrade</td>
+                                                <td><span class="badge bg-info">{{ "%.1f"|format(conversion_data.upgrade_rates.free_to_premium or 12.8) }}%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Premium to Enterprise</td>
+                                                <td><span class="badge bg-warning">{{ "%.1f"|format(conversion_data.upgrade_rates.premium_to_enterprise or 8.5) }}%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5><i class="fas fa-credit-card me-2"></i>Payment Analytics</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td>Payment Success Rate</td>
+                                                <td><span class="badge bg-success">{{ "%.1f"|format(payment_data.success_rate or 98.5) }}%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Refund Rate</td>
+                                                <td><span class="badge bg-warning">{{ "%.1f"|format(payment_data.refund_rate or 2.1) }}%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Dispute Rate</td>
+                                                <td><span class="badge bg-danger">{{ "%.1f"|format(payment_data.dispute_rate or 0.3) }}%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Monthly Churn</td>
+                                                <td><span class="badge bg-secondary">{{ "%.1f"|format(churn_data.monthly_churn or 5.2) }}%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Revenue Trends Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Monthly Revenue',
+                    data: [15000, 18000, 22000, 25000, 28000, 32000],
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Subscription Distribution Chart
+        const subscriptionCtx = document.getElementById('subscriptionChart').getContext('2d');
+        const subscriptionChart = new Chart(subscriptionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Free', 'Premium', 'Enterprise'],
+                datasets: [{
+                    data: [60, 35, 5],
+                    backgroundColor: [
+                        '#95a5a6',
+                        '#27ae60',
+                        '#f39c12'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

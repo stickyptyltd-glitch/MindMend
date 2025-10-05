@@ -1,0 +1,510 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Revenue Forecasting & Projections - Admin Panel{% endblock %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+.forecast-scenario-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.forecast-scenario-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.forecast-scenario-card.active {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+}
+
+.confidence-indicator {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.confidence-high { background-color: #d4edda; color: #155724; }
+.confidence-medium { background-color: #fff3cd; color: #856404; }
+.confidence-low { background-color: #f8d7da; color: #721c24; }
+
+.scenario-optimistic { border-left: 4px solid #28a745; }
+.scenario-realistic { border-left: 4px solid #007bff; }
+.scenario-conservative { border-left: 4px solid #ffc107; }
+.scenario-pessimistic { border-left: 4px solid #dc3545; }
+
+.market-factor {
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    border-left: 3px solid #007bff;
+}
+
+.recommendation-card {
+    border-left: 4px solid;
+    margin-bottom: 1rem;
+}
+
+.priority-high { border-color: #dc3545; }
+.priority-medium { border-color: #ffc107; }
+.priority-low { border-color: #28a745; }
+
+.seasonal-chart {
+    max-height: 200px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Revenue Forecasting & Projections</h1>
+            <p class="text-muted">Advanced forecasting with scenario analysis and confidence intervals</p>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-primary" onclick="toggleTimeframe('12months')">12 Months</button>
+            <button type="button" class="btn btn-outline-primary" onclick="toggleTimeframe('36months')">3 Years</button>
+            <button type="button" class="btn btn-primary" onclick="exportForecast()">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Key Metrics Overview -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Current MRR</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                ${{ "{:,.2f}".format(forecasting_data.key_metrics.current_mrr) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Growth Trend</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ "{:+.1f}".format(forecasting_data.key_metrics.growth_trend * 100) }}%
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Active Customers</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ "{:,}".format(forecasting_data.key_metrics.current_customers) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Forecast Confidence</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ forecasting_data.confidence_analysis.overall_confidence }}%
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-bar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scenario Comparison -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Forecasting Scenarios</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="scenarioDropdown" data-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow">
+                            <a class="dropdown-item" href="#" onclick="showScenarioDetails()">View Details</a>
+                            <a class="dropdown-item" href="#" onclick="downloadScenarioData()">Download Data</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for scenario_name, scenario_data in forecasting_data.scenarios.items() %}
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="forecast-scenario-card scenario-{{ scenario_name }} card h-100"
+                                 onclick="selectScenario('{{ scenario_name }}')"
+                                 data-scenario="{{ scenario_name }}">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-capitalize">{{ scenario_name.replace('_', ' ') }}</h6>
+                                    <div class="h4 font-weight-bold text-primary mb-2">
+                                        ${{ "{:,.0f}".format(scenario_data.annual_projection) }}
+                                    </div>
+                                    <small class="text-muted">Projected ARR</small>
+                                    <div class="mt-2">
+                                        <small class="badge badge-secondary">
+                                            {{ "{:+.1f}".format(scenario_data.assumptions.adjusted_growth_rate) }}% growth
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Scenario Projections Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Revenue Projections by Scenario</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="scenarioChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confidence Intervals -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Confidence Intervals</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="confidenceChart" width="100%" height="60"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Analysis and Recommendations -->
+    <div class="row mb-4">
+        <!-- Market Analysis -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Market Analysis</h6>
+                </div>
+                <div class="card-body">
+                    <div class="market-factor">
+                        <strong>Market Sentiment:</strong> {{ forecasting_data.market_analysis.market_sentiment }}
+                    </div>
+                    <div class="market-factor">
+                        <strong>Industry Growth:</strong> {{ forecasting_data.market_analysis.industry_growth_rate }}%
+                    </div>
+                    <div class="market-factor">
+                        <strong>Competitive Pressure:</strong> {{ forecasting_data.market_analysis.competitive_pressure }}
+                    </div>
+
+                    <div class="mt-3">
+                        <h6 class="font-weight-bold">Risk Factors</h6>
+                        <ul class="list-unstyled">
+                            {% for risk in forecasting_data.market_analysis.risk_factors %}
+                            <li class="mb-1"><i class="fas fa-exclamation-triangle text-warning mr-2"></i>{{ risk }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="mt-3">
+                        <h6 class="font-weight-bold">Opportunities</h6>
+                        <ul class="list-unstyled">
+                            {% for opportunity in forecasting_data.market_analysis.opportunities %}
+                            <li class="mb-1"><i class="fas fa-arrow-up text-success mr-2"></i>{{ opportunity }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Strategic Recommendations</h6>
+                </div>
+                <div class="card-body">
+                    {% for recommendation in forecasting_data.recommendations %}
+                    <div class="recommendation-card card priority-{{ recommendation.priority.lower() }} mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="font-weight-bold mb-1">{{ recommendation.category }}</h6>
+                                <span class="badge badge-{{ 'danger' if recommendation.priority == 'High' else 'warning' if recommendation.priority == 'Medium' else 'success' }}">
+                                    {{ recommendation.priority }}
+                                </span>
+                            </div>
+                            <p class="mb-2">{{ recommendation.recommendation }}</p>
+                            <small class="text-muted">
+                                <i class="fas fa-chart-line mr-1"></i>{{ recommendation.impact }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seasonal Analysis -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Seasonal Revenue Patterns</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <canvas id="seasonalChart" class="seasonal-chart"></canvas>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="mt-3">
+                                <h6 class="font-weight-bold">Key Insights</h6>
+                                <div class="mb-2">
+                                    <strong>Strongest Month:</strong>
+                                    {% if forecasting_data.seasonal_adjustments.strongest_month %}
+                                    {{ ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][forecasting_data.seasonal_adjustments.strongest_month[0] - 1] }}
+                                    ({{ "{:.1f}".format((forecasting_data.seasonal_adjustments.strongest_month[1] - 1) * 100) }}% above average)
+                                    {% endif %}
+                                </div>
+                                <div class="mb-2">
+                                    <strong>Weakest Month:</strong>
+                                    {% if forecasting_data.seasonal_adjustments.weakest_month %}
+                                    {{ ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][forecasting_data.seasonal_adjustments.weakest_month[0] - 1] }}
+                                    ({{ "{:.1f}".format((forecasting_data.seasonal_adjustments.weakest_month[1] - 1) * 100) }}% below average)
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentTimeframe = '12months';
+let scenarioChart, confidenceChart, seasonalChart;
+
+// Initialize charts when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    selectScenario('{{ current_scenario }}');
+});
+
+function initializeCharts() {
+    // Scenario Projections Chart
+    fetch('/admin/api/finance/charts?type=forecasting_scenarios')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('scenarioChart').getContext('2d');
+            scenarioChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        });
+
+    // Confidence Intervals Chart
+    fetch('/admin/api/finance/charts?type=confidence_intervals')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('confidenceChart').getContext('2d');
+            confidenceChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    // Seasonal Chart
+    const seasonalCtx = document.getElementById('seasonalChart').getContext('2d');
+    const seasonalData = {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+            label: 'Seasonal Factor',
+            data: [
+                {% for insight in forecasting_data.seasonal_adjustments.insights %}
+                {{ insight.factor }}{{ "," if not loop.last }}
+                {% endfor %}
+            ],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2
+        }]
+    };
+
+    seasonalChart = new Chart(seasonalCtx, {
+        type: 'bar',
+        data: seasonalData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 0.8,
+                    max: 1.2,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return (value * 100).toFixed(0) + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function selectScenario(scenarioName) {
+    // Update active card
+    document.querySelectorAll('.forecast-scenario-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    document.querySelector(`[data-scenario="${scenarioName}"]`).classList.add('active');
+
+    // Update charts with selected scenario data
+    updateChartsForScenario(scenarioName);
+}
+
+function toggleTimeframe(timeframe) {
+    currentTimeframe = timeframe;
+
+    // Update button states
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline-primary');
+    });
+    event.target.classList.remove('btn-outline-primary');
+    event.target.classList.add('btn-primary');
+
+    // Fetch extended data if needed
+    if (timeframe === '36months') {
+        updateChartsForTimeframe(true);
+    } else {
+        updateChartsForTimeframe(false);
+    }
+}
+
+function updateChartsForScenario(scenarioName) {
+    // Implementation would update charts based on selected scenario
+    console.log('Updating charts for scenario:', scenarioName);
+}
+
+function updateChartsForTimeframe(extended) {
+    // Implementation would update charts for extended timeframe
+    console.log('Updating charts for extended view:', extended);
+}
+
+function exportForecast() {
+    // Implementation for exporting forecast data
+    window.open('/admin/api/finance/forecasting?export=true', '_blank');
+}
+
+function showScenarioDetails() {
+    // Implementation for showing detailed scenario analysis
+    console.log('Showing scenario details');
+}
+
+function downloadScenarioData() {
+    // Implementation for downloading scenario data
+    console.log('Downloading scenario data');
+}
+</script>
+{% endblock %}

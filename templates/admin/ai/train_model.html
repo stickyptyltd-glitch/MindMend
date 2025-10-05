@@ -1,0 +1,646 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Train AI Model - MindMend Admin{% endblock %}
+
+{% block extra_head %}
+<style>
+    .train-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .train-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .train-section h4 {
+        color: #495057;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .model-info-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .model-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .model-info-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .model-info-label {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+    }
+
+    .model-info-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .dataset-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .dataset-option {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        position: relative;
+    }
+
+    .dataset-option:hover {
+        border-color: #007bff;
+        background: #e7f1ff;
+    }
+
+    .dataset-option.selected {
+        border-color: #007bff;
+        background: #e7f1ff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .dataset-option .dataset-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .dataset-option .dataset-info {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .dataset-option .dataset-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dataset-stat {
+        text-align: center;
+    }
+
+    .dataset-stat-value {
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .dataset-stat-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .training-parameters {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .parameters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .parameter-group {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .parameter-group h6 {
+        color: #495057;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    .parameter-help {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    .training-preview {
+        background: #e8f5e8;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .training-preview h6 {
+        color: #155724;
+        margin-bottom: 1rem;
+    }
+
+    .preview-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #c3e6cb;
+    }
+
+    .preview-item:last-child {
+        border-bottom: none;
+    }
+
+    .preview-label {
+        font-weight: 500;
+        color: #155724;
+    }
+
+    .preview-value {
+        color: #155724;
+        font-family: monospace;
+    }
+
+    .training-actions {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .info-box {
+        background: #e7f3ff;
+        border: 1px solid #bee5eb;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-box i {
+        color: #0c5460;
+        margin-right: 0.5rem;
+    }
+
+    .warning-box {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .warning-box i {
+        color: #856404;
+        margin-right: 0.5rem;
+    }
+
+    .algorithm-info {
+        background: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .algorithm-info h6 {
+        color: #007bff;
+        margin-bottom: 0.5rem;
+    }
+
+    .training-progress {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .training-progress.show {
+        display: block;
+    }
+
+    .progress-spinner {
+        width: 4rem;
+        height: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .expected-time {
+        background: #e9ecef;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .expected-time i {
+        color: #6c757d;
+        margin-right: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .dataset-selector,
+        .parameters-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .model-info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="train-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">🎯 Train AI Model</h2>
+            <p class="text-muted mb-0">Configure and start training your custom AI model</p>
+        </div>
+        <a href="{{ url_for('admin.ai_builder_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Builder
+        </a>
+    </div>
+
+    <!-- Model Information -->
+    <div class="model-info-card">
+        <h3><i class="fas fa-brain"></i> {{ model.name }}</h3>
+        {% if model.description %}
+        <p class="mb-3">{{ model.description }}</p>
+        {% endif %}
+
+        <div class="model-info-grid">
+            <div class="model-info-item">
+                <div class="model-info-label">Algorithm</div>
+                <div class="model-info-value">{{ model.algorithm|title }}</div>
+            </div>
+            <div class="model-info-item">
+                <div class="model-info-label">Model Type</div>
+                <div class="model-info-value">{{ model.model_type|title }}</div>
+            </div>
+            <div class="model-info-item">
+                <div class="model-info-label">Status</div>
+                <div class="model-info-value">{{ model.status|title }}</div>
+            </div>
+            <div class="model-info-item">
+                <div class="model-info-label">Created</div>
+                <div class="model-info-value">{{ model.created_at.strftime('%Y-%m-%d') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="trainingForm">
+        <form method="POST" id="trainModelForm">
+            <!-- Dataset Selection -->
+            <div class="train-section">
+                <h4><i class="fas fa-database"></i> Select Training Dataset</h4>
+
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Dataset Selection:</strong> Choose the dataset that matches your model's purpose.
+                    Larger datasets generally produce better results but take longer to train.
+                </div>
+
+                {% if datasets %}
+                <input type="hidden" name="dataset_id" id="selectedDataset">
+
+                <div class="dataset-selector">
+                    {% for dataset in datasets %}
+                    <div class="dataset-option" data-dataset-id="{{ dataset.id }}">
+                        <div class="dataset-name">{{ dataset.name }}</div>
+                        <div class="dataset-info">{{ dataset.description or 'No description available' }}</div>
+                        <div class="dataset-stats">
+                            <div class="dataset-stat">
+                                <div class="dataset-stat-value">{{ dataset.size }}</div>
+                                <div class="dataset-stat-label">Records</div>
+                            </div>
+                            <div class="dataset-stat">
+                                <div class="dataset-stat-value">{{ dataset.data_type|title }}</div>
+                                <div class="dataset-stat-label">Type</div>
+                            </div>
+                            <div class="dataset-stat">
+                                <div class="dataset-stat-value">{{ dataset.created_at[:10] }}</div>
+                                <div class="dataset-stat-label">Created</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-database fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No Datasets Available</h5>
+                    <p class="text-muted mb-3">You need to upload a training dataset before you can train this model.</p>
+                    <a href="{{ url_for('admin.upload_training_dataset') }}" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Upload Dataset
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if datasets %}
+            <!-- Algorithm Information -->
+            <div class="train-section">
+                <h4><i class="fas fa-cogs"></i> Algorithm Configuration</h4>
+
+                {% if model.algorithm in algorithms %}
+                <div class="algorithm-info">
+                    <h6>{{ algorithms[model.algorithm].name }}</h6>
+                    <p class="mb-0">{{ algorithms[model.algorithm].description }}</p>
+                </div>
+
+                <!-- Training Parameters -->
+                <div class="training-parameters">
+                    <h5><i class="fas fa-sliders-h"></i> Training Parameters</h5>
+                    <p class="text-muted">Fine-tune the algorithm parameters for optimal performance</p>
+
+                    <div class="parameters-grid">
+                        {% for param_name, param_values in algorithms[model.algorithm].params.items() %}
+                        <div class="parameter-group">
+                            <h6>{{ param_name.replace('_', ' ').title() }}</h6>
+                            {% if param_values is iterable and param_values is not string %}
+                            <select class="form-select" name="param_{{ param_name }}" id="param_{{ param_name }}">
+                                <option value="">Use Default</option>
+                                {% for value in param_values %}
+                                <option value="{{ value }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                            {% else %}
+                            <input type="text" class="form-control" name="param_{{ param_name }}"
+                                   id="param_{{ param_name }}" placeholder="Default: {{ param_values }}">
+                            {% endif %}
+                            <div class="parameter-help">
+                                Adjust this parameter to control model behavior during training
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Training Preview -->
+            <div class="train-section">
+                <h4><i class="fas fa-eye"></i> Training Preview</h4>
+
+                <div class="training-preview">
+                    <h6><i class="fas fa-play-circle"></i> Training Configuration</h6>
+                    <div class="preview-item">
+                        <span class="preview-label">Model Name:</span>
+                        <span class="preview-value">{{ model.name }}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="preview-label">Algorithm:</span>
+                        <span class="preview-value">{{ model.algorithm }}</span>
+                    </div>
+                    <div class="preview-item">
+                        <span class="preview-label">Model Type:</span>
+                        <span class="preview-value">{{ model.model_type }}</span>
+                    </div>
+                    <div class="preview-item" id="datasetPreview" style="display: none;">
+                        <span class="preview-label">Dataset:</span>
+                        <span class="preview-value" id="datasetPreviewName">None selected</span>
+                    </div>
+                    <div class="preview-item" id="datasetSizePreview" style="display: none;">
+                        <span class="preview-label">Training Records:</span>
+                        <span class="preview-value" id="datasetPreviewSize">0</span>
+                    </div>
+                </div>
+
+                <div class="expected-time">
+                    <i class="fas fa-clock"></i>
+                    <strong>Expected Training Time:</strong> <span id="expectedTime">Select a dataset to see estimate</span>
+                </div>
+            </div>
+
+            <!-- Training Actions -->
+            <div class="training-actions">
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Training Notice:</strong> Training may take several minutes depending on dataset size and complexity.
+                    The model will be automatically saved when training completes.
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg" id="trainButton" disabled>
+                    <i class="fas fa-play"></i> Start Training
+                </button>
+
+                <div class="mt-3">
+                    <small class="text-muted">
+                        Training will run in the background. You can monitor progress in the model details page.
+                    </small>
+                </div>
+            </div>
+
+            <input type="hidden" name="training_parameters" id="trainingParameters" value="{}">
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- Training Progress (shown during training) -->
+    <div class="training-progress" id="trainingProgress">
+        <div class="spinner-border text-primary progress-spinner" role="status">
+            <span class="visually-hidden">Training...</span>
+        </div>
+        <h4>Training in Progress</h4>
+        <p class="text-muted">Please wait while your model is being trained...</p>
+        <div class="progress" style="height: 10px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                 role="progressbar" style="width: 0%" id="trainingProgressBar"></div>
+        </div>
+        <div class="mt-3">
+            <small class="text-muted" id="trainingStatus">Initializing training process...</small>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let selectedDatasetSize = 0;
+
+document.addEventListener('DOMContentLoaded', function() {
+    setupDatasetSelection();
+    setupParameterHandling();
+});
+
+function setupDatasetSelection() {
+    document.querySelectorAll('.dataset-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selection from all options
+            document.querySelectorAll('.dataset-option').forEach(opt => opt.classList.remove('selected'));
+
+            // Select this option
+            this.classList.add('selected');
+
+            // Update hidden input
+            const datasetId = this.dataset.datasetId;
+            document.getElementById('selectedDataset').value = datasetId;
+
+            // Update preview
+            const datasetName = this.querySelector('.dataset-name').textContent;
+            const datasetSize = this.querySelector('.dataset-stat-value').textContent;
+
+            document.getElementById('datasetPreview').style.display = 'flex';
+            document.getElementById('datasetPreviewName').textContent = datasetName;
+            document.getElementById('datasetSizePreview').style.display = 'flex';
+            document.getElementById('datasetPreviewSize').textContent = datasetSize;
+
+            selectedDatasetSize = parseInt(datasetSize);
+            updateExpectedTime();
+
+            // Enable train button
+            document.getElementById('trainButton').disabled = false;
+        });
+    });
+}
+
+function setupParameterHandling() {
+    // Monitor parameter changes
+    document.querySelectorAll('[name^="param_"]').forEach(input => {
+        input.addEventListener('change', updateTrainingParameters);
+    });
+
+    updateTrainingParameters();
+}
+
+function updateTrainingParameters() {
+    const parameters = {};
+
+    document.querySelectorAll('[name^="param_"]').forEach(input => {
+        const paramName = input.name.replace('param_', '');
+        const value = input.value;
+
+        if (value && value !== '') {
+            // Try to convert to number if possible
+            const numValue = parseFloat(value);
+            parameters[paramName] = isNaN(numValue) ? value : numValue;
+        }
+    });
+
+    document.getElementById('trainingParameters').value = JSON.stringify(parameters);
+}
+
+function updateExpectedTime() {
+    const baseTime = Math.max(1, Math.floor(selectedDatasetSize / 100)); // Base time in minutes
+    const algorithmMultiplier = getAlgorithmMultiplier('{{ model.algorithm }}');
+    const expectedMinutes = Math.ceil(baseTime * algorithmMultiplier);
+
+    let timeString;
+    if (expectedMinutes < 1) {
+        timeString = '< 1 minute';
+    } else if (expectedMinutes < 60) {
+        timeString = `${expectedMinutes} minute${expectedMinutes > 1 ? 's' : ''}`;
+    } else {
+        const hours = Math.floor(expectedMinutes / 60);
+        const mins = expectedMinutes % 60;
+        timeString = `${hours}h ${mins}m`;
+    }
+
+    document.getElementById('expectedTime').textContent = timeString;
+}
+
+function getAlgorithmMultiplier(algorithm) {
+    const multipliers = {
+        'naive_bayes': 0.5,
+        'logistic_regression': 1.0,
+        'svm': 1.5,
+        'random_forest': 2.0,
+        'neural_network': 3.0
+    };
+    return multipliers[algorithm] || 1.0;
+}
+
+// Form submission
+document.getElementById('trainModelForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Validate form
+    const datasetId = document.getElementById('selectedDataset').value;
+    if (!datasetId) {
+        alert('Please select a training dataset');
+        return;
+    }
+
+    // Confirm training
+    const confirmMessage = `Are you sure you want to start training "${models.name}" with the selected dataset? This process cannot be undone.`;
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+
+    // Show training progress
+    document.getElementById('trainingForm').style.display = 'none';
+    document.getElementById('trainingProgress').classList.add('show');
+
+    // Simulate progress updates (in real implementation, use WebSocket or polling)
+    simulateTrainingProgress();
+
+    // Submit form
+    this.submit();
+});
+
+function simulateTrainingProgress() {
+    const progressBar = document.getElementById('trainingProgressBar');
+    const statusText = document.getElementById('trainingStatus');
+
+    const statuses = [
+        'Preparing training data...',
+        'Initializing model parameters...',
+        'Starting training process...',
+        'Training in progress...',
+        'Validating model performance...',
+        'Saving trained model...'
+    ];
+
+    let progress = 0;
+    let statusIndex = 0;
+
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 95) progress = 95;
+
+        progressBar.style.width = progress + '%';
+
+        if (statusIndex < statuses.length - 1 && Math.random() > 0.7) {
+            statusIndex++;
+            statusText.textContent = statuses[statusIndex];
+        }
+
+        if (progress >= 95) {
+            clearInterval(interval);
+            statusText.textContent = 'Finalizing training...';
+        }
+    }, 500);
+}
+
+// Auto-save parameters when changed
+document.addEventListener('change', function(e) {
+    if (e.target.name && e.target.name.startsWith('param_')) {
+        updateTrainingParameters();
+    }
+});
+</script>
+{% endblock %}

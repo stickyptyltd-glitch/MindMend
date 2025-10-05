@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>User Management</h1>
+{% for patient in patients %}
+<div>
+    <h2>{{ patient.name }}</h2>
+    <p>Email: {{ patient.email }}</p>
+    <h3>Sessions</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Session ID</th>
+                <th>Session Type</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in patient.sessions %}
+            <tr>
+                <td>{{ session.id }}</td>
+                <td>{{ session.session_type }}</td>
+                <td>{{ session.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Therapist Sessions</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Session ID</th>
+                <th>Therapist</th>
+                <th>Date</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in patient.therapist_sessions %}
+            <tr>
+                <td>{{ session.id }}</td>
+                <td>{{ session.therapist_name }}</td>
+                <td>{{ session.session_date }}</td>
+                <td>{{ session.session_notes }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<hr>
+{% endfor %}
+{% endblock %}

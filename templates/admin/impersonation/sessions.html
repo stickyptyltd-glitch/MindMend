@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impersonation Sessions - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .sessions-header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .sessions-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .active-session {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        .expired-session {
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+        .session-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .time-remaining {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-weight: bold;
+        }
+        .time-active { color: #28a745; }
+        .time-warning { color: #ffc107; }
+        .time-danger { color: #dc3545; }
+        .audit-entry {
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #dee2e6;
+        }
+        .audit-start { border-left-color: #28a745; }
+        .audit-end { border-left-color: #dc3545; }
+        .audit-failed { border-left-color: #ffc107; }
+        .security-notice {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filter-controls {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="sessions-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-user-secret me-3"></i>Impersonation Sessions</h1>
+                    <p class="mb-0">Monitor and manage all user impersonation activities</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="text-white-50 small">
+                        Active Sessions: {{ active_sessions|length }}
+                    </div>
+                    <div class="text-white">
+                        <i class="fas fa-shield-alt me-2"></i>Security Monitoring
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="security-notice">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Security Notice:</strong> All impersonation sessions are monitored for HIPAA compliance.
+            Unauthorized or inappropriate use of impersonation features is strictly prohibited and will result in disciplinary action.
+        </div>
+
+        <!-- Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stat-value">{{ active_sessions|length }}</div>
+                    <div class="stat-label">Active Sessions</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stat-value">{{ recent_sessions|length }}</div>
+                    <div class="stat-label">Recent Sessions</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    {% set started_today = recent_sessions|selectattr('action', 'equalto', 'USER_IMPERSONATION_STARTED')|selectattr('timestamp', 'ge', (moment().startOf('day')))|list %}
+                    <div class="stat-value">{{ started_today|length if started_today else 0 }}</div>
+                    <div class="stat-label">Today</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    {% set unique_admins = recent_sessions|map(attribute='admin_id')|unique|list %}
+                    <div class="stat-value">{{ unique_admins|length }}</div>
+                    <div class="stat-label">Active Admins</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Sessions -->
+        <div class="sessions-container">
+            <h5><i class="fas fa-broadcast-tower me-2 text-warning"></i>Active Impersonation Sessions</h5>
+
+            {% if active_sessions %}
+                {% for session in active_sessions %}
+                <div class="active-session">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-user me-2"></i>{{ session.user.name if session.user else 'Unknown User' }}</h6>
+                            <small class="text-muted">{{ session.user.email if session.user else 'No email' }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Admin:</strong> {{ session.admin.name if session.admin else 'Unknown Admin' }}<br>
+                            <strong>Token:</strong> <code>{{ session.token_preview }}</code>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="time-remaining time-active" data-expires="{{ session.expires_at }}">
+                                Calculating...
+                            </div>
+                            <small class="text-muted">remaining</small>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="session-actions">
+                                <button class="btn btn-sm btn-primary" onclick="viewSession('{{ session.token }}')">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="endSession('{{ session.token }}')">
+                                    <i class="fas fa-stop me-1"></i>End
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <strong>Reason:</strong> {{ session.reason }}<br>
+                        <strong>Started:</strong> {{ session.created_at[:19] }} |
+                        <strong>Duration:</strong> {{ session.duration_hours }}h
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h5>No Active Sessions</h5>
+                    <p class="mb-0">There are currently no active impersonation sessions.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Session History -->
+        <div class="sessions-container">
+            <h5><i class="fas fa-history me-2 text-info"></i>Recent Session History</h5>
+
+            <div class="filter-controls">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Filter by Action:</label>
+                        <select class="form-select" id="actionFilter" onchange="filterSessions()">
+                            <option value="">All Actions</option>
+                            <option value="USER_IMPERSONATION_STARTED">Started</option>
+                            <option value="USER_IMPERSONATION_ENDED">Ended</option>
+                            <option value="IMPERSONATION_FAILED">Failed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Filter by Date:</label>
+                        <input type="date" class="form-control" id="dateFilter" onchange="filterSessions()">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Search:</label>
+                        <input type="text" class="form-control" id="searchFilter" placeholder="User name, admin, reason..." onchange="filterSessions()">
+                    </div>
+                </div>
+            </div>
+
+            <div id="sessionHistory">
+                {% if recent_sessions %}
+                    {% for entry in recent_sessions %}
+                    <div class="audit-entry audit-{{ 'start' if entry.action == 'USER_IMPERSONATION_STARTED' else 'end' if entry.action == 'USER_IMPERSONATION_ENDED' else 'failed' }}"
+                         data-action="{{ entry.action }}"
+                         data-date="{{ entry.timestamp.strftime('%Y-%m-%d') }}"
+                         data-searchable="{{ (entry.description + ' ' + (entry.details.get('impersonated_user', '') if entry.details else '')).lower() }}">
+
+                        <div class="row align-items-center">
+                            <div class="col-md-1">
+                                <i class="fas fa-{{ 'play' if entry.action == 'USER_IMPERSONATION_STARTED' else 'stop' if entry.action == 'USER_IMPERSONATION_ENDED' else 'exclamation-triangle' }} fa-lg
+                                   text-{{ 'success' if entry.action == 'USER_IMPERSONATION_STARTED' else 'danger' if entry.action == 'USER_IMPERSONATION_ENDED' else 'warning' }}"></i>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>{{ entry.description }}</strong>
+                                {% if entry.details %}
+                                    <br><small class="text-muted">
+                                        {% if entry.details.get('reason') %}
+                                            Reason: {{ entry.details.reason }}
+                                        {% endif %}
+                                        {% if entry.details.get('duration_hours') %}
+                                            | Duration: {{ entry.details.duration_hours }}h
+                                        {% endif %}
+                                    </small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">
+                                    {{ entry.timestamp.strftime('%B %d, %Y at %I:%M %p') }}
+                                </small>
+                                <br>
+                                <small>Admin ID: {{ entry.admin_id or 'Unknown' }}</small>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <span class="badge bg-{{ 'success' if entry.action == 'USER_IMPERSONATION_STARTED' else 'danger' if entry.action == 'USER_IMPERSONATION_ENDED' else 'warning' }}">
+                                    {{ entry.severity }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle fa-2x mb-3"></i>
+                        <h5>No Session History</h5>
+                        <p class="mb-0">No impersonation sessions have been recorded yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="sessions-container">
+            <h5><i class="fas fa-tools me-2 text-primary"></i>Management Actions</h5>
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-danger w-100" onclick="endAllSessions()">
+                        <i class="fas fa-stop me-2"></i>End All Active Sessions
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-info w-100" onclick="exportSessionLog()">
+                        <i class="fas fa-download me-2"></i>Export Session Log
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ url_for('admin.users_list') }}" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-users me-2"></i>Back to User Management
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update time remaining for active sessions
+        function updateTimeRemaining() {
+            document.querySelectorAll('[data-expires]').forEach(element => {
+                const expiresAt = new Date(element.getAttribute('data-expires'));
+                const now = new Date();
+                const remaining = expiresAt - now;
+
+                if (remaining <= 0) {
+                    element.textContent = 'EXPIRED';
+                    element.className = 'time-remaining time-danger';
+                    return;
+                }
+
+                const hours = Math.floor(remaining / (1000 * 60 * 60));
+                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+
+                element.textContent = `${hours}h ${minutes}m`;
+
+                // Color coding
+                if (remaining < 30 * 60 * 1000) { // Less than 30 minutes
+                    element.className = 'time-remaining time-danger';
+                } else if (remaining < 60 * 60 * 1000) { // Less than 1 hour
+                    element.className = 'time-remaining time-warning';
+                } else {
+                    element.className = 'time-remaining time-active';
+                }
+            });
+        }
+
+        // Update every minute
+        setInterval(updateTimeRemaining, 60000);
+        updateTimeRemaining();
+
+        // Session management functions
+        function viewSession(token) {
+            window.open(`/admin/impersonate/portal?token=${token}`, '_blank');
+        }
+
+        function endSession(token) {
+            if (confirm('Are you sure you want to end this impersonation session?')) {
+                fetch(`/admin/impersonate/end/${token}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to end session');
+                    }
+                })
+                .catch(error => {
+                    alert('Error ending session: ' + error.message);
+                });
+            }
+        }
+
+        function endAllSessions() {
+            const activeSessions = document.querySelectorAll('.active-session').length;
+
+            if (activeSessions === 0) {
+                alert('No active sessions to end');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to end all ${activeSessions} active impersonation sessions?`)) {
+                // In a real implementation, this would call a batch endpoint
+                alert('Feature coming soon: Bulk session termination');
+            }
+        }
+
+        function exportSessionLog() {
+            // In a real implementation, this would generate and download a CSV/PDF report
+            alert('Feature coming soon: Export session audit log');
+        }
+
+        // Filter functions
+        function filterSessions() {
+            const actionFilter = document.getElementById('actionFilter').value.toLowerCase();
+            const dateFilter = document.getElementById('dateFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+
+            document.querySelectorAll('.audit-entry').forEach(entry => {
+                let show = true;
+
+                // Action filter
+                if (actionFilter && !entry.getAttribute('data-action').toLowerCase().includes(actionFilter)) {
+                    show = false;
+                }
+
+                // Date filter
+                if (dateFilter && entry.getAttribute('data-date') !== dateFilter) {
+                    show = false;
+                }
+
+                // Search filter
+                if (searchFilter && !entry.getAttribute('data-searchable').includes(searchFilter)) {
+                    show = false;
+                }
+
+                entry.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        // Auto-refresh page every 5 minutes to get latest data
+        setTimeout(function() {
+            location.reload();
+        }, 5 * 60 * 1000);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        location.reload();
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        document.getElementById('searchFilter').focus();
+                        break;
+                }
+            }
+        });
+
+        // Real-time updates (if WebSocket available)
+        if (window.WebSocket) {
+            // In production, implement WebSocket for real-time session updates
+            console.log('WebSocket support available for real-time updates');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitoring - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-container {
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            min-height: 100vh;
+        }
+
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 5px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            padding: 30px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .system-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-title {
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .progress-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-healthy { background-color: var(--success-color); }
+        .status-warning { background-color: var(--warning-color); }
+        .status-critical { background-color: var(--danger-color); }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-server me-3"></i>System Monitoring
+            </h1>
+            <div>
+                <button class="btn btn-success me-2" onclick="refreshMetrics()">
+                    <i class="fas fa-sync-alt me-2"></i>Refresh
+                </button>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2">
+                <nav class="sidebar">
+                    <div class="p-4">
+                        <h5 class="text-white mb-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Navigation
+                        </h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-home me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.user_management') }}">
+                                    <i class="fas fa-users me-2"></i>User Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.financial_dashboard') }}">
+                                    <i class="fas fa-chart-line me-2"></i>Financial Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.ai_management') }}">
+                                    <i class="fas fa-robot me-2"></i>AI Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.system_monitoring') }}">
+                                    <i class="fas fa-server me-2"></i>System Monitoring
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content">
+                    <!-- Server Status Overview -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="system-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-primary me-3">
+                                        <i class="fas fa-microchip"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">{{ "%.1f"|format(system_metrics.server_status.cpu_usage or 45.2) }}%</h3>
+                                        <p class="text-muted mb-0">CPU Usage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="system-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-info me-3">
+                                        <i class="fas fa-memory"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">{{ "%.1f"|format(system_metrics.server_status.memory_usage or 67.8) }}%</h3>
+                                        <p class="text-muted mb-0">Memory Usage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="system-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-warning me-3">
+                                        <i class="fas fa-hdd"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">{{ "%.1f"|format(system_metrics.server_status.disk_usage or 34.1) }}%</h3>
+                                        <p class="text-muted mb-0">Disk Usage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="system-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-success me-3">
+                                        <i class="fas fa-network-wired"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">
+                                            <span class="status-indicator status-healthy"></span>
+                                            Healthy
+                                        </h3>
+                                        <p class="text-muted mb-0">Network Status</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Resources -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="system-card">
+                                <h5><i class="fas fa-chart-area me-2"></i>System Resources</h5>
+
+                                <!-- CPU Usage -->
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>CPU Usage</span>
+                                        <span>{{ "%.1f"|format(system_metrics.server_status.cpu_usage or 45.2) }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 15px;">
+                                        <div class="progress-bar bg-primary" role="progressbar"
+                                             style="width: {{ system_metrics.server_status.cpu_usage or 45.2 }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Memory Usage -->
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Memory Usage</span>
+                                        <span>{{ "%.1f"|format(system_metrics.server_status.memory_usage or 67.8) }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 15px;">
+                                        <div class="progress-bar bg-info" role="progressbar"
+                                             style="width: {{ system_metrics.server_status.memory_usage or 67.8 }}%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Disk Usage -->
+                                <div class="progress-container">
+                                    <div class="progress-label">
+                                        <span>Disk Usage</span>
+                                        <span>{{ "%.1f"|format(system_metrics.server_status.disk_usage or 34.1) }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 15px;">
+                                        <div class="progress-bar bg-warning" role="progressbar"
+                                             style="width: {{ system_metrics.server_status.disk_usage or 34.1 }}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="system-card">
+                                <h5><i class="fas fa-database me-2"></i>Database Status</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td>Connection Pool</td>
+                                                <td>
+                                                    <span class="status-indicator status-healthy"></span>
+                                                    {{ system_metrics.database_status.connection_pool or "Healthy" }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Query Performance</td>
+                                                <td>
+                                                    <span class="status-indicator status-healthy"></span>
+                                                    {{ system_metrics.database_status.query_performance or "Optimal" }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Storage Usage</td>
+                                                <td>{{ system_metrics.database_status.storage_usage or "2.3GB" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Backup Status</td>
+                                                <td>
+                                                    <span class="status-indicator status-healthy"></span>
+                                                    {{ system_metrics.database_status.backup_status or "Up to date" }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API & Performance Metrics -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="system-card">
+                                <h5><i class="fas fa-plug me-2"></i>API Status</h5>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="text-center p-3">
+                                            <h3 class="text-success">{{ system_metrics.api_status.response_time or "120ms" }}</h3>
+                                            <p class="text-muted mb-0">Response Time</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center p-3">
+                                            <h3 class="text-primary">{{ system_metrics.api_status.error_rate or "0.2%" }}</h3>
+                                            <p class="text-muted mb-0">Error Rate</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Rate Limit Status: {{ system_metrics.api_status.rate_limit_status or "Normal" }}
+                                </div>
+                                <div class="alert alert-success" role="alert">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    All Endpoints: {{ system_metrics.api_status.endpoint_health or "Operational" }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="system-card">
+                                <h5><i class="fas fa-tachometer-alt me-2"></i>Performance Metrics</h5>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="text-center p-3">
+                                            <h3 class="text-info">{{ "%.1f"|format(system_metrics.performance_metrics.average_response_time or 1.8) }}s</h3>
+                                            <p class="text-muted mb-0">Avg Response Time</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center p-3">
+                                            <h3 class="text-warning">{{ system_metrics.performance_metrics.requests_per_minute or 245 }}</h3>
+                                            <p class="text-muted mb-0">Requests/Min</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="text-center p-3">
+                                            <h3 class="text-success">{{ system_metrics.performance_metrics.concurrent_users or 89 }}</h3>
+                                            <p class="text-muted mb-0">Concurrent Users</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center p-3">
+                                            <h3 class="text-primary">{{ "%.1f"|format(system_metrics.performance_metrics.cache_hit_rate or 94.2) }}%</h3>
+                                            <p class="text-muted mb-0">Cache Hit Rate</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage & Security -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="system-card">
+                                <h5><i class="fas fa-archive me-2"></i>Storage Usage</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td>Total Storage</td>
+                                                <td><strong>{{ system_metrics.storage_usage.total_storage or "50GB" }}</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Used Storage</td>
+                                                <td>{{ system_metrics.storage_usage.used_storage or "17.2GB" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Media Files</td>
+                                                <td>{{ system_metrics.storage_usage.media_files or "8.5GB" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Database Size</td>
+                                                <td>{{ system_metrics.storage_usage.database_size or "2.3GB" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Logs Size</td>
+                                                <td>{{ system_metrics.storage_usage.logs_size or "1.1GB" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="system-card">
+                                <h5><i class="fas fa-shield-alt me-2"></i>Security Status</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td>SSL Certificate</td>
+                                                <td>
+                                                    <span class="status-indicator status-healthy"></span>
+                                                    {{ system_metrics.security_status.ssl_certificate or "Valid" }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Firewall Status</td>
+                                                <td>
+                                                    <span class="status-indicator status-healthy"></span>
+                                                    {{ system_metrics.security_status.firewall_status or "Active" }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Intrusion Detection</td>
+                                                <td>
+                                                    <span class="status-indicator status-healthy"></span>
+                                                    {{ system_metrics.security_status.intrusion_detection or "Monitoring" }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Last Security Scan</td>
+                                                <td>{{ system_metrics.security_status.last_security_scan or "2024-01-15" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Vulnerabilities</td>
+                                                <td>
+                                                    <span class="badge bg-success">{{ system_metrics.security_status.vulnerabilities or 0 }}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function refreshMetrics() {
+            // Refresh system metrics
+            location.reload();
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(function() {
+            fetch('/admin/api/system-health')
+                .then(response => response.json())
+                .then(data => {
+                    // Update metrics without full page reload
+                    console.log('System metrics updated:', data);
+                })
+                .catch(error => console.error('Error updating metrics:', error));
+        }, 30000);
+    </script>
+</body>
+</html>

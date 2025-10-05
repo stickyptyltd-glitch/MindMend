@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Dashboard - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #f8f9fa; }
+        .finance-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .metric-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .metric-card:hover { transform: translateY(-3px); }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+        .metric-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .metric-label {
+            color: #6c757d;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .metric-change {
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+        }
+        .change-positive {
+            background: #d4edda;
+            color: #155724;
+        }
+        .change-negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .period-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .period-btn {
+            border: none;
+            background: transparent;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .period-btn.active {
+            background: #2c3e50;
+            color: white;
+        }
+        .period-btn:hover:not(.active) {
+            background: #f8f9fa;
+        }
+        .revenue-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .breakdown-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #2c3e50;
+        }
+        .breakdown-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .breakdown-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .profit-indicator {
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .profit-positive {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .profit-negative {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .forecast-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .forecast-item:last-child {
+            border-bottom: none;
+        }
+        .growth-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .growth-high {
+            background: #d4edda;
+            color: #155724;
+        }
+        .growth-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .growth-low {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .financial-insight {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="finance-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-chart-line me-3"></i>Financial Dashboard</h1>
+                    <p class="mb-0">Comprehensive financial metrics and business intelligence - {{ period_name }}</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="period-selector">
+                        <button class="period-btn {{ 'active' if period == '7d' else '' }}" onclick="changePeriod('7d')">7D</button>
+                        <button class="period-btn {{ 'active' if period == '30d' else '' }}" onclick="changePeriod('30d')">30D</button>
+                        <button class="period-btn {{ 'active' if period == '90d' else '' }}" onclick="changePeriod('90d')">90D</button>
+                        <button class="period-btn {{ 'active' if period == 'mtd' else '' }}" onclick="changePeriod('mtd')">MTD</button>
+                        <button class="period-btn {{ 'active' if period == 'ytd' else '' }}" onclick="changePeriod('ytd')">YTD</button>
+                        <button class="period-btn {{ 'active' if period == '1y' else '' }}" onclick="changePeriod('1y')">1Y</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Key Financial Metrics -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-value">${{ "{:,.0f}".format(financial_data.overview_metrics.total_revenue) }}</div>
+                    <div class="metric-label">Total Revenue</div>
+                    <div class="metric-change {{ 'change-positive' if financial_data.overview_metrics.revenue_growth > 0 else 'change-negative' }}">
+                        <i class="fas fa-arrow-{{ 'up' if financial_data.overview_metrics.revenue_growth > 0 else 'down' }}"></i>
+                        {{ financial_data.overview_metrics.revenue_growth }}%
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-value">${{ "{:,.0f}".format(financial_data.overview_metrics.mrr) }}</div>
+                    <div class="metric-label">Monthly Recurring Revenue</div>
+                    <div class="metric-change {{ 'change-positive' if financial_data.growth_metrics.mrr_growth > 0 else 'change-negative' }}">
+                        <i class="fas fa-sync-alt"></i>
+                        {{ financial_data.growth_metrics.mrr_growth }}% MoM
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-value">${{ "{:.2f}".format(financial_data.overview_metrics.arpu) }}</div>
+                    <div class="metric-label">Average Revenue Per User</div>
+                    <div class="metric-change change-positive">
+                        <i class="fas fa-user-dollar"></i>
+                        {{ financial_data.overview_metrics.active_subscriptions }} Active
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-value">{{ "%.1f"|format(financial_data.profit_analysis.profit_margin) }}%</div>
+                    <div class="metric-label">Profit Margin</div>
+                    <div class="profit-indicator {{ 'profit-positive' if financial_data.profit_analysis.profit_margin > 0 else 'profit-negative' }}">
+                        ${{ "{:,.0f}".format(financial_data.profit_analysis.gross_profit) }} Profit
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Breakdown -->
+        <div class="chart-container">
+            <h5><i class="fas fa-chart-pie me-2 text-primary"></i>Revenue Breakdown Analysis</h5>
+
+            <div class="revenue-breakdown">
+                <div class="breakdown-item">
+                    <div class="breakdown-value">${{ "{:,.0f}".format(financial_data.subscription_metrics.new_customer_revenue) }}</div>
+                    <div class="breakdown-label">New Customer Revenue</div>
+                    <small class="text-success">{{ financial_data.subscription_metrics.new_subscriptions }} new subscriptions</small>
+                </div>
+
+                <div class="breakdown-item">
+                    <div class="breakdown-value">${{ "{:,.0f}".format(financial_data.subscription_metrics.existing_customer_revenue) }}</div>
+                    <div class="breakdown-label">Existing Customer Revenue</div>
+                    <small class="text-info">Recurring base revenue</small>
+                </div>
+
+                <div class="breakdown-item">
+                    <div class="breakdown-value">${{ "{:,.0f}".format(financial_data.revenue_breakdown.recurring_vs_one_time.recurring) }}</div>
+                    <div class="breakdown-label">Recurring Revenue</div>
+                    <small class="text-success">Subscription-based</small>
+                </div>
+
+                <div class="breakdown-item">
+                    <div class="breakdown-value">${{ "{:,.0f}".format(financial_data.revenue_breakdown.recurring_vs_one_time.one_time) }}</div>
+                    <div class="breakdown-label">One-time Revenue</div>
+                    <small class="text-warning">Non-recurring</small>
+                </div>
+            </div>
+
+            <!-- Tier Performance -->
+            <h6 class="mt-4 mb-3">Revenue by Subscription Tier</h6>
+            <div class="row">
+                {% for tier, revenue in financial_data.revenue_breakdown.by_tier.items() %}
+                <div class="col-md-3 mb-3">
+                    <div class="text-center p-3 border rounded">
+                        <div class="h5 text-primary">${{ "{:,.0f}".format(revenue) }}</div>
+                        <div class="text-capitalize">{{ tier }} Tier</div>
+                        {% if financial_data.subscription_metrics.ltv_by_tier[tier] %}
+                        <small class="text-muted">LTV: ${{ "{:.0f}".format(financial_data.subscription_metrics.ltv_by_tier[tier]) }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="chart-container">
+                    <h5><i class="fas fa-chart-area me-2 text-success"></i>Revenue Trend</h5>
+                    <canvas id="revenueTrendChart" height="100"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-container">
+                    <h5><i class="fas fa-chart-doughnut me-2 text-info"></i>Expense Breakdown</h5>
+                    <canvas id="expenseChart"></canvas>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            Total Expenses: <strong>${{ "{:,.0f}".format(financial_data.expense_overview.total_expenses) }}</strong>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <h5><i class="fas fa-chart-line me-2 text-warning"></i>MRR Growth Trend</h5>
+                    <canvas id="mrrChart" height="150"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <h5><i class="fas fa-water me-2 text-primary"></i>Cash Flow Projection</h5>
+                    <canvas id="cashFlowChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Insights & Forecasting -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="chart-container">
+                    <h5><i class="fas fa-brain me-2 text-warning"></i>Financial Insights</h5>
+
+                    <div class="financial-insight">
+                        <h6><i class="fas fa-chart-line me-2"></i>Revenue Performance</h6>
+                        {% if financial_data.overview_metrics.revenue_growth > 10 %}
+                        <p class="mb-1"><strong>Excellent Growth!</strong> Revenue increased by {{ financial_data.overview_metrics.revenue_growth }}%</p>
+                        <small>Strong market performance - consider scaling operations.</small>
+                        {% elif financial_data.overview_metrics.revenue_growth > 0 %}
+                        <p class="mb-1"><strong>Positive Trend:</strong> Revenue grew {{ financial_data.overview_metrics.revenue_growth }}%</p>
+                        <small>Steady growth - optimize conversion and retention strategies.</small>
+                        {% else %}
+                        <p class="mb-1"><strong>Attention Required:</strong> Revenue declined {{ abs(financial_data.overview_metrics.revenue_growth) }}%</p>
+                        <small>Review market positioning and customer acquisition strategies.</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="financial-insight">
+                        <h6><i class="fas fa-users me-2"></i>Customer Growth</h6>
+                        <p class="mb-1">Net New Subscriptions: <strong>{{ financial_data.subscription_metrics.net_new_subscriptions }}</strong></p>
+                        <p class="mb-1">Churn Rate: <strong>{{ financial_data.subscription_metrics.churn_rate }}%</strong></p>
+                        <small>{{ 'Excellent retention' if financial_data.subscription_metrics.churn_rate < 5 else 'Good retention' if financial_data.subscription_metrics.churn_rate < 10 else 'High churn - needs attention' }}</small>
+                    </div>
+
+                    <div class="financial-insight">
+                        <h6><i class="fas fa-credit-card me-2"></i>Payment Performance</h6>
+                        <p class="mb-1">Success Rate: <strong>{{ financial_data.payment_metrics.success_rate }}%</strong></p>
+                        <p class="mb-1">Processing Volume: <strong>${{ "{:,.0f}".format(financial_data.payment_metrics.total_processing_volume) }}</strong></p>
+                        <small>{{ financial_data.payment_metrics.total_attempts }} payment attempts processed</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="chart-container">
+                    <h5><i class="fas fa-crystal-ball me-2 text-success"></i>Revenue Forecast</h5>
+
+                    <div class="mb-3">
+                        <div class="growth-indicator growth-{{ 'high' if financial_data.forecasting.growth_assumptions.monthly_growth_rate > 8 else 'medium' if financial_data.forecasting.growth_assumptions.monthly_growth_rate > 3 else 'low' }}">
+                            <i class="fas fa-trending-up"></i>
+                            {{ financial_data.forecasting.growth_assumptions.monthly_growth_rate }}% Monthly Growth
+                        </div>
+                    </div>
+
+                    <div class="forecast-item">
+                        <span>Projected ARR:</span>
+                        <strong>${{ "{:,.0f}".format(financial_data.forecasting.projected_arr) }}</strong>
+                    </div>
+
+                    <div class="forecast-item">
+                        <span>Break-even Point:</span>
+                        <strong>{{ financial_data.profit_analysis.break_even_point }} customers</strong>
+                    </div>
+
+                    <div class="forecast-item">
+                        <span>Next Month MRR:</span>
+                        <strong>${{ "{:,.0f}".format(financial_data.forecasting.next_12_months[0].projected_mrr if financial_data.forecasting.next_12_months else 0) }}</strong>
+                    </div>
+
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Projections based on current growth trends and market conditions.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h5><i class="fas fa-calculator me-2 text-primary"></i>Key Financial Ratios</h5>
+
+                    <div class="forecast-item">
+                        <span>Customer LTV/CAC:</span>
+                        <strong>3.2x</strong>
+                    </div>
+
+                    <div class="forecast-item">
+                        <span>Gross Margin:</span>
+                        <strong>{{ "%.1f"|format(financial_data.profit_analysis.profit_margin) }}%</strong>
+                    </div>
+
+                    <div class="forecast-item">
+                        <span>Revenue/Employee:</span>
+                        <strong>$125K</strong>
+                    </div>
+
+                    <div class="forecast-item">
+                        <span>Monthly Burn Rate:</span>
+                        <strong>${{ "{:,.0f}".format(financial_data.expense_overview.total_expenses) }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="chart-container">
+                    <h5><i class="fas fa-tools me-2 text-primary"></i>Financial Management Actions</h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.revenue_analysis') }}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Revenue Analysis
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.forecasting_dashboard') }}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-crystal-ball me-2"></i>
+                                Revenue Forecasting
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.expense_management') }}" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-chart-pie me-2"></i>
+                                Expense Management
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('admin.financial_reports') }}" class="btn btn-outline-info w-100">
+                                <i class="fas fa-file-export me-2"></i>
+                                Financial Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Chart.js configuration
+        Chart.defaults.color = '#6c757d';
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+        // Revenue Trend Chart
+        const revenueCtx = document.getElementById('revenueTrendChart').getContext('2d');
+        fetch(`/admin/api/finance/charts?type=revenue_trend&period={{ period }}`)
+            .then(response => response.json())
+            .then(data => {
+                new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Daily Revenue',
+                            data: data.data,
+                            borderColor: '#2c3e50',
+                            backgroundColor: 'rgba(44, 62, 80, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+        // Expense Breakdown Chart
+        const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+        fetch(`/admin/api/finance/charts?type=expense_breakdown&period={{ period }}`)
+            .then(response => response.json())
+            .then(data => {
+                new Chart(expenseCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.data,
+                            backgroundColor: ['#2c3e50', '#34495e', '#7f8c8d', '#95a5a6']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            });
+
+        // MRR Growth Chart
+        const mrrCtx = document.getElementById('mrrChart').getContext('2d');
+        fetch(`/admin/api/finance/charts?type=mrr_growth&period={{ period }}`)
+            .then(response => response.json())
+            .then(data => {
+                new Chart(mrrCtx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'MRR',
+                            data: data.data,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+        // Cash Flow Chart
+        const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
+        fetch(`/admin/api/finance/charts?type=cash_flow&period={{ period }}`)
+            .then(response => response.json())
+            .then(data => {
+                new Chart(cashFlowCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Inflow',
+                            data: data.inflow,
+                            backgroundColor: '#27ae60'
+                        }, {
+                            label: 'Outflow',
+                            data: data.outflow,
+                            backgroundColor: '#e74c3c'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + (value/1000) + 'K';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+        // Period selector
+        function changePeriod(period) {
+            const url = new URL(window.location);
+            url.searchParams.set('period', period);
+            window.location.href = url.toString();
+        }
+
+        // Action functions
+        function generateReport() {
+            alert('Financial report generation feature coming soon');
+        }
+
+        function exportData() {
+            window.open(`/admin/finance/export/summary?format=csv&period={{ period }}`, '_blank');
+        }
+
+        // Auto-refresh data every 10 minutes
+        setTimeout(function() {
+            location.reload();
+        }, 10 * 60 * 1000);
+
+        // Real-time updates (if WebSocket available)
+        if (window.WebSocket) {
+            console.log('WebSocket support available for real-time financial updates');
+        }
+    </script>
+</body>
+</html>

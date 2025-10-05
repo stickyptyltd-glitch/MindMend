@@ -1,0 +1,602 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Create New AI Model - MindMend Admin{% endblock %}
+
+{% block extra_head %}
+<style>
+    .create-model-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .form-section h4 {
+        color: #495057;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .algorithm-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .algorithm-option {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .algorithm-option:hover {
+        border-color: #007bff;
+        background: #e7f1ff;
+    }
+
+    .algorithm-option.selected {
+        border-color: #007bff;
+        background: #e7f1ff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .algorithm-option h5 {
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .algorithm-option p {
+        color: #6c757d;
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+
+    .model-type-selector {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .model-type-option {
+        flex: 1;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .model-type-option:hover {
+        border-color: #28a745;
+        background: #e8f5e8;
+    }
+
+    .model-type-option.selected {
+        border-color: #28a745;
+        background: #e8f5e8;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .model-type-option i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .parameters-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        display: none;
+    }
+
+    .parameters-section.show {
+        display: block;
+    }
+
+    .parameter-group {
+        margin-bottom: 1rem;
+    }
+
+    .parameter-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .parameter-help {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    .form-actions {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .progress-indicator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .progress-step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e9ecef;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+    }
+
+    .progress-step.active {
+        background: #007bff;
+        color: white;
+    }
+
+    .progress-step.completed {
+        background: #28a745;
+        color: white;
+    }
+
+    .progress-line {
+        height: 2px;
+        background: #e9ecef;
+        flex: 1;
+        margin: 0 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .progress-line.completed {
+        background: #28a745;
+    }
+
+    .step-label {
+        position: absolute;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.8rem;
+        color: #6c757d;
+        white-space: nowrap;
+    }
+
+    .info-box {
+        background: #e7f3ff;
+        border: 1px solid #bee5eb;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-box i {
+        color: #0c5460;
+        margin-right: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .algorithm-selector,
+        .model-type-selector {
+            grid-template-columns: 1fr;
+            flex-direction: column;
+        }
+
+        .progress-indicator {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .progress-line {
+            width: 2px;
+            height: 30px;
+            margin: 0;
+        }
+
+        .step-label {
+            position: static;
+            transform: none;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-model-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">🧠 Create New AI Model</h2>
+            <p class="text-muted mb-0">Build a custom AI model for therapy applications</p>
+        </div>
+        <a href="{{ url_for('admin.ai_builder_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Builder
+        </a>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+        <div class="progress-step active">
+            1
+            <span class="step-label">Basic Info</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            2
+            <span class="step-label">Model Type</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            3
+            <span class="step-label">Algorithm</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+            4
+            <span class="step-label">Parameters</span>
+        </div>
+    </div>
+
+    <form method="POST" id="createModelForm">
+        <!-- Basic Information -->
+        <div class="form-section" id="step1">
+            <h4><i class="fas fa-info-circle"></i> Basic Information</h4>
+
+            <div class="info-box">
+                <i class="fas fa-lightbulb"></i>
+                <strong>Getting Started:</strong> Create a custom AI model tailored for mental health applications.
+                You'll be able to train it with your own therapeutic data and deploy it for real-time analysis.
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="modelName" class="form-label">Model Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="modelName" name="name" required
+                               placeholder="e.g., Anxiety Detection Model">
+                        <div class="form-text">Choose a descriptive name for your model</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="modelDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="modelDescription" name="description" rows="3"
+                                  placeholder="Describe what this model will do..."></textarea>
+                        <div class="form-text">Optional description of the model's purpose</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Type Selection -->
+        <div class="form-section" id="step2">
+            <h4><i class="fas fa-cogs"></i> Model Type</h4>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <strong>Model Types:</strong> Choose based on your use case. Classification predicts categories,
+                while generation creates new text responses.
+            </div>
+
+            <input type="hidden" name="model_type" id="selectedModelType">
+
+            <div class="model-type-selector">
+                <div class="model-type-option" data-type="classification">
+                    <i class="fas fa-tags" style="color: #007bff;"></i>
+                    <h5>Classification</h5>
+                    <p>Categorize text into predefined classes (e.g., anxiety, depression, positive)</p>
+                </div>
+                <div class="model-type-option" data-type="regression">
+                    <i class="fas fa-chart-line" style="color: #28a745;"></i>
+                    <h5>Regression</h5>
+                    <p>Predict numerical values (e.g., severity scores, risk levels)</p>
+                </div>
+                <div class="model-type-option" data-type="generation">
+                    <i class="fas fa-comment-dots" style="color: #ffc107;"></i>
+                    <h5>Generation</h5>
+                    <p>Generate therapeutic responses and recommendations</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Algorithm Selection -->
+        <div class="form-section" id="step3">
+            <h4><i class="fas fa-brain"></i> Algorithm Selection</h4>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <strong>Algorithm Choice:</strong> Different algorithms work better for different types of data.
+                Naive Bayes is fast for text, while Neural Networks handle complex patterns.
+            </div>
+
+            <input type="hidden" name="algorithm" id="selectedAlgorithm">
+
+            <div class="algorithm-selector">
+                {% for algo_key, algo_info in algorithms.items() %}
+                <div class="algorithm-option" data-algorithm="{{ algo_key }}">
+                    <h5>{{ algo_info.name }}</h5>
+                    <p>{{ algo_info.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Parameters Configuration -->
+        <div class="form-section" id="step4">
+            <h4><i class="fas fa-sliders-h"></i> Advanced Parameters</h4>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <strong>Parameters:</strong> Fine-tune your model's behavior. Default values work well for most cases.
+                Advanced users can customize these for better performance.
+            </div>
+
+            <div id="parametersContainer">
+                <!-- Parameters will be dynamically populated based on algorithm selection -->
+            </div>
+
+            <input type="hidden" name="parameters" id="parametersJson" value="{}">
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary me-2" onclick="goToPrevStep()">
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <button type="button" class="btn btn-primary me-2" onclick="goToNextStep()">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+            <button type="submit" class="btn btn-success" id="createButton" style="display: none;">
+                <i class="fas fa-plus-circle"></i> Create Model
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentStep = 1;
+const totalSteps = 4;
+let selectedParameters = {};
+
+// Algorithm parameters from backend
+const algorithmParameters = {{ algorithms|tojson }};
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateStepVisibility();
+    setupEventListeners();
+});
+
+function setupEventListeners() {
+    // Model type selection
+    document.querySelectorAll('.model-type-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.model-type-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('selectedModelType').value = this.dataset.type;
+            validateCurrentStep();
+        });
+    });
+
+    // Algorithm selection
+    document.querySelectorAll('.algorithm-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.algorithm-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('selectedAlgorithm').value = this.dataset.algorithm;
+            generateParameterInputs(this.dataset.algorithm);
+            validateCurrentStep();
+        });
+    });
+
+    // Form validation
+    document.getElementById('modelName').addEventListener('input', validateCurrentStep);
+}
+
+function goToNextStep() {
+    if (!validateCurrentStep()) return;
+
+    if (currentStep < totalSteps) {
+        currentStep++;
+        updateStepVisibility();
+        updateProgressIndicator();
+    }
+}
+
+function goToPrevStep() {
+    if (currentStep > 1) {
+        currentStep--;
+        updateStepVisibility();
+        updateProgressIndicator();
+    }
+}
+
+function updateStepVisibility() {
+    // Hide all steps
+    for (let i = 1; i <= totalSteps; i++) {
+        const step = document.getElementById(`step${i}`);
+        if (step) {
+            step.style.display = i === currentStep ? 'block' : 'none';
+        }
+    }
+
+    // Update button visibility
+    const prevBtn = document.querySelector('.btn-secondary');
+    const nextBtn = document.querySelector('.btn-primary');
+    const createBtn = document.getElementById('createButton');
+
+    prevBtn.style.display = currentStep > 1 ? 'inline-block' : 'none';
+    nextBtn.style.display = currentStep < totalSteps ? 'inline-block' : 'none';
+    createBtn.style.display = currentStep === totalSteps ? 'inline-block' : 'none';
+}
+
+function updateProgressIndicator() {
+    document.querySelectorAll('.progress-step').forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        if (index + 1 < currentStep) {
+            step.classList.add('completed');
+        } else if (index + 1 === currentStep) {
+            step.classList.add('active');
+        }
+    });
+
+    document.querySelectorAll('.progress-line').forEach((line, index) => {
+        line.classList.remove('completed');
+        if (index + 1 < currentStep) {
+            line.classList.add('completed');
+        }
+    });
+}
+
+function validateCurrentStep() {
+    let isValid = true;
+
+    switch (currentStep) {
+        case 1:
+            const modelName = document.getElementById('modelName').value.trim();
+            isValid = modelName.length > 0;
+            break;
+
+        case 2:
+            const selectedType = document.getElementById('selectedModelType').value;
+            isValid = selectedType !== '';
+            break;
+
+        case 3:
+            const selectedAlgorithm = document.getElementById('selectedAlgorithm').value;
+            isValid = selectedAlgorithm !== '';
+            break;
+
+        case 4:
+            // Parameters are optional, so always valid
+            isValid = true;
+            break;
+    }
+
+    return isValid;
+}
+
+function generateParameterInputs(algorithmKey) {
+    const container = document.getElementById('parametersContainer');
+    container.innerHTML = '';
+
+    if (!algorithmParameters[algorithmKey] || !algorithmParameters[algorithmKey].params) {
+        container.innerHTML = '<p class="text-muted">No additional parameters required for this algorithm.</p>';
+        return;
+    }
+
+    const params = algorithmParameters[algorithmKey].params;
+
+    container.innerHTML = `
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Configure parameters for <strong>${algorithmParameters[algorithmKey].name}</strong>
+        </div>
+    `;
+
+    for (const [paramName, paramValues] of Object.entries(params)) {
+        const paramGroup = document.createElement('div');
+        paramGroup.className = 'parameter-group';
+
+        let inputHtml = '';
+        if (Array.isArray(paramValues)) {
+            // Multiple choice parameter
+            if (typeof paramValues[0] === 'number') {
+                inputHtml = `
+                    <select class="form-select" name="param_${paramName}" onchange="updateParameter('${paramName}', this.value)">
+                        <option value="">Select ${paramName}</option>
+                        ${paramValues.map(val => `<option value="${val}">${val}</option>`).join('')}
+                    </select>
+                `;
+            } else {
+                inputHtml = `
+                    <select class="form-select" name="param_${paramName}" onchange="updateParameter('${paramName}', this.value)">
+                        <option value="">Select ${paramName}</option>
+                        ${paramValues.map(val => `<option value="${val}">${val}</option>`).join('')}
+                    </select>
+                `;
+            }
+        } else {
+            // Single value parameter
+            inputHtml = `
+                <input type="text" class="form-control" name="param_${paramName}"
+                       value="${paramValues}" onchange="updateParameter('${paramName}', this.value)">
+            `;
+        }
+
+        paramGroup.innerHTML = `
+            <label class="form-label">${paramName.replace(/_/g, ' ').toUpperCase()}</label>
+            ${inputHtml}
+            <div class="parameter-help">
+                Adjust this parameter to fine-tune model behavior
+            </div>
+        `;
+
+        container.appendChild(paramGroup);
+    }
+}
+
+function updateParameter(paramName, value) {
+    if (value === '') {
+        delete selectedParameters[paramName];
+    } else {
+        // Try to convert to number if possible
+        const numValue = parseFloat(value);
+        selectedParameters[paramName] = isNaN(numValue) ? value : numValue;
+    }
+
+    document.getElementById('parametersJson').value = JSON.stringify(selectedParameters);
+}
+
+// Form submission
+document.getElementById('createModelForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!validateCurrentStep()) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    // Show loading state
+    const createBtn = document.getElementById('createButton');
+    const originalText = createBtn.innerHTML;
+    createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+    createBtn.disabled = true;
+
+    // Submit form
+    this.submit();
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' && currentStep < totalSteps) {
+        goToNextStep();
+    } else if (e.key === 'ArrowLeft' && currentStep > 1) {
+        goToPrevStep();
+    }
+});
+</script>
+{% endblock %}

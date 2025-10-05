@@ -1,0 +1,576 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Expense Management & Cost Control - Admin Panel{% endblock %}
+
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+.expense-category-card {
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    border-left: 4px solid;
+}
+
+.expense-category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.category-infrastructure { border-left-color: #17a2b8; }
+.category-operations { border-left-color: #28a745; }
+.category-marketing { border-left-color: #ffc107; }
+.category-personnel { border-left-color: #dc3545; }
+
+.budget-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.budget-over { background-color: #f8d7da; color: #721c24; }
+.budget-warning { background-color: #fff3cd; color: #856404; }
+.budget-under { background-color: #d4edda; color: #155724; }
+
+.trend-indicator {
+    display: inline-block;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.trend-up { color: #dc3545; }
+.trend-down { color: #28a745; }
+.trend-stable { color: #6c757d; }
+
+.optimization-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+}
+
+.optimization-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.optimization-impact {
+    font-weight: bold;
+    color: #28a745;
+}
+
+.alert-critical { border-left: 4px solid #dc3545; }
+.alert-warning { border-left: 4px solid #ffc107; }
+.alert-info { border-left: 4px solid #17a2b8; }
+
+.expense-breakdown {
+    max-height: 300px;
+}
+
+.category-progress {
+    height: 8px;
+    border-radius: 4px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Expense Management & Cost Control</h1>
+            <p class="text-muted">Monitor expenses, track budgets, and optimize costs</p>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary" onclick="changePeriod('7d')">7D</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="changePeriod('30d')">30D</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="changePeriod('90d')">90D</button>
+            <button type="button" class="btn btn-outline-secondary" onclick="changePeriod('mtd')">MTD</button>
+            <button type="button" class="btn btn-primary" onclick="exportExpenseReport()">
+                <i class="fas fa-download"></i> Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Key Expense Metrics -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Expenses</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                ${{ "{:,.2f}".format(expense_data.total_expenses) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-credit-card fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Burn Rate</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                ${{ "{:,.2f}".format(expense_data.expense_metrics.burn_rate) }}
+                            </div>
+                            <div class="text-xs text-muted">per month</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-fire fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Cash Runway</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {% if expense_data.expense_metrics.runway_months == float('inf') %}
+                                ∞
+                                {% else %}
+                                {{ "{:.1f}".format(expense_data.expense_metrics.runway_months) }}
+                                {% endif %}
+                            </div>
+                            <div class="text-xs text-muted">months</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hourglass-half fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Cost per Customer</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                ${{ "{:.2f}".format(expense_data.expense_metrics.cost_per_customer) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-dollar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Alerts -->
+    {% if budget_analysis.budget_alerts %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Budget Alerts
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for alert in budget_analysis.budget_alerts %}
+                    <div class="alert alert-{{ 'danger' if alert.level == 'critical' else 'warning' }} alert-{{ alert.level }} mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>{{ alert.category.title() }}:</strong> {{ alert.message }}
+                                <br><small class="text-muted">{{ alert.recommended_action }}</small>
+                            </div>
+                            <span class="badge badge-{{ 'danger' if alert.level == 'critical' else 'warning' }}">
+                                {{ alert.level.title() }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Expense Categories and Trends -->
+    <div class="row mb-4">
+        <!-- Category Breakdown -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Expense Categories</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for category, data in expense_data.expense_categories.items() %}
+                        <div class="col-md-6 mb-3">
+                            <div class="expense-category-card category-{{ category }} card h-100" onclick="showCategoryDetails('{{ category }}')">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="card-title mb-0">{{ category.title().replace('_', ' ') }}</h6>
+                                        {% if cost_trends.trend_analysis.category_trends.get(category) %}
+                                        <span class="trend-indicator trend-{{ cost_trends.trend_analysis.category_trends[category].direction }}">
+                                            <i class="fas fa-arrow-{{ 'up' if cost_trends.trend_analysis.category_trends[category].direction == 'up' else 'down' if cost_trends.trend_analysis.category_trends[category].direction == 'down' else 'right' }}"></i>
+                                            {{ "{:+.1f}".format(cost_trends.trend_analysis.category_trends[category].change_percentage) }}%
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="h5 font-weight-bold text-primary mb-2">
+                                        ${{ "{:,.2f}".format(data.total) }}
+                                    </div>
+                                    {% if budget_analysis.current_variance.category_variances.get(category) %}
+                                    {% set variance = budget_analysis.current_variance.category_variances[category] %}
+                                    <div class="progress category-progress mb-2">
+                                        <div class="progress-bar
+                                            {% if variance.variance_percentage > 0 %}bg-danger{% else %}bg-success{% endif %}"
+                                             style="width: {{ min(100, abs(variance.variance_percentage)) }}%">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">
+                                        {{ "{:+.1f}".format(variance.variance_percentage) }}% vs budget
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expense Trends Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Expense Trends</h6>
+                </div>
+                <div class="card-body expense-breakdown">
+                    <canvas id="expenseTrendChart" width="100%" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Analysis and Cost Optimization -->
+    <div class="row mb-4">
+        <!-- Budget Variance Analysis -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Budget Variance Analysis</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>Overall Budget Status:</strong>
+                            <span class="budget-status {% if expense_data.budget_variance.variance_percentage > 10 %}budget-over{% elif expense_data.budget_variance.variance_percentage > 0 %}budget-warning{% else %}budget-under{% endif %}">
+                                {{ expense_data.budget_variance.status }}
+                            </span>
+                        </div>
+                        <div class="small text-muted">
+                            Budgeted: ${{ "{:,.2f}".format(expense_data.budget_variance.budgeted_amount) }} |
+                            Actual: ${{ "{:,.2f}".format(expense_data.budget_variance.actual_amount) }} |
+                            Variance: ${{ "{:+,.2f}".format(expense_data.budget_variance.variance_amount) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Spending Velocity</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar
+                                {% if budget_analysis.spending_velocity.status == 'fast' %}bg-danger{% elif budget_analysis.spending_velocity.status == 'slow' %}bg-warning{% else %}bg-success{% endif %}"
+                                 style="width: {{ min(100, budget_analysis.spending_velocity.velocity_percentage) }}%">
+                                {{ "{:.1f}".format(budget_analysis.spending_velocity.velocity_percentage) }}%
+                            </div>
+                        </div>
+                        <small class="text-muted">{{ budget_analysis.spending_velocity.recommendation }}</small>
+                    </div>
+
+                    <h6>Category Projections</h6>
+                    {% for category, projection in budget_analysis.projections.items() %}
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>{{ category.title() }}</span>
+                            <span class="{% if projection.budget_utilization > 100 %}text-danger{% elif projection.budget_utilization > 85 %}text-warning{% else %}text-success{% endif %}">
+                                {{ "{:.0f}".format(projection.budget_utilization) }}%
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar
+                                {% if projection.budget_utilization > 100 %}bg-danger{% elif projection.budget_utilization > 85 %}bg-warning{% else %}bg-success{% endif %}"
+                                 style="width: {{ min(100, projection.budget_utilization) }}%">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Optimization Opportunities -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Cost Optimization Opportunities</h6>
+                </div>
+                <div class="card-body">
+                    {% for opportunity in expense_data.cost_optimization %}
+                    <div class="optimization-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="font-weight-bold mb-0">{{ opportunity.category }}</h6>
+                                <span class="badge badge-{{ 'danger' if opportunity.effort == 'High' else 'warning' if opportunity.effort == 'Medium' else 'success' }}">
+                                    {{ opportunity.effort }}
+                                </span>
+                            </div>
+                            <p class="mb-2">{{ opportunity.opportunity }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="optimization-impact">
+                                        ${{ "{:,.0f}".format(opportunity.potential_savings) }} savings
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">Timeframe: {{ opportunity.timeframe }}</small>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <form method="post" action="{{ url_for('admin.optimize_expenses') }}" class="d-inline">
+                                        <input type="hidden" name="optimization_id" value="{{ opportunity.category.lower().replace(' ', '_') }}">
+                                        <input type="hidden" name="action" value="apply">
+                                        <button type="submit" class="btn btn-sm btn-success">Apply</button>
+                                    </form>
+                                    <form method="post" action="{{ url_for('admin.optimize_expenses') }}" class="d-inline">
+                                        <input type="hidden" name="optimization_id" value="{{ opportunity.category.lower().replace(' ', '_') }}">
+                                        <input type="hidden" name="action" value="schedule">
+                                        <button type="submit" class="btn btn-sm btn-info">Schedule</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Category Breakdown -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Detailed Category Breakdown</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Current Period</th>
+                                    <th>Budget</th>
+                                    <th>Variance</th>
+                                    <th>Trend</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category, data in expense_data.expense_categories.items() %}
+                                <tr>
+                                    <td class="font-weight-bold">{{ category.title().replace('_', ' ') }}</td>
+                                    <td>${{ "{:,.2f}".format(data.total) }}</td>
+                                    <td>
+                                        {% if budget_analysis.current_variance.category_variances.get(category) %}
+                                        ${{ "{:,.2f}".format(budget_analysis.current_variance.category_variances[category].budgeted) }}
+                                        {% else %}
+                                        N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if budget_analysis.current_variance.category_variances.get(category) %}
+                                        {% set variance = budget_analysis.current_variance.category_variances[category] %}
+                                        <span class="{% if variance.variance_percentage > 0 %}text-danger{% else %}text-success{% endif %}">
+                                            {{ "{:+.1f}".format(variance.variance_percentage) }}%
+                                        </span>
+                                        {% else %}
+                                        N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if cost_trends.trend_analysis.category_trends.get(category) %}
+                                        <span class="trend-indicator trend-{{ cost_trends.trend_analysis.category_trends[category].direction }}">
+                                            <i class="fas fa-arrow-{{ 'up' if cost_trends.trend_analysis.category_trends[category].direction == 'up' else 'down' if cost_trends.trend_analysis.category_trends[category].direction == 'down' else 'right' }}"></i>
+                                            {{ "{:+.1f}".format(cost_trends.trend_analysis.category_trends[category].change_percentage) }}%
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="showCategoryDetails('{{ category }}')">
+                                            <i class="fas fa-eye"></i> View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Details Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Category Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="categoryModalBody">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentPeriod = '{{ period }}';
+let expenseTrendChart;
+
+// Initialize charts when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initializeExpenseChart();
+});
+
+function initializeExpenseChart() {
+    // Expense Trend Chart
+    fetch(`/admin/api/finance/expenses/trends?period=${currentPeriod}&category=all`)
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('expenseTrendChart').getContext('2d');
+            expenseTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: data.trend_data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+}
+
+function changePeriod(period) {
+    // Update button states
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline-secondary');
+    });
+    event.target.classList.remove('btn-outline-secondary');
+    event.target.classList.add('btn-primary');
+
+    // Reload page with new period
+    window.location.href = `{{ url_for('admin.expense_management') }}?period=${period}`;
+}
+
+function showCategoryDetails(category) {
+    // Show detailed breakdown for specific category
+    const categoryData = {{ expense_data.expense_categories | tojson }};
+    const data = categoryData[category];
+
+    let modalContent = `
+        <h6>${category.charAt(0).toUpperCase() + category.slice(1).replace('_', ' ')} Breakdown</h6>
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Total Cost: $${data.total.toLocaleString()}</h6>
+    `;
+
+    if (data.breakdown) {
+        modalContent += '<h6>Cost Breakdown:</h6><ul>';
+        for (const [item, cost] of Object.entries(data.breakdown)) {
+            modalContent += `<li>${item.replace('_', ' ')}: $${cost.toLocaleString()}</li>`;
+        }
+        modalContent += '</ul>';
+    }
+
+    if (data.metrics) {
+        modalContent += '<h6>Key Metrics:</h6><ul>';
+        for (const [metric, value] of Object.entries(data.metrics)) {
+            modalContent += `<li>${metric.replace('_', ' ')}: ${typeof value === 'number' ? value.toLocaleString() : value}</li>`;
+        }
+        modalContent += '</ul>';
+    }
+
+    modalContent += '</div></div>';
+
+    document.getElementById('categoryModalBody').innerHTML = modalContent;
+    new bootstrap.Modal(document.getElementById('categoryModal')).show();
+}
+
+function exportExpenseReport() {
+    // Export expense report functionality
+    const reportData = {
+        period: currentPeriod,
+        total_expenses: {{ expense_data.total_expenses }},
+        categories: {{ expense_data.expense_categories | tojson }},
+        budget_analysis: {{ budget_analysis | tojson }}
+    };
+
+    // Create CSV content
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Category,Current Period,Budget,Variance,Trend\n";
+
+    // Add category data
+    {% for category, data in expense_data.expense_categories.items() %}
+    csvContent += `{{ category }},{{ data.total }},`;
+    {% if budget_analysis.current_variance.category_variances.get(category) %}
+    csvContent += `{{ budget_analysis.current_variance.category_variances[category].budgeted }},{{ budget_analysis.current_variance.category_variances[category].variance_percentage }}%,`;
+    {% else %}
+    csvContent += "N/A,N/A,";
+    {% endif %}
+    {% if cost_trends.trend_analysis.category_trends.get(category) %}
+    csvContent += `{{ cost_trends.trend_analysis.category_trends[category].change_percentage }}%\n`;
+    {% else %}
+    csvContent += "N/A\n";
+    {% endif %}
+    {% endfor %}
+
+    // Download CSV
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `expense_report_${currentPeriod}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+</script>
+{% endblock %}

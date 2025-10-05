@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Management - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-container {
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar {
+            background: var(--primary-color);
+            min-height: 100vh;
+        }
+
+        .sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 5px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            padding: 30px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-title {
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-file-alt me-3"></i>Content Management
+            </h1>
+            <div>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2">
+                <nav class="sidebar">
+                    <div class="p-4">
+                        <h5 class="text-white mb-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Navigation
+                        </h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                                    <i class="fas fa-home me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.user_management') }}">
+                                    <i class="fas fa-users me-2"></i>User Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.financial_dashboard') }}">
+                                    <i class="fas fa-chart-line me-2"></i>Financial Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.ai_management') }}">
+                                    <i class="fas fa-robot me-2"></i>AI Management
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.system_monitoring') }}">
+                                    <i class="fas fa-server me-2"></i>System Monitoring
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.content_management') }}">
+                                    <i class="fas fa-file-alt me-2"></i>Content Management
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content">
+                    <!-- Media Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="content-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-info me-3">
+                                        <i class="fas fa-images"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">{{ media_stats.total_files or 1250 }}</h3>
+                                        <p class="text-muted mb-0">Total Files</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="content-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-warning me-3">
+                                        <i class="fas fa-hdd"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">{{ media_stats.storage_used or "8.5GB" }}</h3>
+                                        <p class="text-muted mb-0">Storage Used</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="content-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon bg-success me-3">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="mb-0">{{ template_usage.active_templates or 15 }}</h3>
+                                        <p class="text-muted mb-0">Active Templates</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Management Tools -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="content-card">
+                                <h5><i class="fas fa-upload me-2"></i>Media Upload</h5>
+                                <form id="mediaUploadForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="mediaFile" class="form-label">Select Files</label>
+                                        <input type="file" class="form-control" id="mediaFile" name="mediaFile" multiple>
+                                        <div class="form-text">Supported formats: JPG, PNG, PDF, MP4, MP3</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="mediaCategory" class="form-label">Category</label>
+                                        <select class="form-select" id="mediaCategory" name="category">
+                                            <option value="images">Images</option>
+                                            <option value="videos">Videos</option>
+                                            <option value="audio">Audio</option>
+                                            <option value="documents">Documents</option>
+                                            <option value="assets">Assets</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-upload me-2"></i>Upload Files
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="content-card">
+                                <h5><i class="fas fa-paint-brush me-2"></i>Branding Assets</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td>Logo Files</td>
+                                                <td><span class="badge bg-primary">{{ branding_assets.logos or 8 }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Themes</td>
+                                                <td><span class="badge bg-success">{{ branding_assets.themes or 3 }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Custom CSS</td>
+                                                <td><span class="badge bg-info">{{ branding_assets.custom_css or 2 }}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-outline-primary" onclick="manageBranding()">
+                                        <i class="fas fa-cog me-2"></i>Manage Branding
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Template Management -->
+                    <div class="content-card">
+                        <h5><i class="fas fa-code me-2"></i>Template Management</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Template Name</th>
+                                                <th>Category</th>
+                                                <th>Last Modified</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>dashboard.html</td>
+                                                <td><span class="badge bg-primary">Main</span></td>
+                                                <td>2024-01-15</td>
+                                                <td><span class="badge bg-success">Active</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-info">Preview</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>login.html</td>
+                                                <td><span class="badge bg-secondary">Auth</span></td>
+                                                <td>2024-01-10</td>
+                                                <td><span class="badge bg-success">Active</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-info">Preview</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>session.html</td>
+                                                <td><span class="badge bg-info">Therapy</span></td>
+                                                <td>2024-01-12</td>
+                                                <td><span class="badge bg-success">Active</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-info">Preview</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>premium.html</td>
+                                                <td><span class="badge bg-warning">Subscription</span></td>
+                                                <td>2024-01-08</td>
+                                                <td><span class="badge bg-success">Active</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-info">Preview</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Quick Actions</h6>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-plus me-2"></i>New Template
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-copy me-2"></i>Clone Template
+                                            </button>
+                                            <button class="btn btn-outline-warning btn-sm">
+                                                <i class="fas fa-download me-2"></i>Export Templates
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm">
+                                                <i class="fas fa-upload me-2"></i>Import Template
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Editor -->
+                    <div class="content-card">
+                        <h5><i class="fas fa-edit me-2"></i>Quick Editor</h5>
+                        <div class="mb-3">
+                            <select class="form-select" id="templateSelector" onchange="loadTemplate()">
+                                <option value="">Select a template to edit...</option>
+                                <option value="dashboard.html">dashboard.html</option>
+                                <option value="login.html">login.html</option>
+                                <option value="session.html">session.html</option>
+                                <option value="premium.html">premium.html</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="templateEditor" rows="10" placeholder="Template content will appear here..."></textarea>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <button class="btn btn-success" onclick="saveTemplate()">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                                <button class="btn btn-outline-info" onclick="previewTemplate()">
+                                    <i class="fas fa-eye me-2"></i>Preview
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-outline-secondary" onclick="resetTemplate()">
+                                    <i class="fas fa-undo me-2"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadTemplate() {
+            const selector = document.getElementById('templateSelector');
+            const editor = document.getElementById('templateEditor');
+
+            if (selector.value) {
+                // Simulate loading template content
+                editor.value = `<!-- ${selector.value} -->\n<!-- Template content would be loaded here -->\n\n<div class="template-placeholder">\n    <h3>Template: ${selector.value}</h3>\n    <p>This is where the actual template content would appear.</p>\n</div>`;
+            } else {
+                editor.value = '';
+            }
+        }
+
+        function saveTemplate() {
+            const selector = document.getElementById('templateSelector');
+            const editor = document.getElementById('templateEditor');
+
+            if (!selector.value) {
+                alert('Please select a template first.');
+                return;
+            }
+
+            // Simulate saving
+            alert(`Template ${selector.value} saved successfully!`);
+        }
+
+        function previewTemplate() {
+            const selector = document.getElementById('templateSelector');
+
+            if (!selector.value) {
+                alert('Please select a template first.');
+                return;
+            }
+
+            // Open preview in new window
+            window.open(`/admin/preview/${selector.value}`, '_blank');
+        }
+
+        function resetTemplate() {
+            const editor = document.getElementById('templateEditor');
+            if (confirm('Are you sure you want to reset all changes?')) {
+                loadTemplate();
+            }
+        }
+
+        function manageBranding() {
+            alert('Branding management panel would open here.');
+        }
+
+        // File upload handling
+        document.getElementById('mediaUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('mediaFile');
+            const category = document.getElementById('mediaCategory').value;
+
+            if (fileInput.files.length === 0) {
+                alert('Please select files to upload.');
+                return;
+            }
+
+            // Simulate upload
+            alert(`${fileInput.files.length} file(s) uploaded to ${category} category successfully!`);
+            fileInput.value = '';
+        });
+    </script>
+</body>
+</html>

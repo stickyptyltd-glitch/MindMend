@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Details - {{ user.name if user else 'Unknown User' }} - MindMend Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .subscription-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        .detail-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .metric-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-indicator {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-canceled { background: #f8d7da; color: #721c24; }
+        .status-past_due { background: #fff3cd; color: #856404; }
+        .tier-badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        .tier-free { background: #6c757d; }
+        .tier-basic { background: #17a2b8; }
+        .tier-premium { background: #28a745; }
+        .tier-enterprise { background: #6f42c1; }
+        .timeline-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .timeline-created { background: #d4edda; color: #155724; }
+        .timeline-canceled { background: #f8d7da; color: #721c24; }
+        .timeline-payment_success { background: #cce5ff; color: #004085; }
+        .timeline-payment_failed { background: #fff3cd; color: #856404; }
+        .payment-row {
+            transition: background-color 0.2s ease;
+        }
+        .payment-row:hover {
+            background-color: rgba(40, 167, 69, 0.05);
+        }
+        .payment-success { color: #28a745; }
+        .payment-failed { color: #dc3545; }
+        .payment-pending { color: #ffc107; }
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .action-button {
+            margin: 0.2rem;
+        }
+        .danger-zone {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border: 1px solid #feb2b2;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="subscription-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar me-3">
+                            {{ user.name[0].upper() if user and user.name else 'U' }}
+                        </div>
+                        <div>
+                            <h1>{{ user.name if user else 'Unknown User' }}</h1>
+                            <p class="mb-0">Subscription #{{ subscription.id }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="tier-badge tier-{{ subscription.tier }}">
+                        {{ subscription.tier.upper() }}
+                    </div>
+                    <div class="mt-2">
+                        <span class="status-indicator status-{{ subscription.status }}">
+                            {{ subscription.status.replace('_', ' ').title() }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.subscriptions_list') }}">Subscriptions</a></li>
+                <li class="breadcrumb-item active">{{ user.name if user else 'Unknown User' }}</li>
+            </ol>
+        </nav>
+
+        <!-- Key Metrics -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value">${{ "{:.2f}".format(metrics.total_revenue) }}</div>
+                    <div class="metric-label">Total Revenue</div>
+                    <small class="text-muted">All-time payments</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value">{{ metrics.payment_count }}</div>
+                    <div class="metric-label">Total Payments</div>
+                    <small class="text-muted">${{ "{:.2f}".format(metrics.average_payment) }} avg</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value">{{ metrics.subscription_age_days }}</div>
+                    <div class="metric-label">Days Active</div>
+                    <small class="text-muted">Since creation</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-box">
+                    <div class="metric-value">{{ metrics.days_until_renewal }}</div>
+                    <div class="metric-label">Days Until Renewal</div>
+                    <small class="text-muted">Next billing cycle</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Details -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="detail-card">
+                    <h5><i class="fas fa-info-circle me-2 text-primary"></i>Subscription Information</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Subscription ID:</strong></td>
+                                    <td>#{{ subscription.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>User:</strong></td>
+                                    <td>
+                                        {% if user %}
+                                        <a href="{{ url_for('admin.user_detail', user_id=user.id) }}">
+                                            {{ user.name }}
+                                        </a>
+                                        <br><small class="text-muted">{{ user.email }}</small>
+                                        {% else %}
+                                        Unknown User
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tier:</strong></td>
+                                    <td>
+                                        <span class="tier-badge tier-{{ subscription.tier }}">
+                                            {{ subscription.tier.upper() }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td>
+                                        <span class="status-indicator status-{{ subscription.status }}">
+                                            {{ subscription.status.replace('_', ' ').title() }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Amount:</strong></td>
+                                    <td>${{ "{:.2f}".format(subscription.amount) if subscription.amount else '0.00' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Billing Cycle:</strong></td>
+                                    <td>{{ subscription.billing_cycle.title() if subscription.billing_cycle else 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Created:</strong></td>
+                                    <td>
+                                        {% if subscription.created_at %}
+                                        {{ subscription.created_at.strftime('%B %d, %Y') }}
+                                        <br><small class="text-muted">{{ subscription.created_at.strftime('%I:%M %p') }}</small>
+                                        {% else %}
+                                        N/A
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Next Billing:</strong></td>
+                                    <td>
+                                        {% if subscription.current_period_end %}
+                                        {{ subscription.current_period_end.strftime('%B %d, %Y') }}
+                                        {% set days_until = (subscription.current_period_end - moment.utcnow()).days %}
+                                        <br><small class="text-{{ 'danger' if days_until < 7 else 'warning' if days_until < 14 else 'success' }}">
+                                            {{ days_until }} days remaining
+                                        </small>
+                                        {% else %}
+                                        N/A
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    {% if subscription.stripe_subscription_id %}
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <strong>Stripe Subscription ID:</strong>
+                        <code>{{ subscription.stripe_subscription_id }}</code>
+                        <a href="#" class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="fas fa-external-link-alt"></i> View in Stripe
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    {% if subscription.notes %}
+                    <div class="mt-3">
+                        <strong>Admin Notes:</strong>
+                        <p class="mt-2 p-3 bg-light rounded">{{ subscription.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Payment History -->
+                <div class="detail-card">
+                    <h5><i class="fas fa-credit-card me-2 text-info"></i>Payment History</h5>
+
+                    {% if payments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr class="payment-row">
+                                    <td>
+                                        {{ payment.created_at.strftime('%b %d, %Y') if payment.created_at else 'N/A' }}
+                                        <br><small class="text-muted">{{ payment.created_at.strftime('%I:%M %p') if payment.created_at else '' }}</small>
+                                    </td>
+                                    <td>
+                                        <strong>${{ "{:.2f}".format(payment.amount) if payment.amount else '0.00' }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if payment.status == 'succeeded' else 'danger' if payment.status == 'failed' else 'warning' }}">
+                                            {{ payment.status.title() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ payment.description or 'Subscription payment' }}
+                                        {% if payment.stripe_payment_intent_id %}
+                                        <br><small class="text-muted">{{ payment.stripe_payment_intent_id }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-info" onclick="viewPayment({{ payment.id }})">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        {% if payment.status == 'failed' %}
+                                        <button class="btn btn-sm btn-outline-warning" onclick="retryPayment({{ payment.id }})">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-credit-card fa-3x text-muted mb-3"></i>
+                        <h6>No Payment History</h6>
+                        <p class="text-muted">No payments have been processed for this subscription yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Quick Actions -->
+                <div class="detail-card">
+                    <h5><i class="fas fa-tools me-2 text-primary"></i>Quick Actions</h5>
+
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('admin.subscription_edit', subscription_id=subscription.id) }}"
+                           class="btn btn-outline-primary action-button">
+                            <i class="fas fa-edit me-2"></i>Edit Subscription
+                        </a>
+
+                        {% if subscription.status == 'active' %}
+                        <button class="btn btn-outline-warning action-button" onclick="pauseSubscription()">
+                            <i class="fas fa-pause me-2"></i>Pause Subscription
+                        </button>
+                        {% endif %}
+
+                        {% if subscription.status == 'canceled' %}
+                        <form method="POST" action="{{ url_for('admin.subscription_reactivate', subscription_id=subscription.id) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-outline-success action-button w-100"
+                                    onclick="return confirm('Reactivate this subscription?')">
+                                <i class="fas fa-play me-2"></i>Reactivate Subscription
+                            </button>
+                        </form>
+                        {% endif %}
+
+                        {% if user %}
+                        <a href="{{ url_for('admin.user_detail', user_id=user.id) }}"
+                           class="btn btn-outline-info action-button">
+                            <i class="fas fa-user me-2"></i>View User Profile
+                        </a>
+                        {% endif %}
+
+                        <button class="btn btn-outline-secondary action-button" onclick="exportSubscriptionData()">
+                            <i class="fas fa-download me-2"></i>Export Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="detail-card">
+                    <h5><i class="fas fa-history me-2 text-info"></i>Subscription Timeline</h5>
+
+                    <div class="timeline">
+                        {% for event in timeline %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon timeline-{{ event.type }}">
+                                <i class="fas fa-{{ 'plus' if event.type == 'created' else 'ban' if event.type == 'canceled' else 'credit-card' if 'payment' in event.type else 'clock' }}"></i>
+                            </div>
+                            <div>
+                                <strong>{{ event.event }}</strong>
+                                <br><small class="text-muted">{{ event.date.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                                {% if event.description %}
+                                <p class="mt-1 mb-0 text-muted small">{{ event.description }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                {% if subscription.status == 'active' %}
+                <div class="danger-zone">
+                    <h6><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Danger Zone</h6>
+                    <p class="small text-muted mb-3">These actions cannot be undone. Please proceed with caution.</p>
+
+                    <form method="POST" action="{{ url_for('admin.subscription_cancel', subscription_id=subscription.id) }}"
+                          onsubmit="return confirmCancellation()">
+                        <div class="mb-3">
+                            <label class="form-label small">Cancellation Reason:</label>
+                            <textarea class="form-control form-control-sm" name="reason" rows="2"
+                                      placeholder="Required: Enter reason for cancellation" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-ban me-2"></i>Cancel Subscription
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function viewPayment(paymentId) {
+            // Implementation for viewing payment details
+            alert(`View payment details for payment ID: ${paymentId}`);
+        }
+
+        function retryPayment(paymentId) {
+            if (confirm('Attempt to retry this failed payment?')) {
+                // Implementation for retrying payment
+                alert(`Retry payment ID: ${paymentId}`);
+            }
+        }
+
+        function pauseSubscription() {
+            if (confirm('Pause this subscription? The user will lose access to premium features.')) {
+                // Implementation for pausing subscription
+                alert('Feature coming soon: Pause subscription');
+            }
+        }
+
+        function exportSubscriptionData() {
+            if (confirm('Export all subscription data? This action will be logged for audit purposes.')) {
+                window.location.href = `/admin/subscriptions/{{ subscription.id }}/export`;
+            }
+        }
+
+        function confirmCancellation() {
+            const reason = document.querySelector('textarea[name="reason"]').value.trim();
+
+            if (!reason || reason.length < 10) {
+                alert('Please provide a detailed reason for cancellation (minimum 10 characters)');
+                return false;
+            }
+
+            return confirm(
+                '🚨 FINAL CONFIRMATION 🚨\n\n' +
+                'You are about to cancel this subscription.\n\n' +
+                '• The user will immediately lose premium access\n' +
+                '• This action will be logged for audit\n' +
+                '• Billing will stop at the end of current period\n\n' +
+                'Are you absolutely sure you want to proceed?'
+            );
+        }
+
+        // Auto-refresh subscription status every 2 minutes
+        setInterval(function() {
+            fetch(`/admin/api/subscriptions/{{ subscription.id }}/status`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== '{{ subscription.status }}') {
+                        // Status changed, reload page
+                        location.reload();
+                    }
+                })
+                .catch(error => console.log('Status check failed'));
+        }, 2 * 60 * 1000);
+    </script>
+</body>
+</html>
