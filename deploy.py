@@ -39,7 +39,6 @@ class MindMendDeployment:
         default_config = {
             "domain": "mindmend.xyz",
             "server_user": "mindmend",
-            "server_host": "your-server-ip",
             "app_directory": "/var/www/mindmend",
             "python_version": "3.11",
             "database_host": "localhost",

@@ -33,14 +33,11 @@ WORKDIR /app
 COPY pyproject.toml ./
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -e . && \
-    pip install --no-cache-dir gunicorn psycopg2-binary redis celery
+    pip install --no-cache-dir gunicorn psycopg2-binary redis celery flask-login
 
 # Install AI/ML specific packages
-RUN pip install --no-cache-dir \
-    torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu \
-    transformers \
-    sentence-transformers \
-    accelerate
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir transformers sentence-transformers accelerate
 
 # Create necessary directories
 RUN mkdir -p /var/log/mindmend /var/www/mindmend/uploads /app/logs && \
