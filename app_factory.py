@@ -1,6 +1,5 @@
 
 import os
-import logging
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
@@ -48,11 +47,8 @@ def create_app():
         from general import general_bp
         app.register_blueprint(general_bp)
 
-        from auth import auth_bp
+        from auth_routes import auth_bp
         app.register_blueprint(auth_bp)
-
-        from admin_auth_routes import admin_auth_bp
-        app.register_blueprint(admin_auth_bp)
 
         from video import video_bp
         app.register_blueprint(video_bp)
