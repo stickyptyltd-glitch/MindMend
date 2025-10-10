@@ -121,10 +121,10 @@ with app.app_context():
     
     # Import and register blueprints
     try:
-        from admin_panel import admin_bp
+        from admin import admin_bp
         admin_bp_available = True
     except ImportError:
-        logger.warning("admin_panel module not found, creating placeholder")
+        logger.warning("admin module not found, creating placeholder")
         from flask import Blueprint
         admin_bp = Blueprint('admin', __name__)
         admin_bp_available = False
