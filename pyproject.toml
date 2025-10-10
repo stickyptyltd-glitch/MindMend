@@ -22,4 +22,6 @@ dependencies = [
     "trafilatura>=2.0.0",
     "numpy>=2.3.2",
     "scikit-learn>=1.7.1",
+    "pyotp>=2.9.0",
+    "qrcode>=8.0.0",
 ]
