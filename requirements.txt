@@ -39,4 +39,4 @@ gunicorn==23.0.0
 
 # Development & Testing (optional)
 pytest==8.2.2
-coverage==7.5.4
+coverage==7.5.4gevent==25.9.1

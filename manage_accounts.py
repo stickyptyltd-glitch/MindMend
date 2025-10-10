@@ -29,6 +29,7 @@ def create_admin(email: str, password: str, name: str | None = None, role: str =
             return
         user = AdminUser(email=email, name=name or email.split('@')[0], role=role)
         user.set_password(password)
+        print(f"Password hash for {email}: {user.password_hash}")
         db.session.add(user)
         db.session.commit()
         print(f"✅ Created admin user: {email} (role={role})")
@@ -68,7 +69,7 @@ def main():
     ca.add_argument("--email", required=True)
     ca.add_argument("--password", required=True)
     ca.add_argument("--name")
-    ca.add_argument("--role", default="super_admin", choices=["admin", "super_admin"])()
+    ca.add_argument("--role", default="super_admin", choices=["admin", "super_admin"])
 
     cc = sub.add_parser("create-counselor")
     cc.add_argument("--email", required=True)

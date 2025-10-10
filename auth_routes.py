@@ -82,9 +82,17 @@ def admin_login():
         return render_template('admin/login.html')
 
     # Verify admin credentials
+    from flask import current_app
+    current_app.logger.info(f"Attempting admin login for user: {username}")
+    current_app.logger.info(f"Password provided: {password}")
     admin_user = AdminUser.query.filter_by(email=username).first()
+    current_app.logger.info(f"Admin user found: {admin_user}")
+    if admin_user:
+        current_app.logger.info(f"Password hash from DB: {admin_user.password_hash}")
 
     if not admin_user or not check_password_hash(admin_user.password_hash, password):
+        if admin_user:
+            current_app.logger.info(f"Password hash check result: {check_password_hash(admin_user.password_hash, password)}")
         admin_security.record_failed_attempt(client_ip)
         AdminAuditLogger.log_login(username, False, client_ip)
         flash('Invalid credentials', 'error')

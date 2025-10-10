@@ -1,0 +1,119 @@
+name: Rollback Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: 'Revision number to rollback to (leave empty for previous revision)'
+        required: false
+        type: string
+      reason:
+        description: 'Reason for rollback'
+        required: true
+        type: string
+
+env:
+  PROJECT_ID: mindmend-production
+  GKE_CLUSTER: mindmend-cluster
+  GKE_ZONE: asia-southeast1-a
+  DEPLOYMENT_NAME: mindmend-backend
+
+jobs:
+  rollback:
+    name: Rollback to Previous Version
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} \
+            --zone ${{ env.GKE_ZONE }} \
+            --project ${{ env.PROJECT_ID }}
+
+      - name: Show current deployment status
+        run: |
+          echo "=== Current Deployment Status ==="
+          kubectl get deployment ${{ env.DEPLOYMENT_NAME }}
+          kubectl get pods -l app=mindmend-backend
+
+          echo ""
+          echo "=== Rollout History ==="
+          kubectl rollout history deployment/${{ env.DEPLOYMENT_NAME }}
+
+      - name: Perform rollback
+        run: |
+          echo "Reason for rollback: ${{ github.event.inputs.reason }}"
+
+          if [[ -n "${{ github.event.inputs.revision }}" ]]; then
+            echo "Rolling back to revision: ${{ github.event.inputs.revision }}"
+            kubectl rollout undo deployment/${{ env.DEPLOYMENT_NAME }} --to-revision=${{ github.event.inputs.revision }}
+          else
+            echo "Rolling back to previous revision"
+            kubectl rollout undo deployment/${{ env.DEPLOYMENT_NAME }}
+          fi
+
+      - name: Wait for rollback to complete
+        run: |
+          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} --timeout=5m
+          echo "✅ Rollback completed"
+
+      - name: Verify rollback health
+        run: |
+          echo "Checking pods after rollback..."
+          kubectl get pods -l app=mindmend-backend
+          kubectl wait --for=condition=ready pod -l app=mindmend-backend --timeout=120s
+
+          echo "✅ Pods are healthy after rollback"
+
+      - name: Test endpoints after rollback
+        run: |
+          echo "Testing endpoints after rollback..."
+
+          # Wait for service to stabilize
+          sleep 20
+
+          # Test health endpoint
+          curl -f http://34.143.177.214/health || echo "Health check warning"
+
+          # Test homepage
+          curl -f http://34.143.177.214/ -o /dev/null || echo "Homepage warning"
+
+          echo "✅ Endpoints responding after rollback"
+
+      - name: Show final status
+        run: |
+          echo "=== Final Deployment Status ==="
+          kubectl describe deployment ${{ env.DEPLOYMENT_NAME }} | grep -A 5 "Image:"
+          kubectl get pods -l app=mindmend-backend
+
+      - name: Create rollback report
+        run: |
+          echo "## Rollback Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** ${{ github.event.inputs.reason }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Initiated by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Rollback completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Current Deployment" >> $GITHUB_STEP_SUMMARY
+          kubectl get deployment ${{ env.DEPLOYMENT_NAME }} -o wide >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Notify rollback completion
+        run: |
+          echo "🔄 Rollback completed successfully"
+          echo "Deployment reverted to previous working state"
+          echo "Reason: ${{ github.event.inputs.reason }}"

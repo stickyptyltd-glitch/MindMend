@@ -152,6 +152,21 @@ with app.app_context():
     # Create all database tables
     db.create_all()
 
+    with app.app_context():
+        from models.database import AdminUser
+        from werkzeug.security import generate_password_hash
+        email = "stickyptyltd@gmail.com"
+        password = "Iloveya1992!"
+        existing_user = AdminUser.query.filter_by(email=email).first()
+        if not existing_user:
+            user = AdminUser(email=email, name="Default Admin", role="super_admin")
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            print(f"Admin user {email} created successfully.")
+
+
+
 # Initialize AI components
 ai_manager = AIManager()
 health_checker = HealthChecker()

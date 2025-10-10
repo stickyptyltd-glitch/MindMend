@@ -25,14 +25,12 @@ spec:
           volumeMounts:
             - name: uploads
               mountPath: /var/www/mindmend/uploads
-          envFrom:
-            - secretRef:
-              name: mindmend-secrets-gsm
-          # Mount CSI volume to trigger sync of GSM secrets
-          volumeMounts:
             - name: gsm-secrets
               mountPath: /var/run/secrets/mindmend/gsm
               readOnly: true
+          envFrom:
+            - secretRef:
+                name: mindmend-secrets-gsm
       volumes:
         - name: uploads
           persistentVolumeClaim:
