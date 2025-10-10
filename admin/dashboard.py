@@ -10,7 +10,7 @@ from flask_socketio import emit
 from sqlalchemy import func, desc
 from . import admin_bp
 from .auth import require_admin_auth, require_permission
-from models.database import db, Patient, Session, BiometricData, Subscription, Payment
+from models.database import db, Patient, Session, BiometricData
 
 @admin_bp.route('/')
 @admin_bp.route('/dashboard')
