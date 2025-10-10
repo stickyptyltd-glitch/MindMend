@@ -2,7 +2,7 @@ import os
 import logging
 import stripe
 import secrets
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, get_flashed_messages
 try:
     from flask_limiter import Limiter
     from flask_limiter.util import get_remote_address
