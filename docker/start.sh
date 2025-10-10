@@ -33,7 +33,7 @@ mkdir -p /var/log/mindmend
 echo "Starting Gunicorn server..."
 exec gunicorn \
     --bind 0.0.0.0:8000 \
-    --workers ${WORKERS:-4} \
+    --workers ${WORKERS:-2} \
     --worker-class gevent \
     --worker-connections ${WORKER_CONNECTIONS:-1000} \
     --max-requests ${MAX_REQUESTS:-10000} \
@@ -45,5 +45,4 @@ exec gunicorn \
     --log-level ${LOG_LEVEL:-info} \
     --capture-output \
     --enable-stdio-inheritance \
-    --preload \
     "app:app"
