@@ -15,7 +15,7 @@ from sqlalchemy import func, desc, asc, or_, and_
 from werkzeug.security import generate_password_hash
 from . import admin_bp
 from .auth import require_admin_auth, require_permission
-from models.database import db, Patient, Session, BiometricData, Subscription, Payment, Assessment
+from models.database import db, Patient, Session, BiometricData, Assessment
 from models.audit_log import audit_logger
 
 @admin_bp.route('/users')

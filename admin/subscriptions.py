@@ -12,7 +12,7 @@ from flask import (
 from sqlalchemy import func, desc, asc, or_, and_
 from . import admin_bp
 from .auth import require_admin_auth, require_permission
-from models.database import db, Patient, Subscription, Payment
+from models.database import db, Patient
 from models.audit_log import audit_logger
 
 @admin_bp.route('/subscriptions')
