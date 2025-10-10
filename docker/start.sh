@@ -34,8 +34,7 @@ echo "Starting Gunicorn server..."
 exec gunicorn \
     --bind 0.0.0.0:8000 \
     --workers ${WORKERS:-2} \
-    --worker-class gevent \
-    --worker-connections ${WORKER_CONNECTIONS:-1000} \
+    --worker-class sync \
     --max-requests ${MAX_REQUESTS:-10000} \
     --max-requests-jitter 100 \
     --timeout ${TIMEOUT:-120} \
