@@ -216,10 +216,11 @@ def login():
             flash('Username and password are required', 'error')
             return render_template('admin/login_complete.html')
 
-        # Find admin user (using Patient model with enterprise subscription as admin)
-        admin_user = Patient.query.filter_by(
+        # Find admin user (using AdminUser model)
+        from models.database import AdminUser
+        admin_user = AdminUser.query.filter_by(
             email=username,
-            subscription_tier='enterprise'
+            is_active=True
         ).first()
 
         if admin_user and check_password_hash(admin_user.password_hash, password):
