@@ -228,7 +228,7 @@ def login():
             session['admin_authenticated'] = True
             session['admin_user_id'] = admin_user.id
             session['admin_username'] = admin_user.email
-            session['admin_role'] = 'super_admin'  # Default to super admin for enterprise users
+            session['admin_role'] = admin_user.role  # Use the role from AdminUser model
             session['admin_session_expiry'] = (datetime.utcnow() + timedelta(hours=8)).isoformat()
 
             # Check if MFA is enabled
