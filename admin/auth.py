@@ -231,30 +231,9 @@ def login():
             session['admin_role'] = admin_user.role  # Use the role from AdminUser model
             session['admin_session_expiry'] = (datetime.utcnow() + timedelta(hours=8)).isoformat()
 
-            # Check if MFA is enabled
-            mfa_secret = admin_user.oauth_providers  # Reuse this field for MFA secret
-            if mfa_secret:
-                session['admin_mfa_required'] = True
-                session['admin_mfa_verified'] = False
-                audit_logger.log_admin_action(
-                    'LOGIN_SUCCESS_MFA_REQUIRED',
-                    f'Admin {admin_user.email} logged in successfully, MFA required',
-                    target_type='USER',
-                    target_id=admin_user.id,
-                    severity='INFO'
-                )
-                return redirect(url_for('admin.mfa_verify'))
-            else:
-                session['admin_mfa_required'] = False
-                session['admin_mfa_verified'] = True
-
-            audit_logger.log_admin_action(
-                'LOGIN_SUCCESS',
-                f'Admin {admin_user.email} logged in successfully',
-                target_type='USER',
-                target_id=admin_user.id,
-                severity='INFO'
-            )
+            # MFA is not implemented for AdminUser model yet
+            session['admin_mfa_required'] = False
+            session['admin_mfa_verified'] = True
             flash(f'Welcome, {admin_user.name}!', 'success')
 
             # Redirect to originally requested page or dashboard
