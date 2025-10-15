@@ -13,7 +13,7 @@ from flask import (
 from sqlalchemy import func, desc, asc, or_, and_, extract, case
 from . import admin_bp
 from .auth import require_admin_auth, require_permission
-from models.database import db, Patient
+from models.database import db, Patient, Subscription, Payment
 from models.audit_log import audit_logger
 
 @admin_bp.route('/finance')
@@ -75,12 +75,12 @@ def finance_dashboard():
         severity='INFO'
     )
 
-    return render_template('admin/finance/dashboard.html', {
-        'financial_data': financial_data,
-        'period': period,
-        'period_name': period_name,
-        'date_range': {'start': start_date, 'end': end_date}
-    })
+    return render_template('admin/finance/dashboard.html',
+        financial_data=financial_data,
+        period=period,
+        period_name=period_name,
+        date_range={'start': start_date, 'end': end_date}
+    )
 
 @admin_bp.route('/finance/revenue')
 @require_admin_auth
@@ -118,13 +118,13 @@ def revenue_analysis():
         details={'period': period, 'breakdown': breakdown_by, 'tier_filter': tier_filter}
     )
 
-    return render_template('admin/finance/revenue.html', {
-        'revenue_analytics': revenue_analytics,
-        'period': period,
-        'breakdown_by': breakdown_by,
-        'tier_filter': tier_filter,
-        'date_range': {'start': start_date, 'end': end_date}
-    })
+    return render_template('admin/finance/revenue.html',
+        revenue_analytics=revenue_analytics,
+        period=period,
+        breakdown_by=breakdown_by,
+        tier_filter=tier_filter,
+        date_range={'start': start_date, 'end': end_date}
+    )
 
 @admin_bp.route('/finance/forecasting')
 @require_admin_auth
@@ -150,11 +150,11 @@ def forecasting_dashboard():
         severity='INFO'
     )
 
-    return render_template('admin/finance/forecasting.html', {
-        'forecasting_data': forecasting_data,
-        'current_scenario': scenario,
-        'timeframe': timeframe
-    })
+    return render_template('admin/finance/forecasting.html',
+        forecasting_data=forecasting_data,
+        current_scenario=scenario,
+        timeframe=timeframe
+    )
 
 @admin_bp.route('/finance/expenses')
 @require_admin_auth
@@ -204,15 +204,15 @@ def expense_management():
         severity='INFO'
     )
 
-    return render_template('admin/finance/expenses.html', {
-        'expense_data': expense_data,
-        'cost_trends': cost_trends,
-        'budget_analysis': budget_analysis,
-        'period': period,
-        'period_name': period_name,
-        'category_filter': category_filter,
-        'date_range': {'start': start_date, 'end': end_date}
-    })
+    return render_template('admin/finance/expenses.html',
+        expense_data=expense_data,
+        cost_trends=cost_trends,
+        budget_analysis=budget_analysis,
+        period=period,
+        period_name=period_name,
+        category_filter=category_filter,
+        date_range={'start': start_date, 'end': end_date}
+    )
 
 @admin_bp.route('/finance/expenses/optimize', methods=['POST'])
 @require_admin_auth
@@ -330,14 +330,14 @@ def financial_reports():
         severity='INFO'
     )
 
-    return render_template('admin/finance/reports.html', {
-        'financial_report': financial_report,
-        'report_type': report_type,
-        'period': period,
-        'period_name': period_name,
-        'available_reports': get_available_report_types(),
-        'date_range': {'start': start_date, 'end': end_date}
-    })
+    return render_template('admin/finance/reports.html',
+        financial_report=financial_report,
+        report_type=report_type,
+        period=period,
+        period_name=period_name,
+        available_reports=get_available_report_types(),
+        date_range={'start': start_date, 'end': end_date}
+    )
 
 @admin_bp.route('/finance/reports/generate', methods=['POST'])
 @require_admin_auth
@@ -371,10 +371,10 @@ def generate_custom_report():
     )
 
     if report_config['format'] == 'html':
-        return render_template('admin/finance/custom_report.html', {
-            'report_data': report_result,
-            'config': report_config
-        })
+        return render_template('admin/finance/custom_report.html',
+            report_data=report_result,
+            config=report_config
+        )
     else:
         # Return file download for non-HTML formats
         return generate_report_download(report_result, report_config)

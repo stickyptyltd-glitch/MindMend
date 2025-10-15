@@ -15,7 +15,7 @@ from sqlalchemy import func, desc, asc, or_, and_
 from werkzeug.security import generate_password_hash
 from . import admin_bp
 from .auth import require_admin_auth, require_permission
-from models.database import db, Patient, Session, BiometricData, Assessment
+from models.database import db, Patient, Session, BiometricData, Assessment, Subscription, Payment
 from models.audit_log import audit_logger
 
 @admin_bp.route('/users')
@@ -118,10 +118,10 @@ def users_list():
         }
     )
 
-    return render_template('admin/users/list.html', {
-        'users': users,
-        'user_stats': user_stats,
-        'current_filters': {
+    return render_template('admin/users/list.html',
+        users=users,
+        user_stats=user_stats,
+        current_filters={
             'search': search,
             'subscription': subscription_filter,
             'risk_level': risk_filter,
@@ -132,10 +132,10 @@ def users_list():
             'order': sort_order,
             'per_page': per_page
         },
-        'subscription_tiers': ['free', 'basic', 'premium', 'enterprise'],
-        'risk_levels': ['low', 'medium', 'high', 'critical'],
-        'total_users': total_users
-    })
+        subscription_tiers=['free', 'basic', 'premium', 'enterprise'],
+        risk_levels=['low', 'medium', 'high', 'critical'],
+        total_users=total_users
+    )
 
 @admin_bp.route('/users/<int:user_id>')
 @require_admin_auth
@@ -176,14 +176,14 @@ def user_detail(user_id):
         severity='INFO'
     )
 
-    return render_template('admin/users/detail.html', {
-        'user': user,
-        'sessions': sessions,
-        'subscription': subscription,
-        'payments': payments,
-        'assessments': assessments,
-        'metrics': user_metrics
-    })
+    return render_template('admin/users/detail.html',
+        user=user,
+        sessions=sessions,
+        subscription=subscription,
+        payments=payments,
+        assessments=assessments,
+        metrics=user_metrics
+    )
 
 @admin_bp.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
 @require_admin_auth
@@ -243,7 +243,7 @@ def user_edit(user_id):
             db.session.rollback()
             flash(f'Error updating user: {str(e)}', 'error')
 
-    return render_template('admin/users/edit.html', {'user': user})
+    return render_template('admin/users/edit.html', user=user)
 
 @admin_bp.route('/users/<int:user_id>/delete', methods=['POST'])
 @require_admin_auth
@@ -596,11 +596,11 @@ def users_analytics_dashboard():
         details={'period': period, 'date_range': {'start': start_date.isoformat(), 'end': end_date.isoformat()}}
     )
 
-    return render_template('admin/users/analytics.html', {
-        'analytics': analytics_data,
-        'period': period,
-        'date_range': {'start': start_date, 'end': end_date}
-    })
+    return render_template('admin/users/analytics.html',
+        analytics=analytics_data,
+        period=period,
+        date_range={'start': start_date, 'end': end_date}
+    )
 
 @admin_bp.route('/users/<int:user_id>/behavioral-profile')
 @require_admin_auth
@@ -631,12 +631,12 @@ def user_behavioral_profile(user_id):
         severity='INFO'
     )
 
-    return render_template('admin/users/behavioral_profile.html', {
-        'user': user,
-        'profile': behavioral_profile,
-        'sessions_count': len(sessions),
-        'biometric_count': len(biometric_data)
-    })
+    return render_template('admin/users/behavioral_profile.html',
+        user=user,
+        profile=behavioral_profile,
+        sessions_count=len(sessions),
+        biometric_count=len(biometric_data)
+    )
 
 @admin_bp.route('/users/cohort-analysis')
 @require_admin_auth
@@ -652,9 +652,9 @@ def users_cohort_analysis():
         details={'cohort_count': len(cohort_data)}
     )
 
-    return render_template('admin/users/cohort_analysis.html', {
-        'cohorts': cohort_data
-    })
+    return render_template('admin/users/cohort_analysis.html',
+        cohorts=cohort_data
+    )
 
 @admin_bp.route('/api/users/analytics/charts')
 @require_admin_auth
@@ -1075,7 +1075,7 @@ def user_impersonate(user_id):
 
         if not admin_password or not reason:
             flash('Admin password and reason are required', 'error')
-            return render_template('admin/users/impersonate_confirm.html', {'user': user})
+            return render_template('admin/users/impersonate_confirm.html', user=user)
 
         # Verify admin password
         from werkzeug.security import check_password_hash
@@ -1089,7 +1089,7 @@ def user_impersonate(user_id):
                 target_id=user_id,
                 severity='WARNING'
             )
-            return render_template('admin/users/impersonate_confirm.html', {'user': user})
+            return render_template('admin/users/impersonate_confirm.html', user=user)
 
         # Create impersonation session
         impersonation_token = create_impersonation_session(user_id, admin.id, reason, duration_hours)
@@ -1126,7 +1126,7 @@ def user_impersonate(user_id):
         else:
             flash('Failed to create impersonation session', 'error')
 
-    return render_template('admin/users/impersonate_confirm.html', {'user': user})
+    return render_template('admin/users/impersonate_confirm.html', user=user)
 
 @admin_bp.route('/impersonate/portal')
 @require_admin_auth
@@ -1152,12 +1152,12 @@ def impersonation_portal():
         flash('Impersonated user not found', 'error')
         return redirect(url_for('admin.users_list'))
 
-    return render_template('admin/impersonation/portal.html', {
-        'user': user,
-        'admin': admin,
-        'impersonation': impersonation_data,
-        'token': token
-    })
+    return render_template('admin/impersonation/portal.html',
+        user=user,
+        admin=admin,
+        impersonation=impersonation_data,
+        token=token
+    )
 
 @admin_bp.route('/impersonate/end/<token>', methods=['POST'])
 @require_admin_auth
@@ -1213,10 +1213,10 @@ def impersonation_sessions():
         details={'active_sessions': len(active_sessions), 'recent_sessions': len(recent_sessions)}
     )
 
-    return render_template('admin/impersonation/sessions.html', {
-        'active_sessions': active_sessions,
-        'recent_sessions': recent_sessions
-    })
+    return render_template('admin/impersonation/sessions.html',
+        active_sessions=active_sessions,
+        recent_sessions=recent_sessions
+    )
 
 @admin_bp.route('/api/impersonate/proxy/<token>/<path:endpoint>')
 @require_admin_auth

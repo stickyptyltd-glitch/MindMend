@@ -12,7 +12,7 @@ from flask import (
 from sqlalchemy import func, desc, asc, or_, and_
 from . import admin_bp
 from .auth import require_admin_auth, require_permission
-from models.database import db, Patient
+from models.database import db, Patient, Subscription, Payment
 from models.audit_log import audit_logger
 
 @admin_bp.route('/subscriptions')
@@ -80,10 +80,10 @@ def subscriptions_list():
         }
     )
 
-    return render_template('admin/subscriptions/list.html', {
-        'subscriptions': subscriptions,
-        'subscription_stats': subscription_stats,
-        'current_filters': {
+    return render_template('admin/subscriptions/list.html',
+        subscriptions=subscriptions,
+        subscription_stats=subscription_stats,
+        current_filters={
             'tier': tier_filter,
             'status': status_filter,
             'search': search,
@@ -91,10 +91,10 @@ def subscriptions_list():
             'order': sort_order,
             'per_page': per_page
         },
-        'subscription_tiers': ['free', 'basic', 'premium', 'enterprise'],
-        'subscription_statuses': ['active', 'canceled', 'past_due', 'unpaid', 'trialing'],
-        'total_subscriptions': total_subscriptions
-    })
+        subscription_tiers=['free', 'basic', 'premium', 'enterprise'],
+        subscription_statuses=['active', 'canceled', 'past_due', 'unpaid', 'trialing'],
+        total_subscriptions=total_subscriptions
+    )
 
 @admin_bp.route('/subscriptions/<int:subscription_id>')
 @require_admin_auth
@@ -124,13 +124,13 @@ def subscription_detail(subscription_id):
         details={'subscription_tier': subscription.tier, 'status': subscription.status}
     )
 
-    return render_template('admin/subscriptions/detail.html', {
-        'subscription': subscription,
-        'user': user,
-        'payments': payments,
-        'metrics': subscription_metrics,
-        'timeline': timeline
-    })
+    return render_template('admin/subscriptions/detail.html',
+        subscription=subscription,
+        user=user,
+        payments=payments,
+        metrics=subscription_metrics,
+        timeline=timeline
+    )
 
 @admin_bp.route('/subscriptions/<int:subscription_id>/edit', methods=['GET', 'POST'])
 @require_admin_auth
@@ -186,10 +186,10 @@ def subscription_edit(subscription_id):
             db.session.rollback()
             flash(f'Error updating subscription: {str(e)}', 'error')
 
-    return render_template('admin/subscriptions/edit.html', {
-        'subscription': subscription,
-        'user': user
-    })
+    return render_template('admin/subscriptions/edit.html',
+        subscription=subscription,
+        user=user
+    )
 
 @admin_bp.route('/subscriptions/<int:subscription_id>/cancel', methods=['POST'])
 @require_admin_auth
@@ -339,9 +339,9 @@ def subscription_create():
         .outerjoin(Subscription, and_(Patient.id == Subscription.user_id, Subscription.status == 'active'))\
         .filter(Subscription.id.is_(None)).all()
 
-    return render_template('admin/subscriptions/create.html', {
-        'available_users': users_without_subs
-    })
+    return render_template('admin/subscriptions/create.html',
+        available_users=users_without_subs
+    )
 
 @admin_bp.route('/subscriptions/analytics')
 @require_admin_auth
@@ -379,11 +379,11 @@ def subscription_analytics():
         details={'period': period}
     )
 
-    return render_template('admin/subscriptions/analytics.html', {
-        'analytics': analytics_data,
-        'period': period,
-        'date_range': {'start': start_date, 'end': end_date}
-    })
+    return render_template('admin/subscriptions/analytics.html',
+        analytics=analytics_data,
+        period=period,
+        date_range={'start': start_date, 'end': end_date}
+    )
 
 @admin_bp.route('/subscriptions/export')
 @require_admin_auth
