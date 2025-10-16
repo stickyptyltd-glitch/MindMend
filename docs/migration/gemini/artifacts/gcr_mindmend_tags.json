@@ -1,0 +1,604 @@
+[
+  {
+    "digest": "sha256:fd3a3945d0740131aa5a9c4f43b419721070a81f49d8c6839493bdcb2349213a",
+    "tags": [
+      "security-fix-v4"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 15:30:21+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 15,
+      "microsecond": 0,
+      "minute": 30,
+      "month": 10,
+      "second": 21,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:e1c024b2bba6c4d281c99c1f9ac050e8df318c3565e424813141e9b0e27eacbc",
+    "tags": [
+      "feature-update-v1"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 15:10:40+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 15,
+      "microsecond": 0,
+      "minute": 10,
+      "month": 10,
+      "second": 40,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:ce636040a4d7e6919b66636a54b0464c83f35d78a6bdad03437d9840987f4fcf",
+    "tags": [
+      "security-fix-v3"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 14:40:54+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 14,
+      "microsecond": 0,
+      "minute": 40,
+      "month": 10,
+      "second": 54,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:2f69f1154681402203d90098a5d0eaf387e8310fae5f613986984021575fa664",
+    "tags": [
+      "security-fix-v2"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 14:20:45+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 14,
+      "microsecond": 0,
+      "minute": 20,
+      "month": 10,
+      "second": 45,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:5057302d7c44c8a1bcfafa39deec404b80be5c42f05f40647adfa4b96f0394d3",
+    "tags": [
+      "celery-v3"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 13:53:04+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 13,
+      "microsecond": 0,
+      "minute": 53,
+      "month": 10,
+      "second": 4,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:7704d147640ca943472dda9d1d78acef9031793369435acc7300d567e5c930b2",
+    "tags": [
+      "celery-v2"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 13:48:02+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 13,
+      "microsecond": 0,
+      "minute": 48,
+      "month": 10,
+      "second": 2,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:49e90cc5aa2bf1cf33341a411dad10b1bde0622c870c2a4ba96ec0f4d24a3d91",
+    "tags": [
+      "security-fix-v1"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 13:28:50+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 13,
+      "microsecond": 0,
+      "minute": 28,
+      "month": 10,
+      "second": 50,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:d8c6f0fbc22577fe36cc8c6ecd1292922efe2c4eaadfa4cb9f7ff1af38e73c71",
+    "tags": [
+      "celery-v1"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 13:02:53+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 13,
+      "microsecond": 0,
+      "minute": 2,
+      "month": 10,
+      "second": 53,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:95bad3ff9e5fcdc5c1115ed043ae3e3fd5b065f55a59a1c4b4986747991fb694",
+    "tags": [
+      "admin-working-v9"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 08:43:37+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 8,
+      "microsecond": 0,
+      "minute": 43,
+      "month": 10,
+      "second": 37,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:a4ccd5066388b66460231a4b74e0b803bf02a75419939531f10e6b3933ef77ce",
+    "tags": [
+      "admin-working-v8"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 08:30:46+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 8,
+      "microsecond": 0,
+      "minute": 30,
+      "month": 10,
+      "second": 46,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:ac4ca578a532541c6793995556ba6e2aa6274a82b9befb503c7f27e19c77794b",
+    "tags": [
+      "admin-working-v7"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 08:09:59+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 8,
+      "microsecond": 0,
+      "minute": 9,
+      "month": 10,
+      "second": 59,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:91d684e663f82d211833161cf317e9b94cf2891b02a826bf78cc5e241c4cffc3",
+    "tags": [
+      "admin-working-v6"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 07:52:22+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 7,
+      "microsecond": 0,
+      "minute": 52,
+      "month": 10,
+      "second": 22,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:ac536ca89fb5fbd958701b7202d6ea174c3cffb08d9a2ee9de7f7b9317aa19e8",
+    "tags": [
+      "admin-working-v5"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 07:32:02+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 7,
+      "microsecond": 0,
+      "minute": 32,
+      "month": 10,
+      "second": 2,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:19218ab90c04da67d411a6fb97e7761f31ef6c817e7f03e3c79f96c87657867f",
+    "tags": [
+      "admin-working-v4"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 07:26:03+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 7,
+      "microsecond": 0,
+      "minute": 26,
+      "month": 10,
+      "second": 3,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:d508151c0208d613acd8c93aa5698d062e9ae9a3de67721bedbdd38d06fe8d71",
+    "tags": [
+      "admin-working-v3"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 07:05:23+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 7,
+      "microsecond": 0,
+      "minute": 5,
+      "month": 10,
+      "second": 23,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:c411275ce18c30ba3b49fd968d07b7827a23b4056b0bbb3df8dc3270986cce64",
+    "tags": [
+      "admin-fixed-v2"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 06:55:24+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 6,
+      "microsecond": 0,
+      "minute": 55,
+      "month": 10,
+      "second": 24,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:703d720682bdf77c2467c266cfa84abb0335c74b142be3dcabcaa98cce737920",
+    "tags": [
+      "admin-fixed"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 06:47:16+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 6,
+      "microsecond": 0,
+      "minute": 47,
+      "month": 10,
+      "second": 16,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:b4fa75c08a99572a6dafd3ebc7b42d182ec8856f4598dd2641bbf89283f263b0",
+    "tags": [
+      "admin-final"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 06:30:04+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 6,
+      "microsecond": 0,
+      "minute": 30,
+      "month": 10,
+      "second": 4,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:e29804f104278949a9e35cd0d6def090ac176d7f575728a887780e2085e0a3b1",
+    "tags": [
+      "admin-v2"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 06:24:34+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 6,
+      "microsecond": 0,
+      "minute": 24,
+      "month": 10,
+      "second": 34,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:77fae9ea56bf03522f68f7ae7a3da4b45aa64b41875c5068e96efbbddbd61188",
+    "tags": [
+      "admin-working"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 06:07:27+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 6,
+      "microsecond": 0,
+      "minute": 7,
+      "month": 10,
+      "second": 27,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:cdb82883e50ad12607fad87b07d9cd3939400927c35f69f2f9a986fc027fab6a",
+    "tags": [
+      "admin-payment-fix"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 06:00:32+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 6,
+      "microsecond": 0,
+      "minute": 0,
+      "month": 10,
+      "second": 32,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:868367b3dbd85f06896f0c5a4f8e2736ae0b944908158ddf8d4c2dc7f4b58f43",
+    "tags": [
+      "admin-logs"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 05:48:39+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 5,
+      "microsecond": 0,
+      "minute": 48,
+      "month": 10,
+      "second": 39,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:989669405cfb9896e33afb9d5ff7f39ba27f2c9282e7b9932df499f280acabe4",
+    "tags": [
+      "latest"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 05:37:38+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 5,
+      "microsecond": 0,
+      "minute": 37,
+      "month": 10,
+      "second": 38,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:821dd98065481168535b4ad217c4ee15219db88ba2438fb88868b3f0ffabb9f6",
+    "tags": [
+      "admin-final-working"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 05:18:18+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 5,
+      "microsecond": 0,
+      "minute": 18,
+      "month": 10,
+      "second": 18,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:25d8e7c2e104118a3dbd87c19fbf3750a8f68abbed013bce6c204a284b388193",
+    "tags": [
+      "admin-login-test"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 05:03:35+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 5,
+      "microsecond": 0,
+      "minute": 3,
+      "month": 10,
+      "second": 35,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:c991860e82d525e6a547dccd50247751da2e8cb90281f7125c3c460f8b8f6a51",
+    "tags": [
+      "admin-auth-fixed"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 04:47:59+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 4,
+      "microsecond": 0,
+      "minute": 47,
+      "month": 10,
+      "second": 59,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:88ee40aa6316223a97d9aaa2287657469bd0d6f6c284326b16efb2257d89973d",
+    "tags": [],
+    "timestamp": {
+      "datetime": "2025-10-10 04:30:42+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 4,
+      "microsecond": 0,
+      "minute": 30,
+      "month": 10,
+      "second": 42,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:f9f22412498cb5bcaf8e3e71a9a6d2deb0a80fe32d9690905280a9545f581e98",
+    "tags": [],
+    "timestamp": {
+      "datetime": "2025-10-10 04:21:07+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 4,
+      "microsecond": 0,
+      "minute": 21,
+      "month": 10,
+      "second": 7,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:09f18bcf4b8b3bdb50f5821f45cfb36d4a199dd143afdd242b2af34446de08d1",
+    "tags": [
+      "admin-complete"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 04:12:10+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 4,
+      "microsecond": 0,
+      "minute": 12,
+      "month": 10,
+      "second": 10,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:d470d61f004860188f6818e1fab7cebfc39fbd47aca8381499c31d27e6c47092",
+    "tags": [
+      "admin-import-fix"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 04:05:09+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 4,
+      "microsecond": 0,
+      "minute": 5,
+      "month": 10,
+      "second": 9,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:ddccd9b09946f19bae9853cd85d868259707b7da6ee6447299d8a4de9986f155",
+    "tags": [
+      "working"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 03:33:07+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 3,
+      "microsecond": 0,
+      "minute": 33,
+      "month": 10,
+      "second": 7,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:7597923123c8a2dd30617ef202d3b8a498441c99791e2ceb4025583cdb3add8d",
+    "tags": [
+      "memory-optimized"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 03:09:39+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 3,
+      "microsecond": 0,
+      "minute": 9,
+      "month": 10,
+      "second": 39,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:e5a6d9e04b64210ee3569f7fdd8d9d59c5440071fca2105114aabf7592f5d121",
+    "tags": [
+      "admin-fix"
+    ],
+    "timestamp": {
+      "datetime": "2025-10-10 02:42:47+00:00",
+      "day": 10,
+      "fold": 0,
+      "hour": 2,
+      "microsecond": 0,
+      "minute": 42,
+      "month": 10,
+      "second": 47,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:bf86ad5074a8b44578843f7a8db6a3edba04c279a4553d3dcfdbd11273bec9a3",
+    "tags": [],
+    "timestamp": {
+      "datetime": "2025-09-24 22:38:31+00:00",
+      "day": 24,
+      "fold": 0,
+      "hour": 22,
+      "microsecond": 0,
+      "minute": 38,
+      "month": 9,
+      "second": 31,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:86f704a83356fd946c19913e40ac55809ef63bf3db1e22d86f197a2b6391c8d0",
+    "tags": [],
+    "timestamp": {
+      "datetime": "2025-09-24 22:17:42+00:00",
+      "day": 24,
+      "fold": 0,
+      "hour": 22,
+      "microsecond": 0,
+      "minute": 17,
+      "month": 9,
+      "second": 42,
+      "year": 2025
+    }
+  },
+  {
+    "digest": "sha256:4f3155cf2eba54c9d134a4f5a6aadd19fe609e0093a043f1170c3d5210967087",
+    "tags": [],
+    "timestamp": {
+      "datetime": "2025-09-20 03:35:54+00:00",
+      "day": 20,
+      "fold": 0,
+      "hour": 3,
+      "microsecond": 0,
+      "minute": 35,
+      "month": 9,
+      "second": 54,
+      "year": 2025
+    }
+  }
+]

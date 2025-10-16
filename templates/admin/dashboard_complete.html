@@ -194,7 +194,7 @@
                         <i class="fas fa-user me-2"></i>{{ session.get('admin_email', 'Admin') }}
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ url_for('admin.security_center') }}">
+                        <li><a class="dropdown-item" href="{{ url_for('admin.security_events') }}">
                             <i class="fas fa-shield-alt me-2"></i>Security Center
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
@@ -221,32 +221,32 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.user_management') }}">
+                                <a class="nav-link" href="{{ url_for('admin.users_list') }}">
                                     <i class="fas fa-users me-2"></i>User Management
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.financial_dashboard') }}">
+                                <a class="nav-link" href="{{ url_for('admin.finance_dashboard') }}">
                                     <i class="fas fa-chart-line me-2"></i>Financial Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.ai_management') }}">
+                                <a class="nav-link" href="{{ url_for('admin.ai_dashboard') }}">
                                     <i class="fas fa-robot me-2"></i>AI Management
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.system_monitoring') }}">
+                                <a class="nav-link" href="{{ url_for('admin.system_dashboard') }}">
                                     <i class="fas fa-server me-2"></i>System Monitoring
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.content_management') }}">
+                                <a class="nav-link" href="{{ url_for('admin.marketing_dashboard') }}">
                                     <i class="fas fa-file-alt me-2"></i>Content Management
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.analytics_center') }}">
+                                <a class="nav-link" href="{{ url_for('admin.users_analytics_dashboard') }}">
                                     <i class="fas fa-analytics me-2"></i>Analytics Center
                                 </a>
                             </li>
@@ -259,7 +259,7 @@
                             {% endif %}
                             {% if session.get('admin_tier') == 'enterprise' %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin.security_center') }}">
+                                <a class="nav-link" href="{{ url_for('admin.security_events') }}">
                                     <i class="fas fa-shield-alt me-2"></i>Security Center
                                 </a>
                             </li>

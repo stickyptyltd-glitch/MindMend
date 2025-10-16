@@ -56,13 +56,13 @@ def ai_dashboard():
         severity='INFO'
     )
 
-    return render_template('admin/ai/dashboard.html', {
-        'model_stats': model_stats,
-        'active_models': active_models,
-        'recent_activity': recent_activity,
-        'performance_metrics': performance_metrics,
-        'ai_available': AI_IMPORTS_AVAILABLE
-    })
+    return render_template('admin/ai/dashboard.html',
+        model_stats=model_stats,
+        active_models=active_models,
+        recent_activity=recent_activity,
+        performance_metrics=performance_metrics,
+        ai_available=AI_IMPORTS_AVAILABLE
+    )
 
 @admin_bp.route('/ai/models')
 @require_admin_auth
@@ -114,16 +114,16 @@ def ai_models_list():
         severity='INFO'
     )
 
-    return render_template('admin/ai/models_list.html', {
-        'custom_models': custom_models,
-        'builtin_models': builtin_models,
-        'current_filters': {
+    return render_template('admin/ai/models_list.html',
+        custom_models=custom_models,
+        builtin_models=builtin_models,
+        current_filters={
             'type': model_type,
             'status': status_filter,
             'sort': sort_by
         },
-        'ai_available': AI_IMPORTS_AVAILABLE
-    })
+        ai_available=AI_IMPORTS_AVAILABLE
+    )
 
 @admin_bp.route('/ai/models/<int:model_id>')
 @require_admin_auth
@@ -155,12 +155,12 @@ def ai_model_details(model_id):
         severity='INFO'
     )
 
-    return render_template('admin/ai/model_details.html', {
-        'model': model,
-        'performance_history': performance_history,
-        'recent_usage': recent_usage,
-        'training_history': training_history
-    })
+    return render_template('admin/ai/model_details.html',
+        model=model,
+        performance_history=performance_history,
+        recent_usage=recent_usage,
+        training_history=training_history
+    )
 
 @admin_bp.route('/ai/models/<int:model_id>/toggle', methods=['POST'])
 @require_admin_auth
@@ -214,7 +214,7 @@ def test_ai_model(model_id):
 
         if not test_input:
             flash('Please provide test input', 'error')
-            return render_template('admin/ai/model_test.html', {'model': model})
+            return render_template('admin/ai/model_test.html', model=model)
 
         # Perform model test
         try:
@@ -233,17 +233,17 @@ def test_ai_model(model_id):
                 severity='INFO'
             )
 
-            return render_template('admin/ai/model_test.html', {
-                'model': model,
-                'test_input': test_input,
-                'test_result': test_result
-            })
+            return render_template('admin/ai/model_test.html',
+                model=model,
+                test_input=test_input,
+                test_result=test_result
+            )
 
         except Exception as e:
             flash(f'Model test failed: {str(e)}', 'error')
             logging.error(f"AI model test failed for model {model_id}: {e}")
 
-    return render_template('admin/ai/model_test.html', {'model': model})
+    return render_template('admin/ai/model_test.html', model=model)
 
 @admin_bp.route('/ai/models/<int:model_id>/retrain', methods=['POST'])
 @require_admin_auth

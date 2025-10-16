@@ -11,7 +11,7 @@ import hmac
 import time
 import logging
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 import json
 import os
 
@@ -69,7 +69,7 @@ class SecurityManager:
             self.log_security_event('blocked_ip_attempt', {
                 'ip': client_ip,
                 'user_agent': request.headers.get('User-Agent', ''),
-                'timestamp': datetime.utcnow().isoformat()
+                'timestamp': datetime.now(UTC).isoformat()
             })
             abort(403)
         
@@ -80,14 +80,14 @@ class SecurityManager:
         # Session timeout check
         if 'last_activity' in session:
             last_activity = datetime.fromisoformat(session['last_activity'])
-            if datetime.utcnow() - last_activity > timedelta(seconds=self.session_timeout):
+            if datetime.now(UTC) - last_activity > timedelta(seconds=self.session_timeout):
                 session.clear()
                 self.log_security_event('session_timeout', {
                     'ip': client_ip,
                     'last_activity': session.get('last_activity')
                 })
         
-        session['last_activity'] = datetime.utcnow().isoformat()
+        session['last_activity'] = datetime.now(UTC).isoformat()
     
     def after_request_security(self, response):
         """Run security checks after each request"""
@@ -98,7 +98,7 @@ class SecurityManager:
                 'method': request.method,
                 'ip': self.get_client_ip(),
                 'user': session.get('user_id', 'anonymous'),
-                'timestamp': datetime.utcnow().isoformat(),
+                'timestamp': datetime.now(UTC).isoformat(),
                 'status_code': response.status_code
             })
         
@@ -141,7 +141,7 @@ class SecurityManager:
         """Log security events"""
         security_event = {
             'event_type': event_type,
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(UTC).isoformat(),
             'data': data,
             'severity': self.get_event_severity(event_type)
         }
@@ -159,7 +159,7 @@ class SecurityManager:
         """Log HIPAA audit events"""
         audit_event = {
             'action': action,
-            'timestamp': datetime.utcnow().isoformat(),
+            'timestamp': datetime.now(UTC).isoformat(),
             'data': data,
             'hipaa_relevant': self.is_hipaa_relevant(action)
         }
@@ -285,7 +285,7 @@ def audit_log(action):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             # Log the action
-            logging.info(f"HIPAA Audit: {action} by {session.get('user_id', 'anonymous')} at {datetime.utcnow()}")
+            logging.info(f"HIPAA Audit: {action} by {session.get('user_id', 'anonymous')} at {datetime.now(UTC)}")
             return f(*args, **kwargs)
         return decorated_function
     return decorator

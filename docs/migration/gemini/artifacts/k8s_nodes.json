@@ -1,0 +1,1469 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Node",
+            "metadata": {
+                "annotations": {
+                    "container.googleapis.com/instance_id": "3264406715476666575",
+                    "csi.volume.kubernetes.io/nodeid": "{\"pd.csi.storage.gke.io\":\"projects/mindmend-production/zones/asia-southeast1-a/instances/gke-mindmend-cluster-default-pool-3b075bf9-0b3c\",\"secrets-store.csi.k8s.io\":\"gke-mindmend-cluster-default-pool-3b075bf9-0b3c\"}",
+                    "node.alpha.kubernetes.io/ttl": "0",
+                    "node.gke.io/last-applied-node-labels": "cloud.google.com/gke-boot-disk=pd-balanced,cloud.google.com/gke-container-runtime=containerd,cloud.google.com/gke-cpu-scaling-level=2,cloud.google.com/gke-logging-variant=DEFAULT,cloud.google.com/gke-max-pods-per-node=110,cloud.google.com/gke-memory-gb-scaling-level=4,cloud.google.com/gke-nodepool=default-pool,cloud.google.com/gke-os-distribution=cos,cloud.google.com/gke-provisioning=standard,cloud.google.com/gke-stack-type=IPV4,cloud.google.com/machine-family=e2,cloud.google.com/private-node=false",
+                    "node.gke.io/last-applied-node-taints": "",
+                    "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+                },
+                "creationTimestamp": "2025-09-21T01:35:06Z",
+                "labels": {
+                    "beta.kubernetes.io/arch": "amd64",
+                    "beta.kubernetes.io/instance-type": "e2-medium",
+                    "beta.kubernetes.io/os": "linux",
+                    "cloud.google.com/gke-boot-disk": "pd-balanced",
+                    "cloud.google.com/gke-container-runtime": "containerd",
+                    "cloud.google.com/gke-cpu-scaling-level": "2",
+                    "cloud.google.com/gke-logging-variant": "DEFAULT",
+                    "cloud.google.com/gke-max-pods-per-node": "110",
+                    "cloud.google.com/gke-memory-gb-scaling-level": "4",
+                    "cloud.google.com/gke-nodepool": "default-pool",
+                    "cloud.google.com/gke-os-distribution": "cos",
+                    "cloud.google.com/gke-provisioning": "standard",
+                    "cloud.google.com/gke-stack-type": "IPV4",
+                    "cloud.google.com/machine-family": "e2",
+                    "cloud.google.com/private-node": "false",
+                    "failure-domain.beta.kubernetes.io/region": "asia-southeast1",
+                    "failure-domain.beta.kubernetes.io/zone": "asia-southeast1-a",
+                    "kubernetes.io/arch": "amd64",
+                    "kubernetes.io/hostname": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+                    "kubernetes.io/os": "linux",
+                    "node.kubernetes.io/instance-type": "e2-medium",
+                    "topology.gke.io/zone": "asia-southeast1-a",
+                    "topology.kubernetes.io/region": "asia-southeast1",
+                    "topology.kubernetes.io/zone": "asia-southeast1-a"
+                },
+                "name": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+                "resourceVersion": "1760112546611407014",
+                "uid": "20586101-bf6c-408a-86b9-19fca9a246c7"
+            },
+            "spec": {
+                "podCIDR": "10.28.0.0/24",
+                "podCIDRs": [
+                    "10.28.0.0/24"
+                ],
+                "providerID": "gce://mindmend-production/asia-southeast1-a/gke-mindmend-cluster-default-pool-3b075bf9-0b3c"
+            },
+            "status": {
+                "addresses": [
+                    {
+                        "address": "10.45.240.8",
+                        "type": "InternalIP"
+                    },
+                    {
+                        "address": "34.124.176.235",
+                        "type": "ExternalIP"
+                    },
+                    {
+                        "address": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+                        "type": "Hostname"
+                    }
+                ],
+                "allocatable": {
+                    "cpu": "940m",
+                    "ephemeral-storage": "47060071478",
+                    "hugepages-1Gi": "0",
+                    "hugepages-2Mi": "0",
+                    "memory": "2869824Ki",
+                    "pods": "110"
+                },
+                "capacity": {
+                    "cpu": "2",
+                    "ephemeral-storage": "98831908Ki",
+                    "hugepages-1Gi": "0",
+                    "hugepages-2Mi": "0",
+                    "memory": "4015680Ki",
+                    "pods": "110"
+                },
+                "conditions": [
+                    {
+                        "lastHeartbeatTime": "2025-09-21T01:35:08Z",
+                        "lastTransitionTime": "2025-09-21T01:35:07Z",
+                        "message": "NodeController create implicit route",
+                        "reason": "RouteCreated",
+                        "status": "False",
+                        "type": "NetworkUnavailable"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "No deprecation risk: did not find any deprecated 'configs' field in containerd's config",
+                        "reason": "DeprecatedConfigsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedConfigsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "Swap is not active",
+                        "reason": "SwapNotDetected",
+                        "status": "False",
+                        "type": "Swap"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "docker overlay2 is functioning properly",
+                        "reason": "NoCorruptDockerOverlay2",
+                        "status": "False",
+                        "type": "CorruptDockerOverlay2"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "containerd is functioning properly",
+                        "reason": "NoFrequentContainerdRestart",
+                        "status": "False",
+                        "type": "FrequentContainerdRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "UEFI CPER has no fatal error",
+                        "reason": "CperHardwareHasNoFatalError",
+                        "status": "False",
+                        "type": "CperHardwareErrorFatal"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "kernel has no deadlock",
+                        "reason": "KernelHasNoDeadlock",
+                        "status": "False",
+                        "type": "KernelDeadlock"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "Root filesystem is not read only",
+                        "reason": "ReadOnlyRootFileSystemNotDetected",
+                        "status": "False",
+                        "type": "ReadOnlyRootFileSystem"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "XFS has not shutdown",
+                        "reason": "XfsHasNotShutDown",
+                        "status": "False",
+                        "type": "XfsShutdown"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:07Z",
+                        "message": "No deprecation risk: did not find any deprecated 'mirrors' field in containerd's config",
+                        "reason": "DeprecatedMirrorsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedMirrorsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "kubelet is functioning properly",
+                        "reason": "NoFrequentKubeletRestart",
+                        "status": "False",
+                        "type": "FrequentKubeletRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:07Z",
+                        "message": "No deprecation risk: did not use v1alpha2 CRI",
+                        "reason": "DeprecatedUsingV1Alpha2CriNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedUsingV1Alpha2Cri"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "No deprecation risk: did not pull any schema v1 images",
+                        "reason": "DeprecatedPullingSchemaV1ImageDetected",
+                        "status": "False",
+                        "type": "DeprecatedPullingSchemaV1Image"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "docker is functioning properly",
+                        "reason": "NoFrequentDockerRestart",
+                        "status": "False",
+                        "type": "FrequentDockerRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "node is functioning properly",
+                        "reason": "NoFrequentUnregisterNetDevice",
+                        "status": "False",
+                        "type": "FrequentUnregisterNetDevice"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "No deprecation risk: did not find any deprecated 'auths' field in containerd's config",
+                        "reason": "DeprecatedAuthsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedAuthsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "No deprecation risk: did not find any deprecations other than 3 configs fields (auths/configs/mirrors), pulling schema v1 images and using v1alpha2 CRI.",
+                        "reason": "DeprecatedOtherContainerdFeaturesNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedOtherContainerdFeatures"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:09:06Z",
+                        "lastTransitionTime": "2025-09-21T01:35:06Z",
+                        "message": "Default sysctls are in effect, no unexpected sysctl changes",
+                        "reason": "SysctlNotChanged",
+                        "status": "False",
+                        "type": "SysctlChanged"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:49Z",
+                        "lastTransitionTime": "2025-09-21T01:35:05Z",
+                        "message": "kubelet has sufficient memory available",
+                        "reason": "KubeletHasSufficientMemory",
+                        "status": "False",
+                        "type": "MemoryPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:49Z",
+                        "lastTransitionTime": "2025-09-21T01:35:05Z",
+                        "message": "kubelet has no disk pressure",
+                        "reason": "KubeletHasNoDiskPressure",
+                        "status": "False",
+                        "type": "DiskPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:49Z",
+                        "lastTransitionTime": "2025-09-21T01:35:05Z",
+                        "message": "kubelet has sufficient PID available",
+                        "reason": "KubeletHasSufficientPID",
+                        "status": "False",
+                        "type": "PIDPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:49Z",
+                        "lastTransitionTime": "2025-09-21T01:35:08Z",
+                        "message": "kubelet is posting ready status",
+                        "reason": "KubeletReady",
+                        "status": "True",
+                        "type": "Ready"
+                    }
+                ],
+                "daemonEndpoints": {
+                    "kubeletEndpoint": {
+                        "Port": 10250
+                    }
+                },
+                "features": {
+                    "supplementalGroupsPolicy": true
+                },
+                "images": [
+                    {
+                        "names": [
+                            "docker.io/ollama/ollama@sha256:5aed793ab336d1aac9b132f4b46fddfcfa13b8911def3d275937c8acbd1763e8",
+                            "docker.io/ollama/ollama:latest"
+                        ],
+                        "sizeBytes": 1801821090
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:e5a6d9e04b64210ee3569f7fdd8d9d59c5440071fca2105114aabf7592f5d121",
+                            "gcr.io/mindmend-production/mindmend-app:admin-fix"
+                        ],
+                        "sizeBytes": 1080403571
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:e1c024b2bba6c4d281c99c1f9ac050e8df318c3565e424813141e9b0e27eacbc",
+                            "gcr.io/mindmend-production/mindmend-app:feature-update-v1"
+                        ],
+                        "sizeBytes": 1077948895
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:2f69f1154681402203d90098a5d0eaf387e8310fae5f613986984021575fa664",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v2"
+                        ],
+                        "sizeBytes": 1077897423
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:7704d147640ca943472dda9d1d78acef9031793369435acc7300d567e5c930b2",
+                            "gcr.io/mindmend-production/mindmend-app:celery-v2"
+                        ],
+                        "sizeBytes": 1077897115
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:5057302d7c44c8a1bcfafa39deec404b80be5c42f05f40647adfa4b96f0394d3",
+                            "gcr.io/mindmend-production/mindmend-app:celery-v3"
+                        ],
+                        "sizeBytes": 1077897056
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:d8c6f0fbc22577fe36cc8c6ecd1292922efe2c4eaadfa4cb9f7ff1af38e73c71",
+                            "gcr.io/mindmend-production/mindmend-app:celery-v1"
+                        ],
+                        "sizeBytes": 1077884264
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:b4fa75c08a99572a6dafd3ebc7b42d182ec8856f4598dd2641bbf89283f263b0",
+                            "gcr.io/mindmend-production/mindmend-app:admin-final"
+                        ],
+                        "sizeBytes": 1077380945
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:77fae9ea56bf03522f68f7ae7a3da4b45aa64b41875c5068e96efbbddbd61188",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working"
+                        ],
+                        "sizeBytes": 1077380651
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:868367b3dbd85f06896f0c5a4f8e2736ae0b944908158ddf8d4c2dc7f4b58f43",
+                            "gcr.io/mindmend-production/mindmend-app:admin-logs"
+                        ],
+                        "sizeBytes": 1077380088
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:821dd98065481168535b4ad217c4ee15219db88ba2438fb88868b3f0ffabb9f6",
+                            "gcr.io/mindmend-production/mindmend-app:admin-final-working"
+                        ],
+                        "sizeBytes": 1077327133
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:c991860e82d525e6a547dccd50247751da2e8cb90281f7125c3c460f8b8f6a51",
+                            "gcr.io/mindmend-production/mindmend-app:admin-auth-fixed"
+                        ],
+                        "sizeBytes": 1077298955
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:88ee40aa6316223a97d9aaa2287657469bd0d6f6c284326b16efb2257d89973d"
+                        ],
+                        "sizeBytes": 1077256648
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:f9f22412498cb5bcaf8e3e71a9a6d2deb0a80fe32d9690905280a9545f581e98"
+                        ],
+                        "sizeBytes": 1077082878
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:09f18bcf4b8b3bdb50f5821f45cfb36d4a199dd143afdd242b2af34446de08d1",
+                            "gcr.io/mindmend-production/mindmend-app:admin-complete"
+                        ],
+                        "sizeBytes": 1076972610
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:d470d61f004860188f6818e1fab7cebfc39fbd47aca8381499c31d27e6c47092",
+                            "gcr.io/mindmend-production/mindmend-app:admin-import-fix"
+                        ],
+                        "sizeBytes": 1076935581
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ddccd9b09946f19bae9853cd85d868259707b7da6ee6447299d8a4de9986f155",
+                            "gcr.io/mindmend-production/mindmend-app:working"
+                        ],
+                        "sizeBytes": 1076868535
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:7597923123c8a2dd30617ef202d3b8a498441c99791e2ceb4025583cdb3add8d",
+                            "gcr.io/mindmend-production/mindmend-app:memory-optimized"
+                        ],
+                        "sizeBytes": 1076865296
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:95bad3ff9e5fcdc5c1115ed043ae3e3fd5b065f55a59a1c4b4986747991fb694",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v9"
+                        ],
+                        "sizeBytes": 1076700844
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ac4ca578a532541c6793995556ba6e2aa6274a82b9befb503c7f27e19c77794b",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v7"
+                        ],
+                        "sizeBytes": 1076656208
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ac536ca89fb5fbd958701b7202d6ea174c3cffb08d9a2ee9de7f7b9317aa19e8",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v5"
+                        ],
+                        "sizeBytes": 1076655337
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:d508151c0208d613acd8c93aa5698d062e9ae9a3de67721bedbdd38d06fe8d71",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v3"
+                        ],
+                        "sizeBytes": 1076641288
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:4f3155cf2eba54c9d134a4f5a6aadd19fe609e0093a043f1170c3d5210967087",
+                            "gcr.io/mindmend-production/mindmend-app:latest"
+                        ],
+                        "sizeBytes": 665060383
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend@sha256:197a23a6dd5bf9b49b22887fde1286463c82b656fabd8eafdce8b7c6080c5d7f",
+                            "gcr.io/mindmend-production/mindmend:latest"
+                        ],
+                        "sizeBytes": 193024967
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend@sha256:6cbb73f49079d0a0a0fc030942a876a41a7e8ec959e153b131f8858c00b27e24"
+                        ],
+                        "sizeBytes": 193007838
+                    }
+                ],
+                "nodeInfo": {
+                    "architecture": "amd64",
+                    "bootID": "2ef3ddac-4f8a-4d9d-972f-d850fb718aa2",
+                    "containerRuntimeVersion": "containerd://2.0.6",
+                    "kernelVersion": "6.6.97+",
+                    "kubeProxyVersion": "",
+                    "kubeletVersion": "v1.33.4-gke.1134000",
+                    "machineID": "3cb8b365c1e3827f96b046906201cbbc",
+                    "operatingSystem": "linux",
+                    "osImage": "Container-Optimized OS from Google",
+                    "systemUUID": "3cb8b365-c1e3-827f-96b0-46906201cbbc"
+                },
+                "runtimeHandlers": [
+                    {
+                        "features": {
+                            "recursiveReadOnlyMounts": true,
+                            "userNamespaces": true
+                        },
+                        "name": "runc"
+                    },
+                    {
+                        "features": {
+                            "recursiveReadOnlyMounts": true,
+                            "userNamespaces": true
+                        },
+                        "name": ""
+                    }
+                ],
+                "volumesAttached": [
+                    {
+                        "devicePath": "",
+                        "name": "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-47e0344a-6cd0-4fe3-91f6-348043cda645"
+                    },
+                    {
+                        "devicePath": "",
+                        "name": "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-4fc1dbac-0e92-41c2-9c02-2d145009b3ac"
+                    }
+                ],
+                "volumesInUse": [
+                    "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-47e0344a-6cd0-4fe3-91f6-348043cda645",
+                    "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-4fc1dbac-0e92-41c2-9c02-2d145009b3ac"
+                ]
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Node",
+            "metadata": {
+                "annotations": {
+                    "container.googleapis.com/instance_id": "3112768402555595709",
+                    "csi.volume.kubernetes.io/nodeid": "{\"pd.csi.storage.gke.io\":\"projects/mindmend-production/zones/asia-southeast1-a/instances/gke-mindmend-cluster-default-pool-3b075bf9-97gv\",\"secrets-store.csi.k8s.io\":\"gke-mindmend-cluster-default-pool-3b075bf9-97gv\"}",
+                    "node.alpha.kubernetes.io/ttl": "0",
+                    "node.gke.io/last-applied-node-labels": "cloud.google.com/gke-boot-disk=pd-balanced,cloud.google.com/gke-container-runtime=containerd,cloud.google.com/gke-cpu-scaling-level=2,cloud.google.com/gke-logging-variant=DEFAULT,cloud.google.com/gke-max-pods-per-node=110,cloud.google.com/gke-memory-gb-scaling-level=4,cloud.google.com/gke-nodepool=default-pool,cloud.google.com/gke-os-distribution=cos,cloud.google.com/gke-provisioning=standard,cloud.google.com/gke-stack-type=IPV4,cloud.google.com/machine-family=e2,cloud.google.com/private-node=false",
+                    "node.gke.io/last-applied-node-taints": "",
+                    "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+                },
+                "creationTimestamp": "2025-09-21T01:31:41Z",
+                "labels": {
+                    "beta.kubernetes.io/arch": "amd64",
+                    "beta.kubernetes.io/instance-type": "e2-medium",
+                    "beta.kubernetes.io/os": "linux",
+                    "cloud.google.com/gke-boot-disk": "pd-balanced",
+                    "cloud.google.com/gke-container-runtime": "containerd",
+                    "cloud.google.com/gke-cpu-scaling-level": "2",
+                    "cloud.google.com/gke-logging-variant": "DEFAULT",
+                    "cloud.google.com/gke-max-pods-per-node": "110",
+                    "cloud.google.com/gke-memory-gb-scaling-level": "4",
+                    "cloud.google.com/gke-nodepool": "default-pool",
+                    "cloud.google.com/gke-os-distribution": "cos",
+                    "cloud.google.com/gke-provisioning": "standard",
+                    "cloud.google.com/gke-stack-type": "IPV4",
+                    "cloud.google.com/machine-family": "e2",
+                    "cloud.google.com/private-node": "false",
+                    "failure-domain.beta.kubernetes.io/region": "asia-southeast1",
+                    "failure-domain.beta.kubernetes.io/zone": "asia-southeast1-a",
+                    "kubernetes.io/arch": "amd64",
+                    "kubernetes.io/hostname": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+                    "kubernetes.io/os": "linux",
+                    "node.kubernetes.io/instance-type": "e2-medium",
+                    "topology.gke.io/zone": "asia-southeast1-a",
+                    "topology.kubernetes.io/region": "asia-southeast1",
+                    "topology.kubernetes.io/zone": "asia-southeast1-a"
+                },
+                "name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+                "resourceVersion": "1760112276385807001",
+                "uid": "2e2aa913-f94c-47d3-be67-23c456cbfcd9"
+            },
+            "spec": {
+                "podCIDR": "10.28.1.0/24",
+                "podCIDRs": [
+                    "10.28.1.0/24"
+                ],
+                "providerID": "gce://mindmend-production/asia-southeast1-a/gke-mindmend-cluster-default-pool-3b075bf9-97gv"
+            },
+            "status": {
+                "addresses": [
+                    {
+                        "address": "10.45.240.7",
+                        "type": "InternalIP"
+                    },
+                    {
+                        "address": "34.124.132.139",
+                        "type": "ExternalIP"
+                    },
+                    {
+                        "address": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+                        "type": "Hostname"
+                    }
+                ],
+                "allocatable": {
+                    "cpu": "940m",
+                    "ephemeral-storage": "47060071478",
+                    "hugepages-1Gi": "0",
+                    "hugepages-2Mi": "0",
+                    "memory": "2869816Ki",
+                    "pods": "110"
+                },
+                "capacity": {
+                    "cpu": "2",
+                    "ephemeral-storage": "98831908Ki",
+                    "hugepages-1Gi": "0",
+                    "hugepages-2Mi": "0",
+                    "memory": "4015672Ki",
+                    "pods": "110"
+                },
+                "conditions": [
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "node is functioning properly",
+                        "reason": "NoFrequentUnregisterNetDevice",
+                        "status": "False",
+                        "type": "FrequentUnregisterNetDevice"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "XFS has not shutdown",
+                        "reason": "XfsHasNotShutDown",
+                        "status": "False",
+                        "type": "XfsShutdown"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "kernel has no deadlock",
+                        "reason": "KernelHasNoDeadlock",
+                        "status": "False",
+                        "type": "KernelDeadlock"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "kubelet is functioning properly",
+                        "reason": "NoFrequentKubeletRestart",
+                        "status": "False",
+                        "type": "FrequentKubeletRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "No deprecation risk: did not pull any schema v1 images",
+                        "reason": "DeprecatedPullingSchemaV1ImageDetected",
+                        "status": "False",
+                        "type": "DeprecatedPullingSchemaV1Image"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "docker overlay2 is functioning properly",
+                        "reason": "NoCorruptDockerOverlay2",
+                        "status": "False",
+                        "type": "CorruptDockerOverlay2"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "No deprecation risk: did not find any deprecated 'auths' field in containerd's config",
+                        "reason": "DeprecatedAuthsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedAuthsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "No deprecation risk: did not find any deprecations other than 3 configs fields (auths/configs/mirrors), pulling schema v1 images and using v1alpha2 CRI.",
+                        "reason": "DeprecatedOtherContainerdFeaturesNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedOtherContainerdFeatures"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "Default sysctls are in effect, no unexpected sysctl changes",
+                        "reason": "SysctlNotChanged",
+                        "status": "False",
+                        "type": "SysctlChanged"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "No deprecation risk: did not use v1alpha2 CRI",
+                        "reason": "DeprecatedUsingV1Alpha2CriNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedUsingV1Alpha2Cri"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "Swap is not active",
+                        "reason": "SwapNotDetected",
+                        "status": "False",
+                        "type": "Swap"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "docker is functioning properly",
+                        "reason": "NoFrequentDockerRestart",
+                        "status": "False",
+                        "type": "FrequentDockerRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "Root filesystem is not read only",
+                        "reason": "ReadOnlyRootFileSystemNotDetected",
+                        "status": "False",
+                        "type": "ReadOnlyRootFileSystem"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "containerd is functioning properly",
+                        "reason": "NoFrequentContainerdRestart",
+                        "status": "False",
+                        "type": "FrequentContainerdRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "UEFI CPER has no fatal error",
+                        "reason": "CperHardwareHasNoFatalError",
+                        "status": "False",
+                        "type": "CperHardwareErrorFatal"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "No deprecation risk: did not find any deprecated 'configs' field in containerd's config",
+                        "reason": "DeprecatedConfigsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedConfigsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:36Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "No deprecation risk: did not find any deprecated 'mirrors' field in containerd's config",
+                        "reason": "DeprecatedMirrorsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedMirrorsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-09-21T01:31:43Z",
+                        "lastTransitionTime": "2025-09-21T01:31:42Z",
+                        "message": "NodeController create implicit route",
+                        "reason": "RouteCreated",
+                        "status": "False",
+                        "type": "NetworkUnavailable"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:34Z",
+                        "lastTransitionTime": "2025-09-21T01:31:39Z",
+                        "message": "kubelet has sufficient memory available",
+                        "reason": "KubeletHasSufficientMemory",
+                        "status": "False",
+                        "type": "MemoryPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:34Z",
+                        "lastTransitionTime": "2025-09-21T01:31:39Z",
+                        "message": "kubelet has no disk pressure",
+                        "reason": "KubeletHasNoDiskPressure",
+                        "status": "False",
+                        "type": "DiskPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:34Z",
+                        "lastTransitionTime": "2025-09-21T01:31:39Z",
+                        "message": "kubelet has sufficient PID available",
+                        "reason": "KubeletHasSufficientPID",
+                        "status": "False",
+                        "type": "PIDPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:04:34Z",
+                        "lastTransitionTime": "2025-09-21T01:31:43Z",
+                        "message": "kubelet is posting ready status",
+                        "reason": "KubeletReady",
+                        "status": "True",
+                        "type": "Ready"
+                    }
+                ],
+                "daemonEndpoints": {
+                    "kubeletEndpoint": {
+                        "Port": 10250
+                    }
+                },
+                "features": {
+                    "supplementalGroupsPolicy": true
+                },
+                "images": [
+                    {
+                        "names": [
+                            "docker.io/ollama/ollama@sha256:c622a7adec67cf5bd7fe1802b7e26aa583a955a54e91d132889301f50c3e0bd0",
+                            "docker.io/ollama/ollama:latest"
+                        ],
+                        "sizeBytes": 1801830160
+                    },
+                    {
+                        "names": [
+                            "docker.io/ollama/ollama@sha256:14def4e0b9ac8c91b3ec6f7fa7684c924ffe244541d5fd827d9b89035cc33310"
+                        ],
+                        "sizeBytes": 1801818296
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:e5a6d9e04b64210ee3569f7fdd8d9d59c5440071fca2105114aabf7592f5d121",
+                            "gcr.io/mindmend-production/mindmend-app:admin-fix",
+                            "gcr.io/mindmend-production/mindmend-app:latest"
+                        ],
+                        "sizeBytes": 1080403571
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:fd3a3945d0740131aa5a9c4f43b419721070a81f49d8c6839493bdcb2349213a",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v4"
+                        ],
+                        "sizeBytes": 1077949607
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:e1c024b2bba6c4d281c99c1f9ac050e8df318c3565e424813141e9b0e27eacbc",
+                            "gcr.io/mindmend-production/mindmend-app:feature-update-v1"
+                        ],
+                        "sizeBytes": 1077948895
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ce636040a4d7e6919b66636a54b0464c83f35d78a6bdad03437d9840987f4fcf",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v3"
+                        ],
+                        "sizeBytes": 1077897338
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:49e90cc5aa2bf1cf33341a411dad10b1bde0622c870c2a4ba96ec0f4d24a3d91",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v1"
+                        ],
+                        "sizeBytes": 1077897254
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:e29804f104278949a9e35cd0d6def090ac176d7f575728a887780e2085e0a3b1",
+                            "gcr.io/mindmend-production/mindmend-app:admin-v2"
+                        ],
+                        "sizeBytes": 1077380980
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:b4fa75c08a99572a6dafd3ebc7b42d182ec8856f4598dd2641bbf89283f263b0",
+                            "gcr.io/mindmend-production/mindmend-app:admin-final"
+                        ],
+                        "sizeBytes": 1077380945
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:77fae9ea56bf03522f68f7ae7a3da4b45aa64b41875c5068e96efbbddbd61188",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working"
+                        ],
+                        "sizeBytes": 1077380651
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:cdb82883e50ad12607fad87b07d9cd3939400927c35f69f2f9a986fc027fab6a",
+                            "gcr.io/mindmend-production/mindmend-app:admin-payment-fix"
+                        ],
+                        "sizeBytes": 1077380155
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:821dd98065481168535b4ad217c4ee15219db88ba2438fb88868b3f0ffabb9f6",
+                            "gcr.io/mindmend-production/mindmend-app:admin-final-working"
+                        ],
+                        "sizeBytes": 1077327133
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:25d8e7c2e104118a3dbd87c19fbf3750a8f68abbed013bce6c204a284b388193",
+                            "gcr.io/mindmend-production/mindmend-app:admin-login-test"
+                        ],
+                        "sizeBytes": 1077300261
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:c991860e82d525e6a547dccd50247751da2e8cb90281f7125c3c460f8b8f6a51",
+                            "gcr.io/mindmend-production/mindmend-app:admin-auth-fixed"
+                        ],
+                        "sizeBytes": 1077298955
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:f9f22412498cb5bcaf8e3e71a9a6d2deb0a80fe32d9690905280a9545f581e98"
+                        ],
+                        "sizeBytes": 1077082878
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:d470d61f004860188f6818e1fab7cebfc39fbd47aca8381499c31d27e6c47092",
+                            "gcr.io/mindmend-production/mindmend-app:admin-import-fix"
+                        ],
+                        "sizeBytes": 1076935581
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:7597923123c8a2dd30617ef202d3b8a498441c99791e2ceb4025583cdb3add8d",
+                            "gcr.io/mindmend-production/mindmend-app:memory-optimized"
+                        ],
+                        "sizeBytes": 1076865296
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:a4ccd5066388b66460231a4b74e0b803bf02a75419939531f10e6b3933ef77ce",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v8"
+                        ],
+                        "sizeBytes": 1076702783
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:95bad3ff9e5fcdc5c1115ed043ae3e3fd5b065f55a59a1c4b4986747991fb694",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v9"
+                        ],
+                        "sizeBytes": 1076700844
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:91d684e663f82d211833161cf317e9b94cf2891b02a826bf78cc5e241c4cffc3",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v6"
+                        ],
+                        "sizeBytes": 1076656070
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:19218ab90c04da67d411a6fb97e7761f31ef6c817e7f03e3c79f96c87657867f",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v4"
+                        ],
+                        "sizeBytes": 1076655500
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ac536ca89fb5fbd958701b7202d6ea174c3cffb08d9a2ee9de7f7b9317aa19e8",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v5"
+                        ],
+                        "sizeBytes": 1076655337
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:c411275ce18c30ba3b49fd968d07b7827a23b4056b0bbb3df8dc3270986cce64",
+                            "gcr.io/mindmend-production/mindmend-app:admin-fixed-v2"
+                        ],
+                        "sizeBytes": 1076654935
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:703d720682bdf77c2467c266cfa84abb0335c74b142be3dcabcaa98cce737920",
+                            "gcr.io/mindmend-production/mindmend-app:admin-fixed"
+                        ],
+                        "sizeBytes": 1076654909
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:bf86ad5074a8b44578843f7a8db6a3edba04c279a4553d3dcfdbd11273bec9a3"
+                        ],
+                        "sizeBytes": 283037025
+                    }
+                ],
+                "nodeInfo": {
+                    "architecture": "amd64",
+                    "bootID": "3d9454a7-f73e-41d5-a0ee-148c9b9141e5",
+                    "containerRuntimeVersion": "containerd://2.0.6",
+                    "kernelVersion": "6.6.97+",
+                    "kubeProxyVersion": "",
+                    "kubeletVersion": "v1.33.4-gke.1134000",
+                    "machineID": "14aef97944dd65248f9f8dd829c00d0f",
+                    "operatingSystem": "linux",
+                    "osImage": "Container-Optimized OS from Google",
+                    "systemUUID": "14aef979-44dd-6524-8f9f-8dd829c00d0f"
+                },
+                "runtimeHandlers": [
+                    {
+                        "features": {
+                            "recursiveReadOnlyMounts": true,
+                            "userNamespaces": true
+                        },
+                        "name": "runc"
+                    },
+                    {
+                        "features": {
+                            "recursiveReadOnlyMounts": true,
+                            "userNamespaces": true
+                        },
+                        "name": ""
+                    }
+                ],
+                "volumesAttached": [
+                    {
+                        "devicePath": "",
+                        "name": "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-6246edd7-3267-4fef-8acc-183167c43968"
+                    }
+                ],
+                "volumesInUse": [
+                    "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-6246edd7-3267-4fef-8acc-183167c43968"
+                ]
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Node",
+            "metadata": {
+                "annotations": {
+                    "container.googleapis.com/instance_id": "5689412166390240330",
+                    "csi.volume.kubernetes.io/nodeid": "{\"pd.csi.storage.gke.io\":\"projects/mindmend-production/zones/asia-southeast1-a/instances/gke-mindmend-cluster-default-pool-3b075bf9-lxhb\",\"secrets-store.csi.k8s.io\":\"gke-mindmend-cluster-default-pool-3b075bf9-lxhb\"}",
+                    "node.alpha.kubernetes.io/ttl": "0",
+                    "node.gke.io/last-applied-node-labels": "cloud.google.com/gke-boot-disk=pd-balanced,cloud.google.com/gke-container-runtime=containerd,cloud.google.com/gke-cpu-scaling-level=2,cloud.google.com/gke-logging-variant=DEFAULT,cloud.google.com/gke-max-pods-per-node=110,cloud.google.com/gke-memory-gb-scaling-level=4,cloud.google.com/gke-nodepool=default-pool,cloud.google.com/gke-os-distribution=cos,cloud.google.com/gke-provisioning=standard,cloud.google.com/gke-stack-type=IPV4,cloud.google.com/machine-family=e2,cloud.google.com/private-node=false",
+                    "node.gke.io/last-applied-node-taints": "",
+                    "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+                },
+                "creationTimestamp": "2025-09-24T22:03:58Z",
+                "labels": {
+                    "beta.kubernetes.io/arch": "amd64",
+                    "beta.kubernetes.io/instance-type": "e2-medium",
+                    "beta.kubernetes.io/os": "linux",
+                    "cloud.google.com/gke-boot-disk": "pd-balanced",
+                    "cloud.google.com/gke-container-runtime": "containerd",
+                    "cloud.google.com/gke-cpu-scaling-level": "2",
+                    "cloud.google.com/gke-logging-variant": "DEFAULT",
+                    "cloud.google.com/gke-max-pods-per-node": "110",
+                    "cloud.google.com/gke-memory-gb-scaling-level": "4",
+                    "cloud.google.com/gke-nodepool": "default-pool",
+                    "cloud.google.com/gke-os-distribution": "cos",
+                    "cloud.google.com/gke-provisioning": "standard",
+                    "cloud.google.com/gke-stack-type": "IPV4",
+                    "cloud.google.com/machine-family": "e2",
+                    "cloud.google.com/private-node": "false",
+                    "failure-domain.beta.kubernetes.io/region": "asia-southeast1",
+                    "failure-domain.beta.kubernetes.io/zone": "asia-southeast1-a",
+                    "kubernetes.io/arch": "amd64",
+                    "kubernetes.io/hostname": "gke-mindmend-cluster-default-pool-3b075bf9-lxhb",
+                    "kubernetes.io/os": "linux",
+                    "node.kubernetes.io/instance-type": "e2-medium",
+                    "topology.gke.io/zone": "asia-southeast1-a",
+                    "topology.kubernetes.io/region": "asia-southeast1",
+                    "topology.kubernetes.io/zone": "asia-southeast1-a"
+                },
+                "name": "gke-mindmend-cluster-default-pool-3b075bf9-lxhb",
+                "resourceVersion": "1760112529604783001",
+                "uid": "67784ff2-d0d3-4bca-976f-2cc96d9b6277"
+            },
+            "spec": {
+                "podCIDR": "10.28.2.0/24",
+                "podCIDRs": [
+                    "10.28.2.0/24"
+                ],
+                "providerID": "gce://mindmend-production/asia-southeast1-a/gke-mindmend-cluster-default-pool-3b075bf9-lxhb"
+            },
+            "status": {
+                "addresses": [
+                    {
+                        "address": "10.45.240.9",
+                        "type": "InternalIP"
+                    },
+                    {
+                        "address": "34.124.221.142",
+                        "type": "ExternalIP"
+                    },
+                    {
+                        "address": "gke-mindmend-cluster-default-pool-3b075bf9-lxhb",
+                        "type": "Hostname"
+                    }
+                ],
+                "allocatable": {
+                    "cpu": "940m",
+                    "ephemeral-storage": "47060071478",
+                    "hugepages-1Gi": "0",
+                    "hugepages-2Mi": "0",
+                    "memory": "2869816Ki",
+                    "pods": "110"
+                },
+                "capacity": {
+                    "cpu": "2",
+                    "ephemeral-storage": "98831908Ki",
+                    "hugepages-1Gi": "0",
+                    "hugepages-2Mi": "0",
+                    "memory": "4015672Ki",
+                    "pods": "110"
+                },
+                "conditions": [
+                    {
+                        "lastHeartbeatTime": "2025-09-24T22:04:02Z",
+                        "lastTransitionTime": "2025-09-24T22:04:02Z",
+                        "message": "NodeController create implicit route",
+                        "reason": "RouteCreated",
+                        "status": "False",
+                        "type": "NetworkUnavailable"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "docker is functioning properly",
+                        "reason": "NoFrequentDockerRestart",
+                        "status": "False",
+                        "type": "FrequentDockerRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "No deprecation risk: did not use v1alpha2 CRI",
+                        "reason": "DeprecatedUsingV1Alpha2CriNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedUsingV1Alpha2Cri"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "node is functioning properly",
+                        "reason": "NoFrequentUnregisterNetDevice",
+                        "status": "False",
+                        "type": "FrequentUnregisterNetDevice"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "No deprecation risk: did not find any deprecated 'auths' field in containerd's config",
+                        "reason": "DeprecatedAuthsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedAuthsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "No deprecation risk: did not find any deprecations other than 3 configs fields (auths/configs/mirrors), pulling schema v1 images and using v1alpha2 CRI.",
+                        "reason": "DeprecatedOtherContainerdFeaturesNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedOtherContainerdFeatures"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "No deprecation risk: did not find any deprecated 'mirrors' field in containerd's config",
+                        "reason": "DeprecatedMirrorsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedMirrorsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "Root filesystem is not read only",
+                        "reason": "ReadOnlyRootFileSystemNotDetected",
+                        "status": "False",
+                        "type": "ReadOnlyRootFileSystem"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "No deprecation risk: did not find any deprecated 'configs' field in containerd's config",
+                        "reason": "DeprecatedConfigsFieldInContainerdConfigurationNotDetected",
+                        "status": "False",
+                        "type": "DeprecatedConfigsFieldInContainerdConfiguration"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "Default sysctls are in effect, no unexpected sysctl changes",
+                        "reason": "SysctlNotChanged",
+                        "status": "False",
+                        "type": "SysctlChanged"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "docker overlay2 is functioning properly",
+                        "reason": "NoCorruptDockerOverlay2",
+                        "status": "False",
+                        "type": "CorruptDockerOverlay2"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "kernel has no deadlock",
+                        "reason": "KernelHasNoDeadlock",
+                        "status": "False",
+                        "type": "KernelDeadlock"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "UEFI CPER has no fatal error",
+                        "reason": "CperHardwareHasNoFatalError",
+                        "status": "False",
+                        "type": "CperHardwareErrorFatal"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "No deprecation risk: did not pull any schema v1 images",
+                        "reason": "DeprecatedPullingSchemaV1ImageDetected",
+                        "status": "False",
+                        "type": "DeprecatedPullingSchemaV1Image"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "kubelet is functioning properly",
+                        "reason": "NoFrequentKubeletRestart",
+                        "status": "False",
+                        "type": "FrequentKubeletRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "Swap is not active",
+                        "reason": "SwapNotDetected",
+                        "status": "False",
+                        "type": "Swap"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "containerd is functioning properly",
+                        "reason": "NoFrequentContainerdRestart",
+                        "status": "False",
+                        "type": "FrequentContainerdRestart"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:06:55Z",
+                        "lastTransitionTime": "2025-09-24T22:03:59Z",
+                        "message": "XFS has not shutdown",
+                        "reason": "XfsHasNotShutDown",
+                        "status": "False",
+                        "type": "XfsShutdown"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:08:49Z",
+                        "lastTransitionTime": "2025-09-24T22:03:56Z",
+                        "message": "kubelet has sufficient memory available",
+                        "reason": "KubeletHasSufficientMemory",
+                        "status": "False",
+                        "type": "MemoryPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:08:49Z",
+                        "lastTransitionTime": "2025-09-24T22:03:56Z",
+                        "message": "kubelet has no disk pressure",
+                        "reason": "KubeletHasNoDiskPressure",
+                        "status": "False",
+                        "type": "DiskPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:08:49Z",
+                        "lastTransitionTime": "2025-09-24T22:03:56Z",
+                        "message": "kubelet has sufficient PID available",
+                        "reason": "KubeletHasSufficientPID",
+                        "status": "False",
+                        "type": "PIDPressure"
+                    },
+                    {
+                        "lastHeartbeatTime": "2025-10-10T16:08:49Z",
+                        "lastTransitionTime": "2025-09-24T22:04:02Z",
+                        "message": "kubelet is posting ready status",
+                        "reason": "KubeletReady",
+                        "status": "True",
+                        "type": "Ready"
+                    }
+                ],
+                "daemonEndpoints": {
+                    "kubeletEndpoint": {
+                        "Port": 10250
+                    }
+                },
+                "features": {
+                    "supplementalGroupsPolicy": true
+                },
+                "images": [
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:e5a6d9e04b64210ee3569f7fdd8d9d59c5440071fca2105114aabf7592f5d121",
+                            "gcr.io/mindmend-production/mindmend-app:admin-fix",
+                            "gcr.io/mindmend-production/mindmend-app:latest"
+                        ],
+                        "sizeBytes": 1080403571
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:fd3a3945d0740131aa5a9c4f43b419721070a81f49d8c6839493bdcb2349213a",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v4"
+                        ],
+                        "sizeBytes": 1077949607
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:2f69f1154681402203d90098a5d0eaf387e8310fae5f613986984021575fa664",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v2"
+                        ],
+                        "sizeBytes": 1077897423
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ce636040a4d7e6919b66636a54b0464c83f35d78a6bdad03437d9840987f4fcf",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v3"
+                        ],
+                        "sizeBytes": 1077897338
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:49e90cc5aa2bf1cf33341a411dad10b1bde0622c870c2a4ba96ec0f4d24a3d91",
+                            "gcr.io/mindmend-production/mindmend-app:security-fix-v1"
+                        ],
+                        "sizeBytes": 1077897254
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:e29804f104278949a9e35cd0d6def090ac176d7f575728a887780e2085e0a3b1",
+                            "gcr.io/mindmend-production/mindmend-app:admin-v2"
+                        ],
+                        "sizeBytes": 1077380980
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:cdb82883e50ad12607fad87b07d9cd3939400927c35f69f2f9a986fc027fab6a",
+                            "gcr.io/mindmend-production/mindmend-app:admin-payment-fix"
+                        ],
+                        "sizeBytes": 1077380155
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:868367b3dbd85f06896f0c5a4f8e2736ae0b944908158ddf8d4c2dc7f4b58f43",
+                            "gcr.io/mindmend-production/mindmend-app:admin-logs"
+                        ],
+                        "sizeBytes": 1077380088
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:25d8e7c2e104118a3dbd87c19fbf3750a8f68abbed013bce6c204a284b388193",
+                            "gcr.io/mindmend-production/mindmend-app:admin-login-test"
+                        ],
+                        "sizeBytes": 1077300261
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:88ee40aa6316223a97d9aaa2287657469bd0d6f6c284326b16efb2257d89973d",
+                            "gcr.io/mindmend-production/mindmend-app:admin-final"
+                        ],
+                        "sizeBytes": 1077256648
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:09f18bcf4b8b3bdb50f5821f45cfb36d4a199dd143afdd242b2af34446de08d1",
+                            "gcr.io/mindmend-production/mindmend-app:admin-complete"
+                        ],
+                        "sizeBytes": 1076972610
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ddccd9b09946f19bae9853cd85d868259707b7da6ee6447299d8a4de9986f155",
+                            "gcr.io/mindmend-production/mindmend-app:working"
+                        ],
+                        "sizeBytes": 1076868535
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:7597923123c8a2dd30617ef202d3b8a498441c99791e2ceb4025583cdb3add8d",
+                            "gcr.io/mindmend-production/mindmend-app:memory-optimized"
+                        ],
+                        "sizeBytes": 1076865296
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:a4ccd5066388b66460231a4b74e0b803bf02a75419939531f10e6b3933ef77ce",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v8"
+                        ],
+                        "sizeBytes": 1076702783
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:ac4ca578a532541c6793995556ba6e2aa6274a82b9befb503c7f27e19c77794b",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v7"
+                        ],
+                        "sizeBytes": 1076656208
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:91d684e663f82d211833161cf317e9b94cf2891b02a826bf78cc5e241c4cffc3",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v6"
+                        ],
+                        "sizeBytes": 1076656070
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:19218ab90c04da67d411a6fb97e7761f31ef6c817e7f03e3c79f96c87657867f",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v4"
+                        ],
+                        "sizeBytes": 1076655500
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:c411275ce18c30ba3b49fd968d07b7827a23b4056b0bbb3df8dc3270986cce64",
+                            "gcr.io/mindmend-production/mindmend-app:admin-fixed-v2"
+                        ],
+                        "sizeBytes": 1076654935
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:703d720682bdf77c2467c266cfa84abb0335c74b142be3dcabcaa98cce737920",
+                            "gcr.io/mindmend-production/mindmend-app:admin-fixed"
+                        ],
+                        "sizeBytes": 1076654909
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:d508151c0208d613acd8c93aa5698d062e9ae9a3de67721bedbdd38d06fe8d71",
+                            "gcr.io/mindmend-production/mindmend-app:admin-working-v3"
+                        ],
+                        "sizeBytes": 1076641288
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:4f3155cf2eba54c9d134a4f5a6aadd19fe609e0093a043f1170c3d5210967087"
+                        ],
+                        "sizeBytes": 665060383
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:bf86ad5074a8b44578843f7a8db6a3edba04c279a4553d3dcfdbd11273bec9a3"
+                        ],
+                        "sizeBytes": 283037025
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend-app@sha256:86f704a83356fd946c19913e40ac55809ef63bf3db1e22d86f197a2b6391c8d0"
+                        ],
+                        "sizeBytes": 283036834
+                    },
+                    {
+                        "names": [
+                            "gcr.io/mindmend-production/mindmend@sha256:197a23a6dd5bf9b49b22887fde1286463c82b656fabd8eafdce8b7c6080c5d7f",
+                            "gcr.io/mindmend-production/mindmend:latest"
+                        ],
+                        "sizeBytes": 193024967
+                    },
+                    {
+                        "names": [
+                            "asia.gcr.io/gke-release-staging/cilium/cilium:v1.16.10-gke1.33-gke.7@sha256:c686b1fc2d1a7b2e2c413963fb915f22e14d2821360ca1bb2d8b979545b72835",
+                            "eu.gcr.io/gke-release-staging/cilium/cilium:v1.16.10-gke1.33-gke.7@sha256:c686b1fc2d1a7b2e2c413963fb915f22e14d2821360ca1bb2d8b979545b72835",
+                            "gcr.io/gke-release-staging/cilium/cilium:v1.16.10-gke1.33-gke.7@sha256:c686b1fc2d1a7b2e2c413963fb915f22e14d2821360ca1bb2d8b979545b72835",
+                            "asia.gke.gcr.io/cilium/cilium:v1.16.10-gke1.33-gke.7",
+                            "eu.gke.gcr.io/cilium/cilium:v1.16.10-gke1.33-gke.7"
+                        ],
+                        "sizeBytes": 192653767
+                    }
+                ],
+                "nodeInfo": {
+                    "architecture": "amd64",
+                    "bootID": "86390aac-7389-4a6b-b729-03f2c0877e19",
+                    "containerRuntimeVersion": "containerd://2.0.6",
+                    "kernelVersion": "6.6.97+",
+                    "kubeProxyVersion": "",
+                    "kubeletVersion": "v1.33.4-gke.1134000",
+                    "machineID": "70020bef1f3b23724531736c3894b5fe",
+                    "operatingSystem": "linux",
+                    "osImage": "Container-Optimized OS from Google",
+                    "systemUUID": "70020bef-1f3b-2372-4531-736c3894b5fe"
+                },
+                "runtimeHandlers": [
+                    {
+                        "features": {
+                            "recursiveReadOnlyMounts": true,
+                            "userNamespaces": true
+                        },
+                        "name": "runc"
+                    },
+                    {
+                        "features": {
+                            "recursiveReadOnlyMounts": true,
+                            "userNamespaces": true
+                        },
+                        "name": ""
+                    }
+                ],
+                "volumesAttached": [
+                    {
+                        "devicePath": "",
+                        "name": "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-327d9b06-34b6-4e0a-a2a8-92f269568c45"
+                    },
+                    {
+                        "devicePath": "",
+                        "name": "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-43a2ca14-45ea-4e5e-9a2b-874a11c930db"
+                    },
+                    {
+                        "devicePath": "",
+                        "name": "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-ad4c03b1-4184-4d0f-8f00-099fbfedd394"
+                    }
+                ],
+                "volumesInUse": [
+                    "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-327d9b06-34b6-4e0a-a2a8-92f269568c45",
+                    "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-43a2ca14-45ea-4e5e-9a2b-874a11c930db",
+                    "kubernetes.io/csi/pd.csi.storage.gke.io^projects/mindmend-production/zones/asia-southeast1-a/disks/pvc-ad4c03b1-4184-4d0f-8f00-099fbfedd394"
+                ]
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

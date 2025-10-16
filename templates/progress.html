@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Progress - MindMend{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-chart-line"></i> Your Progress Dashboard</h3>
+                    <p class="mb-0">Track your mental health journey and celebrate your achievements</p>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Key Metrics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-smile" style="color: #28a745;"></i>
+                                </div>
+                                <div class="metric-value">{{ "%.1f"|format(progress.avg_mood) if progress.avg_mood else "N/A" }}</div>
+                                <div class="metric-label">Average Mood</div>
+                                <small class="text-muted">Out of 10</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-fire" style="color: #ff6b6b;"></i>
+                                </div>
+                                <div class="metric-value">{{ progress.streak_days if progress.streak_days else 0 }}</div>
+                                <div class="metric-label">Day Streak</div>
+                                <small class="text-muted">Keep it going!</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-calendar-check" style="color: #667eea;"></i>
+                                </div>
+                                <div class="metric-value">{{ progress.total_sessions if progress.total_sessions else 0 }}</div>
+                                <div class="metric-label">Total Sessions</div>
+                                <small class="text-muted">All time</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="metric-card">
+                                <div class="metric-icon">
+                                    <i class="fas fa-trophy" style="color: #ffc107;"></i>
+                                </div>
+                                <div class="metric-value">{{ progress.completed_exercises if progress.completed_exercises else 0 }}</div>
+                                <div class="metric-label">Exercises Done</div>
+                                <small class="text-muted">Completed</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Improvement Metric -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <h4 class="text-success">
+                                        <i class="fas fa-arrow-up"></i>
+                                        {{ "%.1f"|format(progress.improvement_percentage) if progress.improvement_percentage else 0 }}% Improvement
+                                    </h4>
+                                    <p class="mb-0">Your mood has improved over the past month! Keep up the great work!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Trend -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5><i class="fas fa-calendar-week"></i> This Week's Mood</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mood-indicator">
+                                        <div class="mood-bar" style="width: {{ (progress.weekly_mood / 10 * 100) if progress.weekly_mood else 50 }}%;
+                                             background: {% if progress.weekly_mood >= 7 %}#28a745{% elif progress.weekly_mood >= 5 %}#ffc107{% elif progress.weekly_mood >= 3 %}#fd7e14{% else %}#dc3545{% endif %};">
+                                        </div>
+                                    </div>
+                                    <p class="text-center mt-2 mb-0">
+                                        <strong>{{ "%.1f"|format(progress.weekly_mood) if progress.weekly_mood else "N/A" }}/10</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session History -->
+                    {% if progress.session_history %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5><i class="fas fa-history"></i> Recent Activity</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Mood Before</th>
+                                                    <th>Mood After</th>
+                                                    <th>Change</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for session in progress.session_history[:10] %}
+                                                <tr>
+                                                    <td>{{ session.timestamp.strftime('%b %d, %Y') }}</td>
+                                                    <td>
+                                                        <span class="badge bg-primary">{{ session.session_type }}</span>
+                                                    </td>
+                                                    <td>
+                                                        {% if session.mood_before %}
+                                                        <span class="mood-badge">{{ session.mood_before }}/10</span>
+                                                        {% else %}
+                                                        <span class="text-muted">N/A</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if session.mood_after %}
+                                                        <span class="mood-badge">{{ session.mood_after }}/10</span>
+                                                        {% else %}
+                                                        <span class="text-muted">N/A</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if session.mood_before and session.mood_after %}
+                                                            {% set change = session.mood_after - session.mood_before %}
+                                                            {% if change > 0 %}
+                                                            <span class="text-success"><i class="fas fa-arrow-up"></i> +{{ change }}</span>
+                                                            {% elif change < 0 %}
+                                                            <span class="text-danger"><i class="fas fa-arrow-down"></i> {{ change }}</span>
+                                                            {% else %}
+                                                            <span class="text-muted">—</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                        <span class="text-muted">—</span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="text-center mt-4">
+                        <a href="/dashboard" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <a href="/mood-tracker" class="btn btn-success">
+                            <i class="fas fa-smile"></i> Track Mood
+                        </a>
+                        <a href="/journaling" class="btn btn-warning text-white">
+                            <i class="fas fa-book"></i> Write in Journal
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.metric-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+}
+
+.metric-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.metric-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.mood-indicator {
+    width: 100%;
+    height: 40px;
+    background: #e9ecef;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.mood-bar {
+    height: 100%;
+    transition: width 1s ease;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 15px;
+    color: white;
+    font-weight: bold;
+}
+
+.mood-badge {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: 500;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.badge {
+    text-transform: capitalize;
+}
+
+@media (max-width: 768px) {
+    .metric-card {
+        margin-bottom: 15px;
+    }
+}
+</style>
+{% endblock %}

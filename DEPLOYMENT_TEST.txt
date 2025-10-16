@@ -1,5 +1,0 @@
-DEPLOYMENT_TEST_FILE_2025_09_15_09_49
-This file was created to test if the server automatically pulls from git.
-If this appears on the live website, then auto-deployment is working.
-Timestamp: 2025-09-15 09:49
-Commit: Testing auto-deployment functionality

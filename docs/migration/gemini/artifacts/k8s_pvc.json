@@ -1,0 +1,456 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"labels\":{\"io.kompose.service\":\"app-logs\"},\"name\":\"app-logs\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"100Mi\"}}}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-lxhb",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-09-28T07:02:16Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "io.kompose.service": "app-logs"
+                },
+                "name": "app-logs",
+                "namespace": "default",
+                "resourceVersion": "1759968606351487018",
+                "uid": "ffe03931-efd7-4b72-ad90-7d6a9c8b625e"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Mi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-ffe03931-efd7-4b72-ad90-7d6a9c8b625e"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"labels\":{\"io.kompose.service\":\"app-uploads\"},\"name\":\"app-uploads\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteMany\"],\"resources\":{\"requests\":{\"storage\":\"100Mi\"}},\"storageClassName\":\"\",\"volumeName\":\"filestore-pv\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes"
+                },
+                "creationTimestamp": "2025-10-09T00:10:00Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "io.kompose.service": "app-uploads"
+                },
+                "name": "app-uploads",
+                "namespace": "default",
+                "resourceVersion": "1759968600551663009",
+                "uid": "3e196f8c-88fb-4f8b-81ea-a92357ec8736"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Mi"
+                    }
+                },
+                "storageClassName": "",
+                "volumeMode": "Filesystem",
+                "volumeName": "filestore-pv"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "capacity": {
+                    "storage": "1T"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"labels\":{\"io.kompose.service\":\"celery-beat-data\"},\"name\":\"celery-beat-data\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"100Mi\"}}}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-09-24T14:30:58Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "io.kompose.service": "celery-beat-data"
+                },
+                "name": "celery-beat-data",
+                "namespace": "default",
+                "resourceVersion": "1758724262798495024",
+                "uid": "47e0344a-6cd0-4fe3-91f6-348043cda645"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Mi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-47e0344a-6cd0-4fe3-91f6-348043cda645"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"labels\":{\"io.kompose.service\":\"nginx-claim1\"},\"name\":\"nginx-claim1\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"100Mi\"}},\"storageClassName\":\"standard-rwo\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-10-09T00:21:33Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "io.kompose.service": "nginx-claim1"
+                },
+                "name": "nginx-claim1",
+                "namespace": "default",
+                "resourceVersion": "1759969307780351006",
+                "uid": "7ea2a692-75ce-4d0b-b7ab-0d2ac925fedd"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Mi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-7ea2a692-75ce-4d0b-b7ab-0d2ac925fedd"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"labels\":{\"io.kompose.service\":\"ollama-data\"},\"name\":\"ollama-data\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"100Mi\"}}}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-09-24T14:30:57Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "io.kompose.service": "ollama-data"
+                },
+                "name": "ollama-data",
+                "namespace": "default",
+                "resourceVersion": "1758724261436159017",
+                "uid": "6246edd7-3267-4fef-8acc-183167c43968"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Mi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-6246edd7-3267-4fef-8acc-183167c43968"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"labels\":{\"io.kompose.service\":\"postgres-data\"},\"name\":\"postgres-data\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"100Mi\"}}}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-09-24T14:30:29Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "io.kompose.service": "postgres-data"
+                },
+                "name": "postgres-data",
+                "namespace": "default",
+                "resourceVersion": "1758724236337519002",
+                "uid": "4fc1dbac-0e92-41c2-9c02-2d145009b3ac"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Mi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-4fc1dbac-0e92-41c2-9c02-2d145009b3ac"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"labels\":{\"io.kompose.service\":\"redis-data\"},\"name\":\"redis-data\",\"namespace\":\"default\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"100Mi\"}}}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-09-24T14:30:39Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "labels": {
+                    "io.kompose.service": "redis-data"
+                },
+                "name": "redis-data",
+                "namespace": "default",
+                "resourceVersion": "1758724243984991023",
+                "uid": "ad4c03b1-4184-4d0f-8f00-099fbfedd394"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "100Mi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-ad4c03b1-4184-4d0f-8f00-099fbfedd394"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "1Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"app-uploads\",\"namespace\":\"mindmend\"},\"spec\":{\"accessModes\":[\"ReadWriteMany\"],\"resources\":{\"requests\":{\"storage\":\"50Gi\"}},\"storageClassName\":\"filestore-rwx\"}}\n",
+                    "volume.beta.kubernetes.io/storage-provisioner": "filestore.csi.storage.gke.io",
+                    "volume.kubernetes.io/storage-provisioner": "filestore.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-10-09T11:22:35Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "app-uploads",
+                "namespace": "mindmend",
+                "resourceVersion": "1760008955975055013",
+                "uid": "d555baf5-e8a0-4666-ab9f-07f4af85e935"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "50Gi"
+                    }
+                },
+                "storageClassName": "filestore-rwx",
+                "volumeMode": "Filesystem"
+            },
+            "status": {
+                "phase": "Pending"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"postgres-data\",\"namespace\":\"mindmend\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"20Gi\"}},\"storageClassName\":\"standard-rwo\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-lxhb",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-10-09T11:15:45Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "postgres-data",
+                "namespace": "mindmend",
+                "resourceVersion": "1760008549984863016",
+                "uid": "327d9b06-34b6-4e0a-a2a8-92f269568c45"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "20Gi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-327d9b06-34b6-4e0a-a2a8-92f269568c45"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "20Gi"
+                },
+                "phase": "Bound"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "PersistentVolumeClaim",
+            "metadata": {
+                "annotations": {
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{},\"name\":\"redis-data\",\"namespace\":\"mindmend\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"5Gi\"}},\"storageClassName\":\"standard-rwo\"}}\n",
+                    "pv.kubernetes.io/bind-completed": "yes",
+                    "pv.kubernetes.io/bound-by-controller": "yes",
+                    "volume.beta.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io",
+                    "volume.kubernetes.io/selected-node": "gke-mindmend-cluster-default-pool-3b075bf9-lxhb",
+                    "volume.kubernetes.io/storage-provisioner": "pd.csi.storage.gke.io"
+                },
+                "creationTimestamp": "2025-10-09T11:15:46Z",
+                "finalizers": [
+                    "kubernetes.io/pvc-protection"
+                ],
+                "name": "redis-data",
+                "namespace": "mindmend",
+                "resourceVersion": "1760008550791071011",
+                "uid": "43a2ca14-45ea-4e5e-9a2b-874a11c930db"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "5Gi"
+                    }
+                },
+                "storageClassName": "standard-rwo",
+                "volumeMode": "Filesystem",
+                "volumeName": "pvc-43a2ca14-45ea-4e5e-9a2b-874a11c930db"
+            },
+            "status": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "capacity": {
+                    "storage": "5Gi"
+                },
+                "phase": "Bound"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

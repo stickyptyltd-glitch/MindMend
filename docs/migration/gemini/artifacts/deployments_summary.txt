@@ -1,0 +1,25 @@
+Kubernetes Deployments Summary
+===============================
+
+NAMESPACE      NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+cert-manager   cert-manager                    1/1     1            1           18d
+cert-manager   cert-manager-cainjector         1/1     1            1           18d
+cert-manager   cert-manager-webhook            1/1     1            1           18d
+default        celery-beat                     1/1     1            1           16d
+default        celery-worker                   1/1     1            1           16d
+default        mindmend-backend                2/2     2            2           15d
+default        nginx-deployment                2/2     2            2           15d
+default        ollama                          1/1     1            1           16d
+default        postgres                        1/1     1            1           16d
+default        redis                           1/1     1            1           16d
+gmp-system     gmp-operator                    1/1     1            1           20d
+gmp-system     rule-evaluator                  0/0     0            0           20d
+kube-system    event-exporter-gke              1/1     1            1           20d
+kube-system    konnectivity-agent              3/3     3            3           20d
+kube-system    konnectivity-agent-autoscaler   1/1     1            1           20d
+kube-system    kube-dns                        2/2     2            2           20d
+kube-system    kube-dns-autoscaler             1/1     1            1           20d
+kube-system    l7-default-backend              1/1     1            1           20d
+kube-system    metrics-server-v1.33.0          1/1     1            1           20d
+Unable to fetch
+

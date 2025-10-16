@@ -47,7 +47,7 @@ jobs:
       IMAGE_NAME: mindmend-app
       CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
       CLUSTER_LOCATION: ${{ secrets.GKE_CLUSTER_LOCATION }}
-      K8S_NAMESPACE: mindmend
+      K8S_NAMESPACE: default
     steps:
       - name: Checkout
         uses: actions/checkout@v4

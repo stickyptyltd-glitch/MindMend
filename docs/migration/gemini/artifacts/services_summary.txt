@@ -1,0 +1,25 @@
+Kubernetes Services Summary
+============================
+
+NAMESPACE      NAME                        TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)            AGE
+cert-manager   cert-manager                ClusterIP      34.118.231.221   <none>           9402/TCP           18d
+cert-manager   cert-manager-webhook        ClusterIP      34.118.237.75    <none>           443/TCP            18d
+default        app                         ClusterIP      34.118.239.101   <none>           8000/TCP           18d
+default        cm-acme-http-solver-fcctn   NodePort       34.118.227.37    <none>           8089:32617/TCP     13h
+default        kubernetes                  ClusterIP      34.118.224.1     <none>           443/TCP            18d
+default        mindmend-backend-service    ClusterIP      34.118.225.153   <none>           80/TCP             15d
+default        nginx                       ClusterIP      34.118.232.0     <none>           80/TCP,443/TCP     18d
+default        nginx-service               LoadBalancer   34.118.227.55    34.143.177.214   80:31011/TCP       15d
+default        ollama                      ClusterIP      34.118.233.124   <none>           11434/TCP          16d
+default        postgres                    ClusterIP      34.118.226.213   <none>           5432/TCP           16d
+default        redis                       ClusterIP      34.118.237.13    <none>           6379/TCP           16d
+gmp-system     alertmanager                ClusterIP      None             <none>           9093/TCP           20d
+gmp-system     gmp-operator                ClusterIP      34.118.226.63    <none>           8443/TCP,443/TCP   20d
+gmp-system     rule-evaluator              ClusterIP      34.118.226.94    <none>           19092/TCP          20d
+kube-system    default-http-backend        NodePort       34.118.229.67    <none>           80:32503/TCP       20d
+kube-system    kube-dns                    ClusterIP      34.118.224.10    <none>           53/UDP,53/TCP      20d
+kube-system    metrics-server              ClusterIP      34.118.230.166   <none>           443/TCP            20d
+mindmend       cm-acme-http-solver-wvlw2   NodePort       34.118.234.98    <none>           8089:31407/TCP     13h
+mindmend       mindmend-backend-service    ClusterIP      34.118.225.154   <none>           80/TCP             28h
+Unable to fetch
+

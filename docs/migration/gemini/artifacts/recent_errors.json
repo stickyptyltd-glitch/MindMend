@@ -1,0 +1,3737 @@
+[
+  {
+    "insertId": "2fj89jaov57xgh63",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:51.948342291Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:49.139750280Z"
+  },
+  {
+    "insertId": "ihvfthjhtmftb49e",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:46.900841782Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:43.521231613Z"
+  },
+  {
+    "insertId": "qcn2cmwigx5tzmz1",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:41.981836176Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:39.090255531Z"
+  },
+  {
+    "insertId": "qh3jfpfq8gxwgi2g",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:36.899314114Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:33.485015970Z"
+  },
+  {
+    "insertId": "qmurxw1gqyqklsih",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:31.901345506Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:29.038084874Z"
+  },
+  {
+    "insertId": "me5clujs4kcl61bx",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:26.993313206Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:23.447687828Z"
+  },
+  {
+    "insertId": "83gifnh8vtmii0sw",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:21.967265370Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:18.992514332Z"
+  },
+  {
+    "insertId": "4mrhlew5x8dvb7du",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:16.937554358Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:13.404223901Z"
+  },
+  {
+    "insertId": "unsflqxwmctls341",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:11.919193822Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:08.953294492Z"
+  },
+  {
+    "insertId": "v5gmctzetxf7lzci",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:06.897838410Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:09:03.366031996Z"
+  },
+  {
+    "insertId": "5eaj8i2z0mxc43p9",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:09:01.908604121Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:58.914595914Z"
+  },
+  {
+    "insertId": "pq7ju37bkbzl6wn1",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:56.910365463Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:53.310715213Z"
+  },
+  {
+    "insertId": "pxjn0ack58h4zrhz",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:52.020035713Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:48.870836388Z"
+  },
+  {
+    "insertId": "o4f25uqa1g1s3xzk",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:46.907523398Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:43.267264703Z"
+  },
+  {
+    "insertId": "aijtsmm1qab65jf2",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:41.897986281Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:38.821747146Z"
+  },
+  {
+    "insertId": "16546vhqvk37f6rf",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:36.905778053Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:33.216424071Z"
+  },
+  {
+    "insertId": "ne2x0yszh95h2a16",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:31.898908710Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:28.771745445Z"
+  },
+  {
+    "insertId": "-vatkn9e1ewc6",
+    "labels": {
+      "compute.googleapis.com/root_trigger_id": "4cf39782-8915-4f60-9260-f63f1ecd04ac"
+    },
+    "logName": "projects/mindmend-production/logs/cloudaudit.googleapis.com%2Factivity",
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "oauthInfo": {
+          "oauthClientId": "112763737943958118968"
+        },
+        "principalEmail": "service-840448055519@container-engine-robot.iam.gserviceaccount.com",
+        "principalSubject": "serviceAccount:service-840448055519@container-engine-robot.iam.gserviceaccount.com"
+      },
+      "authorizationInfo": [
+        {
+          "granted": true,
+          "permission": "compute.backendServices.setSecurityPolicy",
+          "permissionType": "ADMIN_WRITE",
+          "resource": "projects/mindmend-production/global/backendServices/k8s1-a79c505b-mindmend-mindmend-backend-service-80-0e47fe0f",
+          "resourceAttributes": {
+            "name": "projects/mindmend-production/global/backendServices/k8s1-a79c505b-mindmend-mindmend-backend-service-80-0e47fe0f",
+            "service": "compute",
+            "type": "compute.backendServices"
+          }
+        },
+        {
+          "granted": true,
+          "permission": "compute.securityPolicies.use",
+          "permissionType": "ADMIN_WRITE",
+          "resource": "projects/mindmend-production/global/securityPolicies/mindmend-armor-policy",
+          "resourceAttributes": {
+            "name": "projects/mindmend-production/global/securityPolicies/mindmend-armor-policy",
+            "service": "compute",
+            "type": "compute.securityPolicies"
+          }
+        }
+      ],
+      "methodName": "v1.compute.backendServices.setSecurityPolicy",
+      "request": {
+        "@type": "type.googleapis.com/compute.backendServices.setSecurityPolicy",
+        "securityPolicy": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/securityPolicies/mindmend-armor-policy"
+      },
+      "requestMetadata": {
+        "callerIp": "34.124.240.64",
+        "callerSuppliedUserAgent": "google-api-go-client/0.5 Kubernetes/0.0.0 (linux amd64),gzip(gfe)",
+        "destinationAttributes": {},
+        "requestAttributes": {
+          "auth": {},
+          "time": "2025-10-10T16:08:28.688203Z"
+        }
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "global"
+        ]
+      },
+      "resourceName": "projects/mindmend-production/global/backendServices/k8s1-a79c505b-mindmend-mindmend-backend-service-80-0e47fe0f",
+      "response": {
+        "@type": "type.googleapis.com/error",
+        "error": {
+          "code": 400,
+          "errors": [
+            {
+              "domain": "global",
+              "message": "Invalid value for field 'resource': '{  \"securityPolicy\": \"https://www.googleapis.com/compute/v1/projects/mindmend-production/global/secu...'. The given security policy does not exist.",
+              "reason": "invalid"
+            }
+          ],
+          "message": "Invalid value for field 'resource': '{  \"securityPolicy\": \"https://www.googleapis.com/compute/v1/projects/mindmend-production/global/secu...'. The given security policy does not exist."
+        }
+      },
+      "serviceName": "compute.googleapis.com",
+      "status": {
+        "code": 3,
+        "message": "Invalid value for field 'resource': '{  \"securityPolicy\": \"https://www.googleapis.com/compute/v1/projects/mindmend-production/global/secu...'. The given security policy does not exist."
+      }
+    },
+    "receiveTimestamp": "2025-10-10T16:08:29.162611978Z",
+    "resource": {
+      "labels": {
+        "backend_service_id": "8241961747805251463",
+        "location": "global",
+        "project_id": "mindmend-production"
+      },
+      "type": "gce_backend_service"
+    },
+    "severity": "ERROR",
+    "timestamp": "2025-10-10T16:08:28.561322Z"
+  },
+  {
+    "insertId": "kwlv8o94nooevv5u",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:26.899825888Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:23.169313582Z"
+  },
+  {
+    "insertId": "28oxwgpmpyl64z2g",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:21.983686006Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:18.732428997Z"
+  },
+  {
+    "insertId": "8fbazfn2t07tz28n",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:16.900599044Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:13.129742308Z"
+  },
+  {
+    "insertId": "47mtd0st4mxiuezk",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:11.901747908Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:08.693468303Z"
+  },
+  {
+    "insertId": "t9g411ufys62xu0i",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:06.902718641Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:08:03.084492056Z"
+  },
+  {
+    "insertId": "xwbicr477wx56hg6",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:08:01.893383635Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:58.646844702Z"
+  },
+  {
+    "insertId": "qwefl718qsblvkm8",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:56.898681785Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:53.041089129Z"
+  },
+  {
+    "insertId": "iz7s6ya8a7im6hso",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:52.072415869Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:48.595758649Z"
+  },
+  {
+    "insertId": "kx86ehnu1nz1odlj",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:46.897425801Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:42.974537286Z"
+  },
+  {
+    "insertId": "d15x245trwew2hrd",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:41.897095194Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:38.555205525Z"
+  },
+  {
+    "insertId": "sttv5glv4hgiglyx",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:36.904484433Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:32.936525282Z"
+  },
+  {
+    "insertId": "6kt0of8zadugnk7v",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:31.907841156Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:28.509905101Z"
+  },
+  {
+    "insertId": "cq0uqtdac1g37m9u",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:26.900259228Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:22.894692166Z"
+  },
+  {
+    "insertId": "plv71hgfctfsp91f",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:21.966948076Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:18.464295776Z"
+  },
+  {
+    "insertId": "uekmqzq4jry1edd3",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:16.901038007Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:12.854747885Z"
+  },
+  {
+    "insertId": "3lvv4lji3oe8948v",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:11.897838839Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:08.413825646Z"
+  },
+  {
+    "insertId": "p0vkdwl0q1srnq3z",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:06.902007967Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:07:02.804321519Z"
+  },
+  {
+    "insertId": "4tku1d5gm0ecs9sx",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:07:01.908833226Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:58.371514449Z"
+  },
+  {
+    "insertId": "fh449e0m5mspzb0q",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:56.916930630Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:52.765047771Z"
+  },
+  {
+    "insertId": "y8nj95ucql8yh8ft",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:51.951959276Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:48.325300412Z"
+  },
+  {
+    "insertId": "0mhe739nck7hma78",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:46.914640709Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:42.727339552Z"
+  },
+  {
+    "insertId": "bjqw8eb73q0qyuxt",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:41.900657819Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:38.278206845Z"
+  },
+  {
+    "insertId": "kksurd27svx26hsi",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:36.895313193Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:32.679758061Z"
+  },
+  {
+    "insertId": "k5aro61964teozso",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:31.899147046Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:28.221516021Z"
+  },
+  {
+    "insertId": "ijewysgicc4474lq",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:26.901446488Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:22.634501262Z"
+  },
+  {
+    "insertId": "fipiclxrmfdzebs6",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:21.916491934Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:18.175984346Z"
+  },
+  {
+    "insertId": "ihgh6yh2bmvqmwj2",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:17.015908944Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:12.592217759Z"
+  },
+  {
+    "insertId": "mhhji59vtq4y0imj",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:11.902026057Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:08.129726356Z"
+  },
+  {
+    "insertId": "iezuf3fjf0hyhta5",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:06.898042792Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:06:02.552078743Z"
+  },
+  {
+    "insertId": "zpzs3x5w1wtq3fgh",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:06:01.904142900Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:58.066014281Z"
+  },
+  {
+    "insertId": "yp7r0t1l9s6ypnsg",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:56.909360830Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:52.511328939Z"
+  },
+  {
+    "insertId": "ob6t36pvtar9hoxw",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:52.037702077Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:48.020043150Z"
+  },
+  {
+    "insertId": "nfzho4ahihbxg5a9",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:46.895449933Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:42.469518541Z"
+  },
+  {
+    "insertId": "2yyod8xpv83uwbt4",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:41.906705061Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:37.974881772Z"
+  },
+  {
+    "insertId": "jdrt1me6uiklji34",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:36.899246853Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:32.422763552Z"
+  },
+  {
+    "insertId": "nbqxpiysd3y9pcuj",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:31.912379474Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:27.925560187Z"
+  },
+  {
+    "insertId": "exjty85hli6a7vyf",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:26.900543259Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:22.378881687Z"
+  },
+  {
+    "insertId": "baacwu7vyfu2ri1k",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:21.894873892Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:17.878321495Z"
+  },
+  {
+    "insertId": "6htu5r2r7fm5tqtp",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:16.903108365Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:12.337009876Z"
+  },
+  {
+    "insertId": "z8415vi6h7pfta8d",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:11.920323992Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:07.828579524Z"
+  },
+  {
+    "insertId": "c49dhe5075icukma",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:06.904039989Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:05:02.285388103Z"
+  },
+  {
+    "insertId": "mboif050lgjdxyj0",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:05:01.904154941Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:57.785763405Z"
+  },
+  {
+    "insertId": "ddivuo1sh03bvp11",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:56.906851937Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:52.219168661Z"
+  },
+  {
+    "insertId": "se8bawp41drw75e8",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:51.977480383Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:47.737532189Z"
+  },
+  {
+    "insertId": "1qwtnhyy87z2re7p",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:46.902759775Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:42.172563221Z"
+  },
+  {
+    "insertId": "xwdfan9m8pif4idg",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:41.979254234Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:37.692986679Z"
+  },
+  {
+    "insertId": "46tzynd6jpojs0m3",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:36.911113930Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:32.130134147Z"
+  },
+  {
+    "insertId": "bidbquexnz63r1yz",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:31.921119561Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:27.651092148Z"
+  },
+  {
+    "insertId": "bvrpzx24hlnoh2zf",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:26.898824938Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:22.085251747Z"
+  },
+  {
+    "insertId": "doarii0q4pnqab4k",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:21.898419363Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:17.599994830Z"
+  },
+  {
+    "insertId": "2uy5wg59u1aceswo",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:16.975448502Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:12.040068420Z"
+  },
+  {
+    "insertId": "713hwrp9jye7rx5f",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:11.988854513Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:07.560788273Z"
+  },
+  {
+    "insertId": "2anjlssjcykcov5e",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:06.898188325Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:04:01.993845144Z"
+  },
+  {
+    "insertId": "kg1mfbkak3mp166k",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:04:01.911913048Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:57.515162035Z"
+  },
+  {
+    "insertId": "a5v863ssk1fvou6h",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:56.910460325Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:51.954057594Z"
+  },
+  {
+    "insertId": "l11cevxk4xzxzr26",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:52.065778455Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:47.454301509Z"
+  },
+  {
+    "insertId": "6dkdwr15ihmqfpda",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:46.901304302Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:41.908153890Z"
+  },
+  {
+    "insertId": "5m8d5m68ym6q4339",
+    "jsonPayload": {
+      "caller": "gcm/export.go:505",
+      "error": "rpc error: code = InvalidArgument desc = One or more TimeSeries could not be written: timeSeries[0-11] (example metric.type=\"kubernetes.io/internal/metrics_exporter/completed_grpcs\", metric.labels={\"grpc_client_method\": \"google.monitoring.v3.MetricService/CreateServiceTimeSeries\", \"grpc_client_status\": \"InvalidArgument\", \"metric_type\": \"self_observability\", \"target_name\": \"containerd\"}, resource.type=\"k8s_container\", resource.labels={\"pod_name\": \"gke-metrics-agent-kpxz5\", \"cluster_name\": \"mindmend-cluster\", \"location\": \"asia-southeast1-a\", \"namespace_name\": \"kube-system\", \"project_id\": \"840448055519\", \"container_name\": \"prometheus-metrics-collector\"}): write for resource failed: Points must be written in order. One or more of the points specified had an older end time than the most recent point.",
+      "level": "error",
+      "msg": "Failed to export self-observability metrics to Cloud Monitoring",
+      "stacktrace": "google3/cloud/kubernetes/metrics/common/gcm/gcm.(*exporter).startSelfObservability\n\tcloud/kubernetes/metrics/common/gcm/export.go:505",
+      "ts": 1760112217.5514684
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+      "k8s-pod/component": "gke-metrics-agent",
+      "k8s-pod/controller-revision-hash": "5946b7b465",
+      "k8s-pod/k8s-app": "gke-metrics-agent",
+      "k8s-pod/pod-template-generation": "1"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:37.989170253Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "prometheus-metrics-collector",
+        "location": "asia-southeast1-a",
+        "namespace_name": "kube-system",
+        "pod_name": "gke-metrics-agent-kpxz5",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "timestamp": "2025-10-10T16:03:37.567708998Z"
+  },
+  {
+    "insertId": "awims1zh5mnjqbcr",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:41.911065780Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:37.397718289Z"
+  },
+  {
+    "insertId": "2n6xr7y4cpsucgo1",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:31.905123009Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:31.868842258Z"
+  },
+  {
+    "insertId": "aepeuemcumuv844r",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:31.905123009Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:27.338200345Z"
+  },
+  {
+    "insertId": "5bztot22mz0am6cj",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:21.911313941Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:21.823516249Z"
+  },
+  {
+    "insertId": "nsjb810bbh5i9z8i",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:21.911313941Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:17.280689728Z"
+  },
+  {
+    "insertId": "c9ruq3a8cdtw4tfz",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:11.916569679Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:11.778037018Z"
+  },
+  {
+    "insertId": "xsgzlfqaynkv1gxk",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:11.916569679Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:07.239651146Z"
+  },
+  {
+    "insertId": "ithwgcwmfvtzzm8z",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:01.897763645Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:03:01.736386263Z"
+  },
+  {
+    "insertId": "mqd1qlr7irt0rm7i",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:03:01.897763645Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:57.188130411Z"
+  },
+  {
+    "insertId": "vopbg5bpxt45tizl",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:51.905551263Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:51.691764552Z"
+  },
+  {
+    "insertId": "u46xg2fcc4kcemf3",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:51.905551263Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:47.139928415Z"
+  },
+  {
+    "insertId": "phqswrlct3tphtui",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:41.894993263Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:41.645818279Z"
+  },
+  {
+    "insertId": "3r1ersy7scpp9n1u",
+    "jsonPayload": {
+      "caller": "gcm/export.go:505",
+      "error": "rpc error: code = InvalidArgument desc = One or more TimeSeries could not be written: timeSeries[0-11] (example metric.type=\"kubernetes.io/internal/node_token_broker_status\", metric.labels={\"mode\": \"MODE_TOKEN_BROKER_WITH_FALLBACK\", \"status\": \"GOT_NODE_P4SA_TOKEN\"}, resource.type=\"k8s_container\", resource.labels={\"location\": \"asia-southeast1-a\", \"container_name\": \"prometheus-metrics-collector\", \"project_id\": \"840448055519\", \"pod_name\": \"gke-metrics-agent-kpxz5\", \"namespace_name\": \"kube-system\", \"cluster_name\": \"mindmend-cluster\"}): write for resource failed: Points must be written in order. One or more of the points specified had an older end time than the most recent point.",
+      "level": "error",
+      "msg": "Failed to export self-observability metrics to Cloud Monitoring",
+      "stacktrace": "google3/cloud/kubernetes/metrics/common/gcm/gcm.(*exporter).startSelfObservability\n\tcloud/kubernetes/metrics/common/gcm/export.go:505",
+      "ts": 1760112157.5596685
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+      "k8s-pod/component": "gke-metrics-agent",
+      "k8s-pod/controller-revision-hash": "5946b7b465",
+      "k8s-pod/k8s-app": "gke-metrics-agent",
+      "k8s-pod/pod-template-generation": "1"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:38.097928662Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "prometheus-metrics-collector",
+        "location": "asia-southeast1-a",
+        "namespace_name": "kube-system",
+        "pod_name": "gke-metrics-agent-kpxz5",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "timestamp": "2025-10-10T16:02:37.581014570Z"
+  },
+  {
+    "insertId": "rwvpgc8tmtgpnq3y",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:41.894993263Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:37.100988025Z"
+  },
+  {
+    "insertId": "lhixz1rtfe5aywys",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:31.908484005Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:31.610593878Z"
+  },
+  {
+    "insertId": "gt7ygwojr8uxvzpp",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:31.908484005Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:27.060246384Z"
+  },
+  {
+    "insertId": "pxgpd4xvpfj6buno",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:21.913854558Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:21.571603599Z"
+  },
+  {
+    "insertId": "80rey2oai2w8h36h",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:21.913854558Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:17.015796824Z"
+  },
+  {
+    "insertId": "7lyyuo5nt5hk16wg",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:11.903490371Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:11.507027742Z"
+  },
+  {
+    "insertId": "p8seo1qbq6e8p1mb",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:11.903490371Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:06.970576339Z"
+  },
+  {
+    "insertId": "j921x2rwtxsh3uo8",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:01.911694001Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:02:01.461142045Z"
+  },
+  {
+    "insertId": "9kzovn28clvaiadb",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-cert-1-3610478478-1340839837\" resource_namespace=\"mindmend\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:02:01.911694001Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:01:56.927515980Z"
+  },
+  {
+    "insertId": "kpt9q5xgnylqtm2n",
+    "jsonPayload": {
+      "message": "\"propagation check failed\" err=\"wrong status code '404', expected '200'\" logger=\"cert-manager.challenges\" resource_name=\"mindmend-tls-1-3645376945-1695481063\" resource_namespace=\"default\" resource_kind=\"Challenge\" resource_version=\"v1\" dnsName=\"www.mindmend.xyz\" type=\"HTTP-01\"",
+      "pid": "1"
+    },
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-97gv",
+      "k8s-pod/app": "cert-manager",
+      "k8s-pod/app_kubernetes_io/component": "controller",
+      "k8s-pod/app_kubernetes_io/instance": "cert-manager",
+      "k8s-pod/app_kubernetes_io/name": "cert-manager",
+      "k8s-pod/app_kubernetes_io/version": "v1.14.5",
+      "k8s-pod/pod-template-hash": "ff4b94468",
+      "logging.gke.io/top_level_controller_name": "cert-manager",
+      "logging.gke.io/top_level_controller_type": "Deployment"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:01:51.952034519Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "cert-manager-controller",
+        "location": "asia-southeast1-a",
+        "namespace_name": "cert-manager",
+        "pod_name": "cert-manager-ff4b94468-vr6vd",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "sourceLocation": {
+      "file": "sync.go",
+      "line": "190"
+    },
+    "timestamp": "2025-10-10T16:01:51.417798867Z"
+  },
+  {
+    "insertId": "46t67pkg0jbwq0jy",
+    "labels": {
+      "compute.googleapis.com/resource_name": "gke-mindmend-cluster-default-pool-3b075bf9-0b3c",
+      "k8s-pod/component": "gke-metrics-agent",
+      "k8s-pod/controller-revision-hash": "5946b7b465",
+      "k8s-pod/k8s-app": "gke-metrics-agent",
+      "k8s-pod/pod-template-generation": "1"
+    },
+    "logName": "projects/mindmend-production/logs/stderr",
+    "receiveTimestamp": "2025-10-10T16:01:52.983914041Z",
+    "resource": {
+      "labels": {
+        "cluster_name": "mindmend-cluster",
+        "container_name": "gke-metrics-agent",
+        "location": "asia-southeast1-a",
+        "namespace_name": "kube-system",
+        "pod_name": "gke-metrics-agent-kpxz5",
+        "project_id": "mindmend-production"
+      },
+      "type": "k8s_container"
+    },
+    "severity": "ERROR",
+    "textPayload": "2025-10-10T16:01:50.262Z\terror\tuasexporter/exporter.go:213\tError exporting metrics to UAS\t{\"kind\": \"exporter\", \"name\": \"uas\", \"error\": \"reading from stream failed: EOF\"}",
+    "timestamp": "2025-10-10T16:01:50.263712441Z"
+  }
+]

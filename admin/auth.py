@@ -208,12 +208,14 @@ def login():
             flash('Too many login attempts. Please try again later.', 'error')
             return render_template('admin/login_complete.html')
 
-        username = request.form.get('username', '').strip()
+        # Accept both 'email' and 'username' for compatibility
+        username = request.form.get('email') or request.form.get('username', '')
+        username = username.strip() if username else ''
         password = request.form.get('password', '')
 
         # Basic validation
         if not username or not password:
-            flash('Username and password are required', 'error')
+            flash('Email and password are required', 'error')
             return render_template('admin/login_complete.html')
 
         # Find admin user (using AdminUser model)

@@ -1,0 +1,1044 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"cert-manager\",\"app.kubernetes.io/component\":\"controller\",\"app.kubernetes.io/instance\":\"cert-manager\",\"app.kubernetes.io/name\":\"cert-manager\",\"app.kubernetes.io/version\":\"v1.14.5\"},\"name\":\"cert-manager\",\"namespace\":\"cert-manager\"},\"spec\":{\"ports\":[{\"name\":\"tcp-prometheus-servicemonitor\",\"port\":9402,\"protocol\":\"TCP\",\"targetPort\":9402}],\"selector\":{\"app.kubernetes.io/component\":\"controller\",\"app.kubernetes.io/instance\":\"cert-manager\",\"app.kubernetes.io/name\":\"cert-manager\"},\"type\":\"ClusterIP\"}}\n"
+                },
+                "creationTimestamp": "2025-09-22T07:58:40Z",
+                "labels": {
+                    "app": "cert-manager",
+                    "app.kubernetes.io/component": "controller",
+                    "app.kubernetes.io/instance": "cert-manager",
+                    "app.kubernetes.io/name": "cert-manager",
+                    "app.kubernetes.io/version": "v1.14.5"
+                },
+                "name": "cert-manager",
+                "namespace": "cert-manager",
+                "resourceVersion": "1758527920615551021",
+                "uid": "8d3fe18e-d81b-449b-a393-1e253c357eab"
+            },
+            "spec": {
+                "clusterIP": "34.118.231.221",
+                "clusterIPs": [
+                    "34.118.231.221"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "tcp-prometheus-servicemonitor",
+                        "port": 9402,
+                        "protocol": "TCP",
+                        "targetPort": 9402
+                    }
+                ],
+                "selector": {
+                    "app.kubernetes.io/component": "controller",
+                    "app.kubernetes.io/instance": "cert-manager",
+                    "app.kubernetes.io/name": "cert-manager"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"labels\":{\"app\":\"webhook\",\"app.kubernetes.io/component\":\"webhook\",\"app.kubernetes.io/instance\":\"cert-manager\",\"app.kubernetes.io/name\":\"webhook\",\"app.kubernetes.io/version\":\"v1.14.5\"},\"name\":\"cert-manager-webhook\",\"namespace\":\"cert-manager\"},\"spec\":{\"ports\":[{\"name\":\"https\",\"port\":443,\"protocol\":\"TCP\",\"targetPort\":\"https\"}],\"selector\":{\"app.kubernetes.io/component\":\"webhook\",\"app.kubernetes.io/instance\":\"cert-manager\",\"app.kubernetes.io/name\":\"webhook\"},\"type\":\"ClusterIP\"}}\n"
+                },
+                "creationTimestamp": "2025-09-22T07:58:40Z",
+                "labels": {
+                    "app": "webhook",
+                    "app.kubernetes.io/component": "webhook",
+                    "app.kubernetes.io/instance": "cert-manager",
+                    "app.kubernetes.io/name": "webhook",
+                    "app.kubernetes.io/version": "v1.14.5"
+                },
+                "name": "cert-manager-webhook",
+                "namespace": "cert-manager",
+                "resourceVersion": "1758527920760015005",
+                "uid": "0d8cee57-3f0b-46ff-bb94-eaf115d86039"
+            },
+            "spec": {
+                "clusterIP": "34.118.237.75",
+                "clusterIPs": [
+                    "34.118.237.75"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "https",
+                        "port": 443,
+                        "protocol": "TCP",
+                        "targetPort": "https"
+                    }
+                ],
+                "selector": {
+                    "app.kubernetes.io/component": "webhook",
+                    "app.kubernetes.io/instance": "cert-manager",
+                    "app.kubernetes.io/name": "webhook"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kompose.cmd": "kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml",
+                    "kompose.version": "1.37.0 (fb0539e64)",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"kompose.cmd\":\"kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml\",\"kompose.version\":\"1.37.0 (fb0539e64)\"},\"labels\":{\"io.kompose.service\":\"app\"},\"name\":\"app\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"name\":\"8000\",\"port\":8000,\"targetPort\":8000}],\"selector\":{\"io.kompose.service\":\"app\"}}}\n"
+                },
+                "creationTimestamp": "2025-09-22T09:40:46Z",
+                "labels": {
+                    "io.kompose.service": "app"
+                },
+                "name": "app",
+                "namespace": "default",
+                "resourceVersion": "1759042963748127021",
+                "uid": "0b5c8fd2-4fd6-4fdb-a65e-53f535023c47"
+            },
+            "spec": {
+                "clusterIP": "34.118.239.101",
+                "clusterIPs": [
+                    "34.118.239.101"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "8000",
+                        "port": 8000,
+                        "protocol": "TCP",
+                        "targetPort": 8000
+                    }
+                ],
+                "selector": {
+                    "io.kompose.service": "app"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "auth.istio.io/8089": "NONE",
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "cloud.google.com/neg-status": "{\"network_endpoint_groups\":{\"8089\":\"k8s1-a79c505b-default-cm-acme-http-solver-fcctn-8089-bb12dde2\"},\"zones\":[\"asia-southeast1-a\"]}"
+                },
+                "creationTimestamp": "2025-10-10T02:16:11Z",
+                "generateName": "cm-acme-http-solver-",
+                "labels": {
+                    "acme.cert-manager.io/http-domain": "922683001",
+                    "acme.cert-manager.io/http-token": "1402801932",
+                    "acme.cert-manager.io/http01-solver": "true"
+                },
+                "name": "cm-acme-http-solver-fcctn",
+                "namespace": "default",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "acme.cert-manager.io/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "Challenge",
+                        "name": "mindmend-tls-1-3645376945-1695481063",
+                        "uid": "ca7ca4a7-dda7-4e40-ab75-5bf6090fa70c"
+                    }
+                ],
+                "resourceVersion": "1760062712520287002",
+                "uid": "20966bf0-494b-469b-9f3c-844873840bf1"
+            },
+            "spec": {
+                "clusterIP": "34.118.227.37",
+                "clusterIPs": [
+                    "34.118.227.37"
+                ],
+                "externalTrafficPolicy": "Cluster",
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "http",
+                        "nodePort": 32617,
+                        "port": 8089,
+                        "protocol": "TCP",
+                        "targetPort": 8089
+                    }
+                ],
+                "selector": {
+                    "acme.cert-manager.io/http-domain": "922683001",
+                    "acme.cert-manager.io/http-token": "1402801932",
+                    "acme.cert-manager.io/http01-solver": "true"
+                },
+                "sessionAffinity": "None",
+                "type": "NodePort"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}"
+                },
+                "creationTimestamp": "2025-09-22T09:13:25Z",
+                "labels": {
+                    "component": "apiserver",
+                    "provider": "kubernetes"
+                },
+                "name": "kubernetes",
+                "namespace": "default",
+                "resourceVersion": "1758532406043391006",
+                "uid": "f677252a-c233-4836-af01-ef6b79f2eb3c"
+            },
+            "spec": {
+                "clusterIP": "34.118.224.1",
+                "clusterIPs": [
+                    "34.118.224.1"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "https",
+                        "port": 443,
+                        "protocol": "TCP",
+                        "targetPort": 443
+                    }
+                ],
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"mindmend-backend-service\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"port\":80,\"protocol\":\"TCP\",\"targetPort\":8000}],\"selector\":{\"app\":\"mindmend-backend\"},\"type\":\"ClusterIP\"}}\n"
+                },
+                "creationTimestamp": "2025-09-24T22:03:14Z",
+                "name": "mindmend-backend-service",
+                "namespace": "default",
+                "resourceVersion": "1760066132179039015",
+                "uid": "cde4aa89-8749-447b-bd74-66fcac78dbd7"
+            },
+            "spec": {
+                "clusterIP": "34.118.225.153",
+                "clusterIPs": [
+                    "34.118.225.153"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "port": 80,
+                        "protocol": "TCP",
+                        "targetPort": 8000
+                    }
+                ],
+                "selector": {
+                    "app": "mindmend-backend"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "cloud.google.com/neg-status": "{\"network_endpoint_groups\":{\"80\":\"k8s1-a79c505b-default-nginx-80-0b5ffe18\"},\"zones\":[\"asia-southeast1-a\"]}",
+                    "kompose.cmd": "kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml",
+                    "kompose.version": "1.37.0 (fb0539e64)",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"kompose.cmd\":\"kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml\",\"kompose.version\":\"1.37.0 (fb0539e64)\"},\"labels\":{\"io.kompose.service\":\"nginx\"},\"name\":\"nginx\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"name\":\"80\",\"port\":80,\"targetPort\":80},{\"name\":\"443\",\"port\":443,\"targetPort\":443}],\"selector\":{\"io.kompose.service\":\"nginx\"}}}\n"
+                },
+                "creationTimestamp": "2025-09-22T09:41:41Z",
+                "labels": {
+                    "io.kompose.service": "nginx"
+                },
+                "name": "nginx",
+                "namespace": "default",
+                "resourceVersion": "1760062466661455016",
+                "uid": "a4facfb3-c45f-4c62-ba90-b6af4aae4108"
+            },
+            "spec": {
+                "clusterIP": "34.118.232.0",
+                "clusterIPs": [
+                    "34.118.232.0"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "80",
+                        "port": 80,
+                        "protocol": "TCP",
+                        "targetPort": 80
+                    },
+                    {
+                        "name": "443",
+                        "port": 443,
+                        "protocol": "TCP",
+                        "targetPort": 443
+                    }
+                ],
+                "selector": {
+                    "app": "nginx"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"nginx-service\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"port\":80,\"protocol\":\"TCP\",\"targetPort\":80}],\"selector\":{\"app\":\"nginx\"},\"type\":\"LoadBalancer\"}}\n"
+                },
+                "creationTimestamp": "2025-09-24T22:03:13Z",
+                "finalizers": [
+                    "gke.networking.io/l4-netlb-v1",
+                    "service.kubernetes.io/load-balancer-cleanup"
+                ],
+                "name": "nginx-service",
+                "namespace": "default",
+                "resourceVersion": "1758751438008559011",
+                "uid": "5f6f15eb-cd06-40dd-a6c4-4da6fb28ed05"
+            },
+            "spec": {
+                "allocateLoadBalancerNodePorts": true,
+                "clusterIP": "34.118.227.55",
+                "clusterIPs": [
+                    "34.118.227.55"
+                ],
+                "externalTrafficPolicy": "Cluster",
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "nodePort": 31011,
+                        "port": 80,
+                        "protocol": "TCP",
+                        "targetPort": 80
+                    }
+                ],
+                "selector": {
+                    "app": "nginx"
+                },
+                "sessionAffinity": "None",
+                "type": "LoadBalancer"
+            },
+            "status": {
+                "loadBalancer": {
+                    "ingress": [
+                        {
+                            "ip": "34.143.177.214",
+                            "ipMode": "VIP"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kompose.cmd": "kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml",
+                    "kompose.version": "1.37.0 (fb0539e64)",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"kompose.cmd\":\"kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml\",\"kompose.version\":\"1.37.0 (fb0539e64)\"},\"labels\":{\"io.kompose.service\":\"ollama\"},\"name\":\"ollama\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"name\":\"11434\",\"port\":11434,\"targetPort\":11434}],\"selector\":{\"io.kompose.service\":\"ollama\"}}}\n"
+                },
+                "creationTimestamp": "2025-09-24T14:30:57Z",
+                "labels": {
+                    "io.kompose.service": "ollama"
+                },
+                "name": "ollama",
+                "namespace": "default",
+                "resourceVersion": "1758724257599951011",
+                "uid": "f10b428a-dd9f-4b63-94e7-7a419cca16d8"
+            },
+            "spec": {
+                "clusterIP": "34.118.233.124",
+                "clusterIPs": [
+                    "34.118.233.124"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "11434",
+                        "port": 11434,
+                        "protocol": "TCP",
+                        "targetPort": 11434
+                    }
+                ],
+                "selector": {
+                    "io.kompose.service": "ollama"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kompose.cmd": "kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml",
+                    "kompose.version": "1.37.0 (fb0539e64)",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"kompose.cmd\":\"kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml\",\"kompose.version\":\"1.37.0 (fb0539e64)\"},\"labels\":{\"io.kompose.service\":\"postgres\"},\"name\":\"postgres\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"name\":\"5432\",\"port\":5432,\"targetPort\":5432}],\"selector\":{\"io.kompose.service\":\"postgres\"}}}\n"
+                },
+                "creationTimestamp": "2025-09-24T14:30:30Z",
+                "labels": {
+                    "io.kompose.service": "postgres"
+                },
+                "name": "postgres",
+                "namespace": "default",
+                "resourceVersion": "1758724230737231004",
+                "uid": "3fe22712-c2f6-4d8b-96a2-c549b1f613eb"
+            },
+            "spec": {
+                "clusterIP": "34.118.226.213",
+                "clusterIPs": [
+                    "34.118.226.213"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "5432",
+                        "port": 5432,
+                        "protocol": "TCP",
+                        "targetPort": 5432
+                    }
+                ],
+                "selector": {
+                    "io.kompose.service": "postgres"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kompose.cmd": "kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml",
+                    "kompose.version": "1.37.0 (fb0539e64)",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"kompose.cmd\":\"kompose convert -f /home/mindmendxyz/MindMend/docker-compose.yml\",\"kompose.version\":\"1.37.0 (fb0539e64)\"},\"labels\":{\"io.kompose.service\":\"redis\"},\"name\":\"redis\",\"namespace\":\"default\"},\"spec\":{\"ports\":[{\"name\":\"6379\",\"port\":6379,\"targetPort\":6379}],\"selector\":{\"io.kompose.service\":\"redis\"}}}\n"
+                },
+                "creationTimestamp": "2025-09-24T14:30:39Z",
+                "labels": {
+                    "io.kompose.service": "redis"
+                },
+                "name": "redis",
+                "namespace": "default",
+                "resourceVersion": "1758724239963327023",
+                "uid": "40d32ff3-109a-4485-a1c1-7676ba467b2a"
+            },
+            "spec": {
+                "clusterIP": "34.118.237.13",
+                "clusterIPs": [
+                    "34.118.237.13"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "6379",
+                        "port": 6379,
+                        "protocol": "TCP",
+                        "targetPort": 6379
+                    }
+                ],
+                "selector": {
+                    "io.kompose.service": "redis"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "components.gke.io/component-name": "managed-prometheus",
+                    "components.gke.io/component-version": "0.15.4-gke.3",
+                    "components.gke.io/layer": "addon"
+                },
+                "creationTimestamp": "2025-09-20T00:38:49Z",
+                "labels": {
+                    "addonmanager.kubernetes.io/mode": "Reconcile"
+                },
+                "name": "alertmanager",
+                "namespace": "gmp-system",
+                "resourceVersion": "1758328729174463017",
+                "uid": "6c1e1cc2-9bf1-4d14-9b70-2b7c4de21d29"
+            },
+            "spec": {
+                "clusterIP": "None",
+                "clusterIPs": [
+                    "None"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "alertmanager",
+                        "port": 9093,
+                        "protocol": "TCP",
+                        "targetPort": 9093
+                    }
+                ],
+                "selector": {
+                    "app": "managed-prometheus-alertmanager",
+                    "app.kubernetes.io/name": "alertmanager"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "components.gke.io/component-name": "managed-prometheus",
+                    "components.gke.io/component-version": "0.15.4-gke.3",
+                    "components.gke.io/layer": "addon"
+                },
+                "creationTimestamp": "2025-09-20T00:38:49Z",
+                "labels": {
+                    "addonmanager.kubernetes.io/mode": "Reconcile"
+                },
+                "name": "gmp-operator",
+                "namespace": "gmp-system",
+                "resourceVersion": "1758328729832847023",
+                "uid": "b39d3ace-a331-4b31-8710-aba823ee28a4"
+            },
+            "spec": {
+                "clusterIP": "34.118.226.63",
+                "clusterIPs": [
+                    "34.118.226.63"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "legacy",
+                        "port": 8443,
+                        "protocol": "TCP",
+                        "targetPort": "webhook"
+                    },
+                    {
+                        "name": "webhook",
+                        "port": 443,
+                        "protocol": "TCP",
+                        "targetPort": "web"
+                    }
+                ],
+                "selector": {
+                    "app.kubernetes.io/component": "operator",
+                    "app.kubernetes.io/name": "gmp-operator",
+                    "app.kubernetes.io/part-of": "gmp"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "components.gke.io/component-name": "managed-prometheus",
+                    "components.gke.io/component-version": "0.15.4-gke.3",
+                    "components.gke.io/layer": "addon"
+                },
+                "creationTimestamp": "2025-09-20T00:38:49Z",
+                "labels": {
+                    "addonmanager.kubernetes.io/mode": "Reconcile"
+                },
+                "name": "rule-evaluator",
+                "namespace": "gmp-system",
+                "resourceVersion": "1758328729524047018",
+                "uid": "8f6cdf21-67e5-4d82-8726-fa91bee83dc2"
+            },
+            "spec": {
+                "clusterIP": "34.118.226.94",
+                "clusterIPs": [
+                    "34.118.226.94"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "rule-evaluator",
+                        "port": 19092,
+                        "protocol": "TCP",
+                        "targetPort": 19092
+                    }
+                ],
+                "selector": {
+                    "app.kubernetes.io/name": "rule-evaluator"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "cloud.google.com/neg-status": "{\"network_endpoint_groups\":{\"80\":\"k8s1-a79c505b-kube-system-default-http-backend-80-493c2d7f\"},\"zones\":[\"asia-southeast1-a\"]}",
+                    "components.gke.io/component-name": "l7-lb-controller-combined",
+                    "components.gke.io/component-version": "1.36.4-gke.0",
+                    "components.gke.io/layer": "addon"
+                },
+                "creationTimestamp": "2025-09-20T00:38:42Z",
+                "labels": {
+                    "addonmanager.kubernetes.io/mode": "Reconcile",
+                    "k8s-app": "glbc",
+                    "kubernetes.io/cluster-service": "true",
+                    "kubernetes.io/name": "GLBCDefaultBackend"
+                },
+                "name": "default-http-backend",
+                "namespace": "kube-system",
+                "resourceVersion": "1759495125022687023",
+                "uid": "d47152db-d4b9-4f82-bb41-80a29f090fae"
+            },
+            "spec": {
+                "clusterIP": "34.118.229.67",
+                "clusterIPs": [
+                    "34.118.229.67"
+                ],
+                "externalTrafficPolicy": "Cluster",
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "http",
+                        "nodePort": 32503,
+                        "port": 80,
+                        "protocol": "TCP",
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "k8s-app": "glbc"
+                },
+                "sessionAffinity": "None",
+                "type": "NodePort"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "creationTimestamp": "2025-09-20T00:37:55Z",
+                "labels": {
+                    "addonmanager.kubernetes.io/mode": "Reconcile",
+                    "k8s-app": "kube-dns",
+                    "kubernetes.io/cluster-service": "true",
+                    "kubernetes.io/name": "KubeDNS"
+                },
+                "name": "kube-dns",
+                "namespace": "kube-system",
+                "resourceVersion": "1758328675538191020",
+                "uid": "159c8c68-f104-4c83-a58c-56980b51411f"
+            },
+            "spec": {
+                "clusterIP": "34.118.224.10",
+                "clusterIPs": [
+                    "34.118.224.10"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "dns",
+                        "port": 53,
+                        "protocol": "UDP",
+                        "targetPort": 53
+                    },
+                    {
+                        "name": "dns-tcp",
+                        "port": 53,
+                        "protocol": "TCP",
+                        "targetPort": 53
+                    }
+                ],
+                "selector": {
+                    "k8s-app": "kube-dns"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "components.gke.io/component-name": "metrics-server",
+                    "components.gke.io/component-version": "1.33.0-gke.3",
+                    "components.gke.io/layer": "addon"
+                },
+                "creationTimestamp": "2025-09-20T00:38:55Z",
+                "labels": {
+                    "addonmanager.kubernetes.io/mode": "Reconcile",
+                    "kubernetes.io/cluster-service": "true",
+                    "kubernetes.io/name": "Metrics-server"
+                },
+                "name": "metrics-server",
+                "namespace": "kube-system",
+                "resourceVersion": "1758328736023039011",
+                "uid": "a27cbdaa-e708-4399-b1d9-2d2abadd241d"
+            },
+            "spec": {
+                "clusterIP": "34.118.230.166",
+                "clusterIPs": [
+                    "34.118.230.166"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "port": 443,
+                        "protocol": "TCP",
+                        "targetPort": "https"
+                    }
+                ],
+                "selector": {
+                    "k8s-app": "metrics-server"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "auth.istio.io/8089": "NONE",
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "cloud.google.com/neg-status": "{\"network_endpoint_groups\":{\"8089\":\"k8s1-a79c505b-mindmend-cm-acme-http-solver-wvlw2-8089-85f67759\"},\"zones\":[\"asia-southeast1-a\"]}"
+                },
+                "creationTimestamp": "2025-10-10T02:14:51Z",
+                "generateName": "cm-acme-http-solver-",
+                "labels": {
+                    "acme.cert-manager.io/http-domain": "532284646",
+                    "acme.cert-manager.io/http-token": "1033965267",
+                    "acme.cert-manager.io/http01-solver": "true"
+                },
+                "name": "cm-acme-http-solver-wvlw2",
+                "namespace": "mindmend",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "acme.cert-manager.io/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "Challenge",
+                        "name": "mindmend-cert-1-3610478478-1340839837",
+                        "uid": "5905c01a-769b-4e9f-844d-0f7a194a0bcb"
+                    }
+                ],
+                "resourceVersion": "1760062491871103011",
+                "uid": "a03d7e75-07cb-4af7-bf4f-866100a87645"
+            },
+            "spec": {
+                "clusterIP": "34.118.234.98",
+                "clusterIPs": [
+                    "34.118.234.98"
+                ],
+                "externalTrafficPolicy": "Cluster",
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "http",
+                        "nodePort": 31407,
+                        "port": 8089,
+                        "protocol": "TCP",
+                        "targetPort": 8089
+                    }
+                ],
+                "selector": {
+                    "acme.cert-manager.io/http-domain": "532284646",
+                    "acme.cert-manager.io/http-token": "1033965267",
+                    "acme.cert-manager.io/http01-solver": "true"
+                },
+                "sessionAffinity": "None",
+                "type": "NodePort"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/backend-config": "{\"default\":\"mindmend-backendconfig\"}",
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "cloud.google.com/neg-status": "{\"network_endpoint_groups\":{\"80\":\"k8s1-a79c505b-mindmend-mindmend-backend-service-80-0e47fe0f\"},\"zones\":[\"asia-southeast1-a\"]}",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{\"cloud.google.com/backend-config\":\"{\\\"default\\\":\\\"mindmend-backendconfig\\\"}\"},\"name\":\"mindmend-backend-service\",\"namespace\":\"mindmend\"},\"spec\":{\"ports\":[{\"name\":\"http\",\"port\":80,\"targetPort\":8000}],\"selector\":{\"app\":\"mindmend-backend\"},\"type\":\"ClusterIP\"}}\n"
+                },
+                "creationTimestamp": "2025-10-09T11:15:47Z",
+                "name": "mindmend-backend-service",
+                "namespace": "mindmend",
+                "resourceVersion": "1760008547502991013",
+                "uid": "7732a6c7-cb28-4c0d-b344-72ecb9d3fb41"
+            },
+            "spec": {
+                "clusterIP": "34.118.225.154",
+                "clusterIPs": [
+                    "34.118.225.154"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "name": "http",
+                        "port": 80,
+                        "protocol": "TCP",
+                        "targetPort": 8000
+                    }
+                ],
+                "selector": {
+                    "app": "mindmend-backend"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"postgres\",\"namespace\":\"mindmend\"},\"spec\":{\"ports\":[{\"port\":5432,\"targetPort\":5432}],\"selector\":{\"app\":\"postgres\"},\"type\":\"ClusterIP\"}}\n"
+                },
+                "creationTimestamp": "2025-10-09T11:15:46Z",
+                "name": "postgres",
+                "namespace": "mindmend",
+                "resourceVersion": "1760008546458447020",
+                "uid": "fcd1a7ae-99cb-4523-9fb9-ddd622915b3f"
+            },
+            "spec": {
+                "clusterIP": "34.118.237.145",
+                "clusterIPs": [
+                    "34.118.237.145"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "port": 5432,
+                        "protocol": "TCP",
+                        "targetPort": 5432
+                    }
+                ],
+                "selector": {
+                    "app": "postgres"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Service",
+            "metadata": {
+                "annotations": {
+                    "cloud.google.com/neg": "{\"ingress\":true}",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Service\",\"metadata\":{\"annotations\":{},\"name\":\"redis\",\"namespace\":\"mindmend\"},\"spec\":{\"ports\":[{\"port\":6379,\"targetPort\":6379}],\"selector\":{\"app\":\"redis\"},\"type\":\"ClusterIP\"}}\n"
+                },
+                "creationTimestamp": "2025-10-09T11:15:46Z",
+                "name": "redis",
+                "namespace": "mindmend",
+                "resourceVersion": "1760008547040479018",
+                "uid": "c4ede51d-f8a5-4c08-9628-1ba057ed9fb5"
+            },
+            "spec": {
+                "clusterIP": "34.118.233.131",
+                "clusterIPs": [
+                    "34.118.233.131"
+                ],
+                "internalTrafficPolicy": "Cluster",
+                "ipFamilies": [
+                    "IPv4"
+                ],
+                "ipFamilyPolicy": "SingleStack",
+                "ports": [
+                    {
+                        "port": 6379,
+                        "protocol": "TCP",
+                        "targetPort": 6379
+                    }
+                ],
+                "selector": {
+                    "app": "redis"
+                },
+                "sessionAffinity": "None",
+                "type": "ClusterIP"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

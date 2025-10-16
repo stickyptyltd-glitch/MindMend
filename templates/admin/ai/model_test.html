@@ -1,0 +1,153 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Test AI Model - {{ model.name if model else 'Model' }} - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2><i class="fas fa-vial me-2"></i>Test AI Model: {{ model.name if model else 'Unknown' }}</h2>
+            <p class="text-muted">Test the model with sample input</p>
+        </div>
+        <div class="col-auto">
+            <a href="/admin/ai/models/{{ model.id if model else '' }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Model
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Test Input</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="test_input" class="form-label">Input Data</label>
+                            <textarea class="form-control" id="test_input" name="test_input" rows="10" placeholder="Enter test data here..." required>{{ test_input if test_input else '' }}</textarea>
+                            <small class="form-text text-muted">
+                                Enter the input data you want to test the model with
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="model_parameters" class="form-label">Additional Parameters (Optional)</label>
+                            <textarea class="form-control" id="model_parameters" name="model_parameters" rows="3" placeholder='{"temperature": 0.7}'></textarea>
+                            <small class="form-text text-muted">
+                                Enter parameters in JSON format
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i>Run Test
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Test Results</h5>
+                </div>
+                <div class="card-body">
+                    {% if test_result %}
+                    <div class="mb-3">
+                        <h6>Model Output:</h6>
+                        <div class="alert alert-info">
+                            <pre class="mb-0">{{ test_result.output if test_result.output else 'No output' }}</pre>
+                        </div>
+                    </div>
+
+                    {% if test_result.confidence %}
+                    <div class="mb-3">
+                        <h6>Confidence Score:</h6>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ test_result.confidence * 100 }}%"
+                                 aria-valuenow="{{ test_result.confidence * 100 }}"
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ "%.1f"|format(test_result.confidence * 100) }}%
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if test_result.execution_time %}
+                    <div class="mb-3">
+                        <h6>Execution Time:</h6>
+                        <p>{{ "%.3f"|format(test_result.execution_time) }} seconds</p>
+                    </div>
+                    {% endif %}
+
+                    {% if test_result.predictions %}
+                    <div class="mb-3">
+                        <h6>Detailed Predictions:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Probability</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pred in test_result.predictions %}
+                                    <tr>
+                                        <td>{{ pred.label }}</td>
+                                        <td>{{ "%.2f"|format(pred.probability * 100) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-flask fa-3x mb-3"></i>
+                        <p>No test results yet. Run a test to see results here.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Info -->
+    {% if model %}
+    <div class="row mt-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Model Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <strong>Model Type:</strong>
+                            <p>{{ model.model_type|title }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Status:</strong>
+                            <p><span class="badge bg-{{ 'success' if model.status == 'active' else 'warning' }}">{{ model.status|upper }}</span></p>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Accuracy:</strong>
+                            <p>{{ "%.1f"|format(model.accuracy * 100) if model.accuracy else 'N/A' }}%</p>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Last Trained:</strong>
+                            <p>{{ model.last_trained.strftime('%Y-%m-%d %H:%M') if model.last_trained else 'Never' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

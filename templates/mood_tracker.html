@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Mood Tracker - MindMend{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3><i class="fas fa-smile"></i> Mood Tracker</h3>
+                    <p class="mb-0">Track your daily mood and see patterns over time</p>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label class="form-label"><i class="fas fa-heart"></i> How are you feeling right now?</label>
+                            <div class="mood-selector">
+                                <input type="radio" id="mood1" name="mood_level" value="1" required>
+                                <label for="mood1" class="mood-option" title="Very Sad">😢</label>
+
+                                <input type="radio" id="mood2" name="mood_level" value="3">
+                                <label for="mood2" class="mood-option" title="Sad">😕</label>
+
+                                <input type="radio" id="mood3" name="mood_level" value="5" checked>
+                                <label for="mood3" class="mood-option" title="Neutral">😐</label>
+
+                                <input type="radio" id="mood4" name="mood_level" value="7">
+                                <label for="mood4" class="mood-option" title="Happy">😊</label>
+
+                                <input type="radio" id="mood5" name="mood_level" value="10">
+                                <label for="mood5" class="mood-option" title="Very Happy">😄</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label"><i class="fas fa-sticky-note"></i> Notes (Optional)</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"
+                                      placeholder="What's making you feel this way?"></textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check"></i> Track Mood
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if recent_moods %}
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-chart-line"></i> Recent Mood History</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for mood in recent_moods %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker" style="background: {% if mood.mood_before >= 8 %}#28a745{% elif mood.mood_before >= 5 %}#ffc107{% else %}#dc3545{% endif %};">
+                                {% if mood.mood_before >= 8 %}😄{% elif mood.mood_before >= 5 %}😐{% else %}😢{% endif %}
+                            </div>
+                            <div class="timeline-content">
+                                <strong>{{ mood.timestamp.strftime('%A, %B %d at %I:%M %p') }}</strong>
+                                <p class="mb-0">Mood Level: {{ mood.mood_before }}/10</p>
+                                {% if mood.input_text %}
+                                <p class="text-muted mb-0"><small>{{ mood.input_text }}</small></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="text-center mt-4">
+                <a href="/dashboard" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <a href="/progress" class="btn btn-primary">
+                    <i class="fas fa-chart-bar"></i> View Progress
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.mood-selector {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.mood-selector input[type="radio"] {
+    display: none;
+}
+
+.mood-option {
+    font-size: 3rem;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 50%;
+    transition: all 0.3s;
+    opacity: 0.5;
+}
+
+.mood-option:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+.mood-selector input[type="radio"]:checked + .mood-option {
+    opacity: 1;
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+}
+
+.timeline {
+    position: relative;
+    padding-left: 50px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-left: 2px solid #e9ecef;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -42px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-content {
+    padding-left: 25px;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+</style>
+{% endblock %}

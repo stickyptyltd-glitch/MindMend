@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Journal - MindMend{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3><i class="fas fa-book"></i> My Journal</h3>
+                    <p class="mb-0">Express your thoughts and feelings privately</p>
+                </div>
+                <div class="card-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-smile"></i> How are you feeling?</label>
+                            <div class="mood-quick-select">
+                                <input type="radio" id="j_mood1" name="mood_before" value="1">
+                                <label for="j_mood1">😢</label>
+
+                                <input type="radio" id="j_mood2" name="mood_before" value="3">
+                                <label for="j_mood2">😕</label>
+
+                                <input type="radio" id="j_mood3" name="mood_before" value="5" checked>
+                                <label for="j_mood3">😐</label>
+
+                                <input type="radio" id="j_mood4" name="mood_before" value="7">
+                                <label for="j_mood4">😊</label>
+
+                                <input type="radio" id="j_mood5" name="mood_before" value="10">
+                                <label for="j_mood5">😄</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="entry_text" class="form-label"><i class="fas fa-pen"></i> Journal Entry</label>
+                            <textarea class="form-control journal-textarea" id="entry_text" name="entry_text" rows="10"
+                                      placeholder="What's on your mind today? Write freely..."
+                                      required></textarea>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-lock"></i> Your entries are private and encrypted
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-save"></i> Save Entry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if entries %}
+            <div class="card mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5><i class="fas fa-history"></i> Recent Entries ({{ entries|length }})</h5>
+                </div>
+                <div class="card-body">
+                    {% for entry in entries %}
+                    <div class="journal-entry">
+                        <div class="entry-header">
+                            <span class="entry-date">
+                                <i class="fas fa-calendar"></i> {{ entry.timestamp.strftime('%A, %B %d, %Y at %I:%M %p') }}
+                            </span>
+                            {% if entry.mood_before %}
+                            <span class="entry-mood">
+                                Mood:
+                                {% if entry.mood_before >= 8 %}😄
+                                {% elif entry.mood_before >= 6 %}😊
+                                {% elif entry.mood_before >= 4 %}😐
+                                {% elif entry.mood_before >= 2 %}😕
+                                {% else %}😢
+                                {% endif %}
+                                {{ entry.mood_before }}/10
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="entry-content">
+                            {{ entry.input_text }}
+                        </div>
+                        <hr>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="card mt-4 text-center">
+                <div class="card-body">
+                    <i class="fas fa-book-open" style="font-size: 4rem; color: #ccc;"></i>
+                    <p class="mt-3 text-muted">No journal entries yet. Start writing your first entry above!</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="text-center mt-4">
+                <a href="/dashboard" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <a href="/mood-tracker" class="btn btn-success">
+                    <i class="fas fa-smile"></i> Track Mood
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.mood-quick-select {
+    display: flex;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.mood-quick-select input[type="radio"] {
+    display: none;
+}
+
+.mood-quick-select label {
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.3s;
+    opacity: 0.5;
+}
+
+.mood-quick-select label:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+.mood-quick-select input[type="radio"]:checked + label {
+    opacity: 1;
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
+}
+
+.journal-textarea {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    resize: vertical;
+    min-height: 200px;
+}
+
+.journal-entry {
+    margin-bottom: 20px;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.entry-date {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.entry-mood {
+    background: #f8f9fa;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.entry-content {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    border: none;
+    color: #fff;
+}
+
+.btn-warning:hover {
+    opacity: 0.9;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,8 @@
+[
+  {
+    "name": "gcr.io/mindmend-production/mindmend"
+  },
+  {
+    "name": "gcr.io/mindmend-production/mindmend-app"
+  }
+]

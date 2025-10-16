@@ -1,0 +1,504 @@
+# MindMend AI Agent Inventory
+# Date: 2025-10-10 (AEDT)
+# Purpose: Document all AI agents for Anthropic → Gemini migration
+#
+# Instructions:
+# 1. Review each agent and verify configuration
+# 2. Replace [TODO] placeholders with actual values from codebase
+# 3. Add new agents as discovered during audit
+
+---
+project:
+  name: MindMend
+  gcp_project_id: mindmend-production
+  gcp_project_number: "840448055519"
+  target_region: australia-southeast1
+
+migration:
+  status: planning
+  target_provider: google_vertex_ai
+  target_models:
+    - gemini-1.5-pro
+    - gemini-1.5-flash
+  fallback_strategy: retry_with_claude_if_quota_exceeded
+
+agents:
+
+  # ==========================================================================
+  # Primary Therapy Agent
+  # ==========================================================================
+
+  - name: therapy_chat_agent
+    purpose: Main AI therapy conversation agent for user sessions
+    current_provider: openai
+    current_model: gpt-4o
+
+    configuration:
+      temperature: 0.7
+      max_tokens: 500
+      top_p: 0.9
+      frequency_penalty: 0.0
+      presence_penalty: 0.0
+
+    streaming: false
+
+    system_prompt: |
+      You are Dr. Sarah Chen, a highly experienced AI therapist with advanced training in:
+      - Cognitive Behavioral Therapy (CBT): Help identify and modify negative thought patterns
+      - Dialectical Behavior Therapy (DBT): Teach distress tolerance, emotion regulation, interpersonal effectiveness
+      - Acceptance and Commitment Therapy (ACT): Foster psychological flexibility and values-based living
+      - Mindfulness-Based Stress Reduction (MBSR): Integrate mindfulness practices
+      - Trauma-Informed Care: Use safety, trustworthiness, collaboration, and empowerment
+      - Solution-Focused Brief Therapy: Emphasize strengths and future-oriented solutions
+      - Psychodynamic approaches: Explore unconscious patterns when appropriate
+      
+      Your therapeutic approach:
+      1. Start with validation and empathetic reflection
+      2. Ask open-ended questions to deepen understanding
+      3. Identify patterns and gently challenge cognitive distortions
+      4. Provide specific, actionable coping strategies
+      5. Monitor for crisis indicators (suicidal ideation, self-harm, violence)
+      6. Normalize experiences while maintaining professional boundaries
+      7. Integrate psychoeducation naturally into responses
+      8. End with hope and encouragement for progress
+      
+      Remember to be warm yet professional, using language that's accessible but not condescending.
+
+    input_schema:
+      type: object
+      properties:
+        message:
+          type: string
+          description: User's message
+        session_id:
+          type: string
+          description: Unique session identifier
+        session_type:
+          type: string
+          enum: [individual, couples, group]
+        context:
+          type: object
+          properties:
+            mood_before:
+              type: integer
+              minimum: 1
+              maximum: 10
+            previous_sessions:
+              type: array
+              items:
+                type: string
+      required:
+        - message
+
+    output_schema:
+      type: object
+      properties:
+        ai_response:
+          type: string
+        suggested_exercises:
+          type: array
+          items:
+            type: string
+        mood_assessment:
+          type: string
+        risk_level:
+          type: string
+          enum: [low, medium, high, critical]
+
+    endpoints:
+      - /api/therapy-session
+      - /api/session
+
+    usage_pattern:
+      request_rate: "[TODO: requests/day]"
+      peak_hours: "TODO"
+      avg_tokens_per_request: 500  # [TODO: Measure]
+
+    timeout_ms: 30000
+    retry_policy:
+      max_attempts: 3
+      backoff: exponential
+
+    observability:
+      logging: true
+      log_level: info
+      metrics:
+        - latency_p50
+        - latency_p95
+        - latency_p99
+        - error_rate
+        - token_usage
+
+    secrets_used:
+      - OPENAI_API_KEY  # Current
+      - VERTEX_AI_PROJECT  # Target
+      - VERTEX_AI_LOCATION  # Target
+
+    migration_priority: critical
+    migration_complexity: medium
+
+    gemini_mapping:
+      target_model: gemini-1.5-pro
+      temperature: 0.7  # Direct mapping
+      max_output_tokens: 1500
+      top_p: 0.9
+      top_k: 40  # New parameter
+      safety_settings:
+        HARM_CATEGORY_DANGEROUS_CONTENT: BLOCK_MEDIUM_AND_ABOVE
+        HARM_CATEGORY_HARASSMENT: BLOCK_MEDIUM_AND_ABOVE
+        HARM_CATEGORY_HATE_SPEECH: BLOCK_MEDIUM_AND_ABOVE
+        HARM_CATEGORY_SEXUALLY_EXPLICIT: BLOCK_MEDIUM_AND_ABOVE
+
+  # ==========================================================================
+  # Text Analysis Agent
+  # ==========================================================================
+
+  - name: text_analysis_agent
+    purpose: Analyze user text for sentiment, risk, and therapeutic insights
+    current_provider: openai
+    current_model: gpt-4o
+
+    configuration:
+      temperature: 0.6
+      max_tokens: 800
+
+    streaming: false
+
+    system_prompt: |
+      You are an advanced AI therapist specializing in text analysis.
+      Provide comprehensive analysis including:
+      1. Emotional state assessment
+      2. Key themes and concerns
+      3. Therapeutic recommendations
+      4. Risk assessment (low/medium/high)
+      5. Suggested interventions
+      
+      Respond in JSON format with these fields:
+      {{"emotional_state": "", "key_themes": [], "recommendations": [], "risk_level": "", "interventions": [], "therapeutic_response": ""}}
+
+    input_schema:
+      type: object
+      properties:
+        text:
+          type: string
+      required:
+        - text
+
+    output_schema:
+      type: object
+      properties:
+        sentiment:
+          type: string
+          enum: [positive, neutral, negative, concerning]
+        risk_indicators:
+          type: array
+          items:
+            type: string
+        suggested_interventions:
+          type: array
+          items:
+            type: string
+
+    endpoints:
+      - /api/analyze-text
+
+    timeout_ms: 15000
+    retry_policy:
+      max_attempts: 2
+
+    migration_priority: high
+
+    gemini_mapping:
+      target_model: gemini-1.5-flash  # Faster model for analysis
+      temperature: 0.3
+      max_output_tokens: 500
+      response_mime_type: application/json
+
+  # ==========================================================================
+  # Couples Therapy Agent
+  # ==========================================================================
+
+  - name: couples_therapy_agent
+    purpose: Specialized agent for couples therapy sessions
+    current_provider: openai
+    current_model: gpt-4o
+
+    configuration:
+      temperature: 0.7
+      max_tokens: 500
+
+    streaming: false
+
+    system_prompt: |
+      You are Dr. Michael Rivera, an expert couples therapist with specialized training in:
+      - Emotionally Focused Therapy (EFT): Help partners identify attachment needs and negative cycles
+      - The Gottman Method: Address the Four Horsemen, build Love Maps, enhance fondness and admiration
+      - Imago Relationship Therapy: Explore childhood wounds affecting current relationships
+      - Cognitive Behavioral Couples Therapy: Modify dysfunctional relationship patterns
+      - Integrative Behavioral Couple Therapy: Promote acceptance alongside change
+      
+      Your therapeutic approach:
+      1. Create safety for vulnerable expression from both partners
+      2. Identify negative interaction cycles (pursue-withdraw, blame-defend)
+      3. Help each partner understand the other's emotional experience
+      4. Teach and model healthy communication (I-statements, active listening, validation)
+      5. Address the Four Horsemen (criticism, contempt, defensiveness, stonewalling)
+      6. Foster emotional attunement and secure connection
+      7. Guide partners toward win-win solutions and compromise
+      8. Celebrate positive interactions and progress
+      9. Remain neutral while holding both partners' experiences
+      
+      Use phrases like "I'm hearing that..." and "It sounds like both of you...".
+
+    endpoints:
+      - /api/couples_session
+      - /api/couples_exercise
+      - /api/conversation_starter
+      - /api/couples_summary
+
+    migration_priority: high
+
+    gemini_mapping:
+      target_model: gemini-1.5-pro
+
+  # ==========================================================================
+  # Exercise Generator Agent
+  # ==========================================================================
+
+  - name: exercise_generator_agent
+    purpose: Generate personalized mental health exercises
+    current_provider: openai
+    current_model: gpt-4o
+
+    configuration:
+      temperature: 0.7
+      max_tokens: 1000
+
+    streaming: false
+
+    input_schema:
+      type: object
+      properties:
+        mood:
+          type: integer
+        issues:
+          type: array
+          items:
+            type: string
+        preferences:
+          type: object
+
+    endpoints:
+      - /api/personalized_activities
+
+    migration_priority: medium
+
+    gemini_mapping:
+      target_model: gemini-1.5-flash
+      temperature: 0.8
+
+  # ==========================================================================
+  # Dashboard AI Insights Agent
+  # ==========================================================================
+
+  - name: dashboard_insights_agent
+    purpose: Generate AI-powered insights for user dashboard
+    current_provider: openai
+    current_model: gpt-3.5-turbo
+
+    configuration:
+      temperature: 0.5
+      max_tokens: 800
+
+    streaming: false
+
+    endpoints:
+      - /api/dashboard/ai-insights
+
+    migration_priority: low
+
+    gemini_mapping:
+      target_model: gemini-1.5-flash
+
+  # ==========================================================================
+  # AI Model Management Agent
+  # ==========================================================================
+
+  - name: ai_model_diagnostics_agent
+    purpose: Diagnose mental health conditions using AI models
+    current_provider: openai
+    current_model: gpt-4o
+
+    configuration:
+      temperature: 0.7
+      max_tokens: 1000
+
+    streaming: false
+
+    endpoints:
+      - /api/ai-models/diagnose
+      - /api/ai-models/status
+
+    migration_priority: critical  # Medical accuracy required
+    migration_notes: |
+      Requires extensive validation before production use.
+      Consider getting medical professional review of outputs.
+
+    gemini_mapping:
+      target_model: gemini-1.5-pro
+      temperature: 0.2
+      safety_settings: strict  # Maximum safety for medical content
+
+  # ==========================================================================
+  # Emotion Logging Agent
+  # ==========================================================================
+
+  - name: emotion_logger_agent
+    purpose: Process and categorize logged emotions
+    current_provider: None
+    current_model: None
+
+    configuration: {}
+
+    streaming: false
+
+    endpoints:
+      - /api/log-emotion
+
+    migration_priority: low
+    migration_notes: |
+      This agent is rule-based and does not use an AI model. No migration needed.
+
+    gemini_mapping:
+      target_model: None
+
+  # ==========================================================================
+  # Video Analysis Agent
+  # ==========================================================================
+
+  - name: video_emotion_analysis_agent
+    purpose: Analyze video for emotion detection
+    current_provider: openai
+    current_model: gpt-4o
+
+    configuration:
+      temperature: 0.0
+      max_tokens: 1000
+
+    streaming: false
+    multimodal: true  # Accepts video input
+
+    endpoints:
+      - /api/video-analysis
+
+    migration_priority: medium
+    migration_notes: |
+      Gemini 1.5 Pro supports video natively.
+      Requires testing with video input.
+
+    gemini_mapping:
+      target_model: gemini-1.5-pro
+      supports_video: true
+      max_video_length: 60s  # [TODO: Verify Vertex AI limits]
+
+  # ==========================================================================
+  # Background Worker Agents
+  # ==========================================================================
+
+  - name: celery_ai_worker
+    purpose: Background AI processing via Celery
+    current_provider: openai
+    current_model: "gpt-4o"
+
+    configuration: {}
+
+    deployment: celery-worker pod
+
+    migration_priority: medium
+    migration_notes: |
+      Verify all Celery tasks using AI.
+      May need async Vertex AI client.
+
+  # ==========================================================================
+  # Ollama Local Model (Optional)
+  # ==========================================================================
+
+  - name: ollama_fallback_agent
+    purpose: Local AI model for fallback/offline scenarios
+    current_provider: ollama
+    current_model: "llama3-8b"
+
+    configuration: {}
+
+    deployment: ollama pod
+
+    migration_priority: low
+    migration_notes: |
+      May be deprecated if Gemini is reliable.
+      Keep for disaster recovery.
+
+# =============================================================================
+# Migration Strategy Summary
+# =============================================================================
+
+migration_strategy:
+
+  phase_1_discovery:
+    - Audit all code for OpenAI API usage
+    - Document exact models and parameters
+    - Measure current performance baselines
+    - Identify Anthropic/Claude usage (if any)
+
+  phase_2_sdk_replacement:
+    - Install google-cloud-aiplatform package
+    - Create abstraction layer for model calls
+    - Implement feature flag for A/B testing
+    - Update environment variables
+
+  phase_3_testing:
+    - Unit tests for all agent endpoints
+    - Integration tests with Gemini staging
+    - Performance benchmarking
+    - Cost analysis
+
+  phase_4_canary:
+    - Deploy to staging environment
+    - Route 10% traffic to Gemini
+    - Monitor errors and latency
+    - Gather user feedback
+
+  phase_5_production:
+    - Gradual rollout (10% → 50% → 100%)
+    - Monitor for 48 hours at each step
+    - Maintain Claude/OpenAI as fallback
+    - Final cutover and decommission old keys
+
+  rollback_triggers:
+    - Error rate > 5%
+    - Latency p95 > 2x baseline
+    - User satisfaction score drop > 10%
+    - Cost spike > 50%
+    - Safety filter false positives > 2%
+
+# =============================================================================
+# Audit Commands
+# =============================================================================
+
+audit_commands:
+  find_openai_usage: |
+    grep -r "import openai\|from openai" --include="*.py" .
+    grep -r "OpenAI\|openai\.ChatCompletion" --include="*.py" .
+
+  find_anthropic_usage: |
+    grep -r "import anthropic\|from anthropic" --include="*.py" .
+    grep -r "ANTHROPIC_API_KEY\|CLAUDE" --include="*.py" .
+
+  find_model_configs: |
+    grep -r "temperature\|max_tokens\|top_p" --include="*.py" . | head -50
+
+  check_streaming: |
+    grep -r "stream=True\|stream_chat\|SSEClient" --include="*.py" .
+
+  find_env_vars: |
+    grep -r "OPENAI_API_KEY\|ANTHROPIC_API_KEY" --include="*.py" .
+    env | grep -E "OPENAI|ANTHROPIC|AI"

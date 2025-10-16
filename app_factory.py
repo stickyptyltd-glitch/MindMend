@@ -31,12 +31,12 @@ def create_app():
     # Login manager setup
     login_manager.login_view = 'auth.login'
 
-    from models.database import Patient, Admin
+    from models.database import Patient, AdminUser
 
     @login_manager.user_loader
     def load_user(user_id):
         # First, try to load as an admin
-        admin = Admin.query.get(int(user_id))
+        admin = AdminUser.query.get(int(user_id))
         if admin:
             return admin
         # If not an admin, try to load as a patient

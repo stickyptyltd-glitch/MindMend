@@ -1,0 +1,62 @@
+MindMend Infrastructure State Collection
+=========================================
+
+Date: 2025-10-10T16:10:07Z
+Project: mindmend-production
+Region: australia-southeast1
+Zone: asia-southeast1-a
+
+Collected Files:
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  1.1K Oct 10 16:09 artifact_registry_repos.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 build_triggers.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   36K Oct 10 16:09 cloud_builds.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 cloudfunctions_v1.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 cloudfunctions_v2.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 cloudrun_jobs.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 cloudrun_services.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  1.3K Oct 10 16:09 compute_addresses.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  3.9K Oct 10 16:10 compute_quotas.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   12K Oct 10 16:09 firewall_rules.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   125 Oct 10 16:09 gcr_images.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   13K Oct 10 16:09 gcr_mindmend_tags.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   14K Oct 10 16:09 gke_cluster_details.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   15K Oct 10 16:09 gke_clusters.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  1.6M Oct 10 16:09 k8s_configmaps.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  225K Oct 10 16:09 k8s_deployments.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   14K Oct 10 16:09 k8s_ingress.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   78K Oct 10 16:09 k8s_nodes.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz 1020K Oct 10 16:09 k8s_pods.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   20K Oct 10 16:09 k8s_pvc.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  8.5K Oct 10 16:09 k8s_secrets_list.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   43K Oct 10 16:09 k8s_services.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  4.0K Oct 10 16:09 load_balancers.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  1.2K Oct 10 16:10 logging_sinks.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz   252 Oct 10 16:09 monitoring_dashboards.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 pubsub_subscriptions.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 pubsub_topics.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  159K Oct 10 16:10 recent_errors.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 scheduler_jobs.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 secrets_list.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz  1.3K Oct 10 16:09 service_accounts.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     0 Oct 10 16:10 summary.txt
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 vertex_endpoints.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 vertex_models.json
+-rw-rw-r-- 1 mindmendxyz mindmendxyz     3 Oct 10 16:09 workflows.json
+
+Quick Stats:
+- GKE Clusters: 1
+- K8s Deployments: 22
+- K8s Services: 21
+- K8s Pods: 48
+- Cloud Run Services: 0
+- Cloud Functions: 0
+- Container Images: 36
+- Service Accounts: 3
+- Secrets: 0
+
+Next Steps:
+1. Review summary.txt and all JSON files in artifacts/
+2. Identify AI-related services and dependencies
+3. Plan Gemini migration based on current state
+4. Create staging environment matching production
+

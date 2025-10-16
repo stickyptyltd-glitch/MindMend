@@ -39,8 +39,8 @@ exec gunicorn \
     --max-requests-jitter 100 \
     --timeout ${TIMEOUT:-120} \
     --keep-alive 5 \
-    --access-logfile /var/log/mindmend/access.log \
-    --error-logfile /var/log/mindmend/error.log \
+    --access-logfile - \
+    --error-logfile - \
     --log-level ${LOG_LEVEL:-info} \
     --capture-output \
     --enable-stdio-inheritance \

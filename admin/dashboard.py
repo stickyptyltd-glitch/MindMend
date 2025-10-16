@@ -10,7 +10,7 @@ from flask_socketio import emit
 from sqlalchemy import func, desc
 from . import admin_bp
 from .auth import require_admin_auth, require_permission
-from models.database import db, Patient, Session, BiometricData
+from models.database import db, Patient, Session, BiometricData, Payment, Subscription
 
 @admin_bp.route('/')
 @admin_bp.route('/dashboard')
@@ -37,8 +37,12 @@ def dashboard():
     ).distinct(Session.patient_name).count()
 
     # Revenue Statistics
-    total_revenue = db.session.query(func.sum(Payment.amount)).scalar() or 0
+    total_revenue = db.session.query(func.sum(Payment.amount)).filter(
+        Payment.status == 'succeeded'
+    ).scalar() or 0
+
     revenue_month = db.session.query(func.sum(Payment.amount)).filter(
+        Payment.status == 'succeeded',
         func.date(Payment.created_at) >= month_ago
     ).scalar() or 0
 
@@ -46,7 +50,7 @@ def dashboard():
     subscription_stats = db.session.query(
         Subscription.tier,
         func.count(Subscription.id).label('count')
-    ).group_by(Subscription.tier).all()
+    ).filter(Subscription.status == 'active').group_by(Subscription.tier).all()
 
     subscription_data = {}
     for tier, count in subscription_stats:
@@ -105,11 +109,12 @@ def dashboard():
             'users': count
         })
 
-    # Revenue Growth
+    # Revenue Growth (last 30 days)
     revenue_growth = []
     for i in range(30):
         date = today - timedelta(days=i)
         daily_revenue = db.session.query(func.sum(Payment.amount)).filter(
+            Payment.status == 'succeeded',
             func.date(Payment.created_at) == date
         ).scalar() or 0
         revenue_growth.append({
@@ -159,7 +164,17 @@ def dashboard():
         'revenue_growth': revenue_growth
     }
 
-    return render_template('admin/dashboard_complete.html', data=dashboard_data)
+    return render_template('admin/dashboard_complete.html',
+                          stats=dashboard_data['user_stats'],
+                          revenue=dashboard_data['revenue_stats'],
+                          subscriptions=dashboard_data['subscription_stats'],
+                          sessions=dashboard_data['session_stats'],
+                          ai_insights=dashboard_data['ai_metrics'],
+                          system_status=dashboard_data['system_health'],
+                          recent_activity=dashboard_data['recent_sessions'],
+                          crisis_alerts=dashboard_data['crisis_alerts'],
+                          user_growth=dashboard_data['user_growth'],
+                          revenue_growth=dashboard_data['revenue_growth'])
 
 @admin_bp.route('/api/dashboard/metrics')
 @require_admin_auth

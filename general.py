@@ -15,7 +15,7 @@ health_checker = HealthChecker()
 exercise_generator = ExerciseGenerator()
 biometric_integrator = BiometricIntegrator()
 
-@general_bp.route("/onboarding")
+@general_bp.route("/onboarding", methods=["GET", "POST"])
 def onboarding():
     """Interactive onboarding tutorial with animated character guide"""
     return render_template("onboarding.html")

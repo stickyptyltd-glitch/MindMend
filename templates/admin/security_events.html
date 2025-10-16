@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Security Events - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="mb-4"><i class="fas fa-shield-alt me-2"></i>Security Events</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Recent Security Events</h5>
+        </div>
+        <div class="card-body">
+            {% if events %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Event Type</th>
+                            <th>User</th>
+                            <th>IP Address</th>
+                            <th>Details</th>
+                            <th>Severity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.timestamp }}</td>
+                            <td>{{ event.type }}</td>
+                            <td>{{ event.user }}</td>
+                            <td>{{ event.ip_address }}</td>
+                            <td>{{ event.details }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'danger' if event.severity == 'high' else 'warning' if event.severity == 'medium' else 'info' }}">
+                                    {{ event.severity|upper }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-shield-alt fa-3x mb-3"></i>
+                <p>No security events recorded</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/home/mindmendxyz/MindMend/run_phase4_migration.py", line 9, in <module>
+    from app import app, db
+  File "/home/mindmendxyz/MindMend/app.py", line 24, in <module>
+    from models.database import db, Patient
+  File "/home/mindmendxyz/MindMend/models/__init__.py", line 2, in <module>
+    from .database import (
+  File "/home/mindmendxyz/MindMend/models/database.py", line 17, in <module>
+    @event.listens_for(db.Model, "before_create", propagate=True)
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mindmendxyz/.local/lib/python3.12/site-packages/sqlalchemy/event/api.py", line 165, in decorate
+    listen(target, identifier, fn, *args, **kw)
+  File "/home/mindmendxyz/.local/lib/python3.12/site-packages/sqlalchemy/event/api.py", line 121, in listen
+    _event_key(target, identifier, fn).listen(*args, **kw)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mindmendxyz/.local/lib/python3.12/site-packages/sqlalchemy/event/api.py", line 34, in _event_key
+    raise exc.InvalidRequestError(
+sqlalchemy.exc.InvalidRequestError: No such event 'before_create' for target '<class 'models.database.FlaskSQLAlchemyBase'>'

@@ -1,0 +1,382 @@
+[
+  {
+    "addonsConfig": {
+      "gcePersistentDiskCsiDriverConfig": {
+        "enabled": true
+      },
+      "kubernetesDashboard": {
+        "disabled": true
+      },
+      "networkPolicyConfig": {
+        "disabled": true
+      }
+    },
+    "anonymousAuthenticationConfig": {
+      "mode": "ENABLED"
+    },
+    "autopilot": {},
+    "autoscaling": {
+      "autoscalingProfile": "BALANCED"
+    },
+    "clusterIpv4Cidr": "10.28.0.0/14",
+    "controlPlaneEndpointsConfig": {
+      "dnsEndpointConfig": {
+        "allowExternalTraffic": false,
+        "enableK8sCertsViaDns": false,
+        "enableK8sTokensViaDns": false,
+        "endpoint": "gke-65410496025c4a129600df33fd6e773b1892-840448055519.asia-southeast1-a.gke.goog"
+      },
+      "ipEndpointsConfig": {
+        "authorizedNetworksConfig": {
+          "gcpPublicCidrsAccessEnabled": true
+        },
+        "enablePublicEndpoint": true,
+        "enabled": true,
+        "privateEndpoint": "10.45.240.2",
+        "publicEndpoint": "35.240.245.62"
+      }
+    },
+    "createTime": "2025-09-20T00:32:55+00:00",
+    "currentMasterVersion": "1.33.4-gke.1245000",
+    "currentNodeCount": 3,
+    "currentNodeVersion": "1.33.4-gke.1245000",
+    "databaseEncryption": {
+      "currentState": "CURRENT_STATE_DECRYPTED",
+      "state": "DECRYPTED"
+    },
+    "defaultMaxPodsConstraint": {
+      "maxPodsPerNode": "110"
+    },
+    "endpoint": "35.240.245.62",
+    "enterpriseConfig": {
+      "clusterTier": "STANDARD"
+    },
+    "etag": "7f8049b5-2162-4634-9530-57db65c796a1",
+    "id": "65410496025c4a129600df33fd6e773b18924e9941084ead9a0770b37b507139",
+    "initialClusterVersion": "1.33.4-gke.1036000",
+    "instanceGroupUrls": [
+      "https://www.googleapis.com/compute/v1/projects/mindmend-production/zones/asia-southeast1-a/instanceGroupManagers/gke-mindmend-cluster-default-pool-3b075bf9-grp",
+      "https://www.googleapis.com/compute/v1/projects/mindmend-production/zones/asia-southeast1-a/instanceGroupManagers/gke-mindmend-cluster-gpu-pool-e144678a-grp"
+    ],
+    "ipAllocationPolicy": {
+      "clusterIpv4Cidr": "10.28.0.0/14",
+      "clusterIpv4CidrBlock": "10.28.0.0/14",
+      "clusterSecondaryRangeName": "gke-mindmend-cluster-pods-65410496",
+      "createSubnetwork": true,
+      "defaultPodIpv4RangeUtilization": 0.0029,
+      "networkTierConfig": {
+        "networkTier": "NETWORK_TIER_DEFAULT"
+      },
+      "podCidrOverprovisionConfig": {},
+      "servicesIpv4Cidr": "34.118.224.0/20",
+      "servicesIpv4CidrBlock": "34.118.224.0/20",
+      "stackType": "IPV4",
+      "subnetworkName": "mindmend-subnet",
+      "useIpAliases": true
+    },
+    "labelFingerprint": "a9dc16a7",
+    "legacyAbac": {},
+    "location": "asia-southeast1-a",
+    "locations": [
+      "asia-southeast1-a"
+    ],
+    "loggingConfig": {
+      "componentConfig": {
+        "enableComponents": [
+          "SYSTEM_COMPONENTS",
+          "WORKLOADS"
+        ]
+      }
+    },
+    "loggingService": "logging.googleapis.com/kubernetes",
+    "maintenancePolicy": {
+      "resourceVersion": "e3b0c442"
+    },
+    "masterAuth": {
+      "clientCertificateConfig": {},
+      "clusterCaCertificate": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVMRENDQXBTZ0F3SUJBZ0lRZEVrYlVST1ZQMGp6RnQ3M3dlTVMxVEFOQmdrcWhraUc5dzBCQVFzRkFEQXYKTVMwd0t3WURWUVFERXlReE9EWTNZV1l3TXkxalpEUXdMVFE1WWpjdFlqVm1aaTFoTW1OalpEazFNR1ZtWlRZdwpJQmNOTWpVd09URTVNak16TWpVMVdoZ1BNakExTlRBNU1UTXdNRE15TlRWYU1DOHhMVEFyQmdOVkJBTVRKREU0Ck5qZGhaakF6TFdOa05EQXRORGxpTnkxaU5XWm1MV0V5WTJOa09UVXdaV1psTmpDQ0FhSXdEUVlKS29aSWh2Y04KQVFFQkJRQURnZ0dQQURDQ0FZb0NnZ0dCQU9DODJWbDNjQ01paVM1OURMTHRJVXA4Tjg3ZlhsQkFNbmZIVmRpbQpaWU5EdHdETmwzb1BQcTNMWmtWZlZJWmI5Y1Bhd043RndGblRkYmRvUnNuL0prYnpIZW1CSVVFOC80RGtLdnVlCkpiUWRRd2Rsa3lqa0lSMi9XUGtPTlpDcG15OTQ1OUNRM252NGZKUDVTMmt4S09qL0lwbWNEWlJBL3JyTm53QUgKSlJSbzBheS9sbkM5K0ZWMGw0YkV4QTZTcXBJQXdKZzYyVzZlcnRoRFE1SFY0NFdRZFl2cEs5ZXRnMGdPNWFCTwo5RWc4bHhJUk9GM1VIZHhGM1JzVXBpbHVmMjJGQ3V2K3E4MVk4MFJjNmczeEU4MlB6ZEZWSW9OZ25XYU9ja2MzCmFEdXJYbHBwT1E5RERXL05kN0FzdW52Rll3NkFHbTl3aVNwQXNNYjdmMnFHZms1WUllKzE3RWZ0MFBWVTkweXgKaTNqUXBhS3ZHVW0wb0kreDNidXZwY1FmcFdQMkZVcHJQbUh0d2NtVE1LUGhHOWxKcElTbnVzRGNTQTNBeUVSbwpFWFJYZ2FYd3FCUkUwcmRaVmNwU3ZqZXNybmRtSFk3OUo5WnR4YTFkVmxnakZQWnNXY0srQ0diMjFGSG9sT0g2CldtSm5pczl0M1NGdU0xNXYvTGk3WnZ4YXR3SURBUUFCbzBJd1FEQU9CZ05WSFE4QkFmOEVCQU1DQWdRd0R3WUQKVlIwVEFRSC9CQVV3QXdFQi96QWRCZ05WSFE0RUZnUVV3ZjZtRGxrTS93QzlHak1DOUFQVWtSMi9DV1F3RFFZSgpLb1pJaHZjTkFRRUxCUUFEZ2dHQkFET3ZuU2hWTXBDQ3hyQTlKRDFmdU1iQ1kvWHZ0eFJEc2NQNk0xTmJLVzdLCnBsWGJKdXM3elIrbmxHT0lMRlVGWmF4RTJGMTFkblpWajgrd3ZQa05SWnZXRHlLSXdJbnVGUmUxNno4c2t0OE0KQVBVRjJNUmhMUjBuQTFnWGVnYlRRTHhBWGJ1c1RvRVpMYXJ4b0grYy9rcGZ0OXd2TGQrWEt2QktNYVJGazI1Mgp2VEF2MjlwT0gvNjF2OVlRNTIxdStvT2src0JwY0Q3VXdqNno0eXVjaStqMDVoaVRFMnBTcGlDUkUxTU5ZWFRpCjFzWVpTbzh2SnNuNXpTUXd0TGw1N2ltcG5SSERqK0hRSzRKTXhiNGhmRmk0N1kyUElTbjZBd2ZCVWdnVHN4dmUKdGZtdUFheStGVTRNWFFrVmkwUWk5RzB0OTd6bmU2M2JxSWxWMmJYait1UjUzakJuN3VDQVhEL0RNZVh3eDFicAp3eHJIUlNDandoSHRzRFh4eFg4SzVMd0hwWUgrUlNxeVl4M3ZZMFJVQU00MXI0Zzl5MUNwM3NxN0RIb21xdm0rCktKMWF2bnFIRExXem5FenpHSVgyRXVJNmh4MHFQZGJmNXo3Q0gzTGxHUDIzRnMzQlZycmdhdzFUQVZENkcxNzQKVDZEV21LVlZIZG1IODAxeTlmc1FyQT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+    },
+    "masterAuthorizedNetworksConfig": {
+      "gcpPublicCidrsAccessEnabled": true
+    },
+    "monitoringConfig": {
+      "advancedDatapathObservabilityConfig": {},
+      "componentConfig": {
+        "enableComponents": [
+          "SYSTEM_COMPONENTS",
+          "STORAGE",
+          "HPA",
+          "POD",
+          "DAEMONSET",
+          "DEPLOYMENT",
+          "STATEFULSET",
+          "JOBSET",
+          "CADVISOR",
+          "KUBELET",
+          "DCGM"
+        ]
+      },
+      "managedPrometheusConfig": {
+        "enabled": true
+      }
+    },
+    "monitoringService": "monitoring.googleapis.com/kubernetes",
+    "name": "mindmend-cluster",
+    "network": "default",
+    "networkConfig": {
+      "network": "projects/mindmend-production/global/networks/default",
+      "serviceExternalIpsConfig": {},
+      "subnetwork": "projects/mindmend-production/regions/asia-southeast1/subnetworks/mindmend-subnet"
+    },
+    "nodeConfig": {
+      "bootDisk": {
+        "diskType": "pd-balanced",
+        "sizeGb": "100"
+      },
+      "diskSizeGb": 100,
+      "diskType": "pd-balanced",
+      "effectiveCgroupMode": "EFFECTIVE_CGROUP_MODE_V2",
+      "imageType": "COS_CONTAINERD",
+      "kubeletConfig": {
+        "insecureKubeletReadonlyPortEnabled": false,
+        "maxParallelImagePulls": 2
+      },
+      "machineType": "e2-medium",
+      "metadata": {
+        "disable-legacy-endpoints": "true"
+      },
+      "oauthScopes": [
+        "https://www.googleapis.com/auth/devstorage.read_only",
+        "https://www.googleapis.com/auth/logging.write",
+        "https://www.googleapis.com/auth/monitoring",
+        "https://www.googleapis.com/auth/service.management.readonly",
+        "https://www.googleapis.com/auth/servicecontrol",
+        "https://www.googleapis.com/auth/trace.append"
+      ],
+      "resourceLabels": {
+        "goog-gke-node-pool-provisioning-model": "on-demand"
+      },
+      "serviceAccount": "default",
+      "shieldedInstanceConfig": {
+        "enableIntegrityMonitoring": true
+      },
+      "windowsNodeConfig": {}
+    },
+    "nodePoolAutoConfig": {
+      "nodeKubeletConfig": {
+        "insecureKubeletReadonlyPortEnabled": false
+      }
+    },
+    "nodePoolDefaults": {
+      "nodeConfigDefaults": {
+        "loggingConfig": {
+          "variantConfig": {
+            "variant": "DEFAULT"
+          }
+        },
+        "nodeKubeletConfig": {
+          "insecureKubeletReadonlyPortEnabled": false
+        }
+      }
+    },
+    "nodePools": [
+      {
+        "autoscaling": {
+          "enabled": true,
+          "locationPolicy": "BALANCED",
+          "maxNodeCount": 3
+        },
+        "config": {
+          "bootDisk": {
+            "diskType": "pd-balanced",
+            "sizeGb": "100"
+          },
+          "diskSizeGb": 100,
+          "diskType": "pd-balanced",
+          "effectiveCgroupMode": "EFFECTIVE_CGROUP_MODE_V2",
+          "imageType": "COS_CONTAINERD",
+          "kubeletConfig": {
+            "insecureKubeletReadonlyPortEnabled": false,
+            "maxParallelImagePulls": 2
+          },
+          "machineType": "e2-medium",
+          "metadata": {
+            "disable-legacy-endpoints": "true"
+          },
+          "oauthScopes": [
+            "https://www.googleapis.com/auth/devstorage.read_only",
+            "https://www.googleapis.com/auth/logging.write",
+            "https://www.googleapis.com/auth/monitoring",
+            "https://www.googleapis.com/auth/service.management.readonly",
+            "https://www.googleapis.com/auth/servicecontrol",
+            "https://www.googleapis.com/auth/trace.append"
+          ],
+          "resourceLabels": {
+            "goog-gke-node-pool-provisioning-model": "on-demand"
+          },
+          "serviceAccount": "default",
+          "shieldedInstanceConfig": {
+            "enableIntegrityMonitoring": true
+          },
+          "windowsNodeConfig": {}
+        },
+        "etag": "d4ce7a2b-96e9-4ca5-94c8-64dea4337b40",
+        "initialNodeCount": 1,
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/mindmend-production/zones/asia-southeast1-a/instanceGroupManagers/gke-mindmend-cluster-default-pool-3b075bf9-grp"
+        ],
+        "locations": [
+          "asia-southeast1-a"
+        ],
+        "management": {
+          "autoRepair": true,
+          "autoUpgrade": true
+        },
+        "maxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "name": "default-pool",
+        "networkConfig": {
+          "networkTierConfig": {
+            "networkTier": "NETWORK_TIER_DEFAULT"
+          },
+          "podIpv4CidrBlock": "10.28.0.0/14",
+          "podIpv4RangeUtilization": 0.0029,
+          "podRange": "gke-mindmend-cluster-pods-65410496",
+          "subnetwork": "projects/mindmend-production/regions/asia-southeast1/subnetworks/mindmend-subnet"
+        },
+        "podIpv4CidrSize": 24,
+        "selfLink": "https://container.googleapis.com/v1/projects/mindmend-production/zones/asia-southeast1-a/clusters/mindmend-cluster/nodePools/default-pool",
+        "status": "RUNNING",
+        "upgradeSettings": {
+          "maxSurge": 1,
+          "strategy": "SURGE"
+        },
+        "version": "1.33.4-gke.1245000"
+      },
+      {
+        "autoscaling": {
+          "enabled": true,
+          "locationPolicy": "BALANCED",
+          "maxNodeCount": 2
+        },
+        "config": {
+          "accelerators": [
+            {
+              "acceleratorCount": "1",
+              "acceleratorType": "nvidia-l4",
+              "gpuDriverInstallationConfig": {
+                "gpuDriverVersion": "DEFAULT"
+              }
+            }
+          ],
+          "bootDisk": {
+            "diskType": "pd-balanced",
+            "sizeGb": "100"
+          },
+          "diskSizeGb": 100,
+          "diskType": "pd-balanced",
+          "effectiveCgroupMode": "EFFECTIVE_CGROUP_MODE_V2",
+          "imageType": "COS_CONTAINERD",
+          "kubeletConfig": {
+            "insecureKubeletReadonlyPortEnabled": false,
+            "maxParallelImagePulls": 2
+          },
+          "machineType": "g2-standard-4",
+          "metadata": {
+            "disable-legacy-endpoints": "true"
+          },
+          "oauthScopes": [
+            "https://www.googleapis.com/auth/devstorage.read_only",
+            "https://www.googleapis.com/auth/logging.write",
+            "https://www.googleapis.com/auth/monitoring",
+            "https://www.googleapis.com/auth/service.management.readonly",
+            "https://www.googleapis.com/auth/servicecontrol",
+            "https://www.googleapis.com/auth/trace.append"
+          ],
+          "resourceLabels": {
+            "goog-gke-accelerator-type": "nvidia-l4",
+            "goog-gke-node-pool-provisioning-model": "on-demand"
+          },
+          "serviceAccount": "default",
+          "shieldedInstanceConfig": {
+            "enableIntegrityMonitoring": true
+          },
+          "taints": [
+            {
+              "effect": "NO_SCHEDULE",
+              "key": "nvidia.com/gpu",
+              "value": "present"
+            }
+          ],
+          "windowsNodeConfig": {}
+        },
+        "etag": "098d9a19-7044-416f-980c-8e840b16f54d",
+        "initialNodeCount": 1,
+        "instanceGroupUrls": [
+          "https://www.googleapis.com/compute/v1/projects/mindmend-production/zones/asia-southeast1-a/instanceGroupManagers/gke-mindmend-cluster-gpu-pool-e144678a-grp"
+        ],
+        "locations": [
+          "asia-southeast1-a"
+        ],
+        "management": {
+          "autoRepair": true,
+          "autoUpgrade": true
+        },
+        "maxPodsConstraint": {
+          "maxPodsPerNode": "110"
+        },
+        "name": "gpu-pool",
+        "networkConfig": {
+          "networkTierConfig": {
+            "networkTier": "NETWORK_TIER_DEFAULT"
+          },
+          "podIpv4CidrBlock": "10.28.0.0/14",
+          "podIpv4RangeUtilization": 0.0029,
+          "podRange": "gke-mindmend-cluster-pods-65410496",
+          "subnetwork": "projects/mindmend-production/regions/asia-southeast1/subnetworks/mindmend-subnet"
+        },
+        "podIpv4CidrSize": 24,
+        "selfLink": "https://container.googleapis.com/v1/projects/mindmend-production/zones/asia-southeast1-a/clusters/mindmend-cluster/nodePools/gpu-pool",
+        "status": "RUNNING",
+        "upgradeSettings": {
+          "maxSurge": 1,
+          "strategy": "SURGE"
+        },
+        "version": "1.33.4-gke.1245000"
+      }
+    ],
+    "notificationConfig": {
+      "pubsub": {}
+    },
+    "podAutoscaling": {
+      "hpaProfile": "PERFORMANCE"
+    },
+    "privateClusterConfig": {
+      "privateEndpoint": "10.45.240.2",
+      "publicEndpoint": "35.240.245.62"
+    },
+    "rbacBindingConfig": {
+      "enableInsecureBindingSystemAuthenticated": true,
+      "enableInsecureBindingSystemUnauthenticated": true
+    },
+    "releaseChannel": {
+      "channel": "REGULAR"
+    },
+    "satisfiesPzi": true,
+    "satisfiesPzs": false,
+    "securityPostureConfig": {
+      "mode": "BASIC",
+      "vulnerabilityMode": "VULNERABILITY_MODE_UNSPECIFIED"
+    },
+    "selfLink": "https://container.googleapis.com/v1/projects/mindmend-production/zones/asia-southeast1-a/clusters/mindmend-cluster",
+    "servicesIpv4Cidr": "34.118.224.0/20",
+    "shieldedNodes": {
+      "enabled": true
+    },
+    "status": "RUNNING",
+    "subnetwork": "mindmend-subnet",
+    "userManagedKeysConfig": {},
+    "zone": "asia-southeast1-a"
+  }
+]

@@ -1,0 +1,292 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "networking.k8s.io/v1",
+            "kind": "Ingress",
+            "metadata": {
+                "annotations": {
+                    "ingress.kubernetes.io/backends": "{\"k8s1-a79c505b-default-cm-acme-http-solver-fcctn-8089-bb12dde2\":\"HEALTHY\",\"k8s1-a79c505b-kube-system-default-http-backend-80-493c2d7f\":\"HEALTHY\"}",
+                    "ingress.kubernetes.io/forwarding-rule": "k8s2-fr-gou1vnqi-default-cm-acme-http-solver-mgcb9-s6ubs0ch",
+                    "ingress.kubernetes.io/target-proxy": "k8s2-tp-gou1vnqi-default-cm-acme-http-solver-mgcb9-s6ubs0ch",
+                    "ingress.kubernetes.io/url-map": "k8s2-um-gou1vnqi-default-cm-acme-http-solver-mgcb9-s6ubs0ch",
+                    "kubernetes.io/ingress.class": "gce",
+                    "nginx.ingress.kubernetes.io/whitelist-source-range": "0.0.0.0/0,::/0"
+                },
+                "creationTimestamp": "2025-10-10T02:18:32Z",
+                "finalizers": [
+                    "networking.gke.io/ingress-finalizer-V2"
+                ],
+                "generateName": "cm-acme-http-solver-",
+                "generation": 1,
+                "labels": {
+                    "acme.cert-manager.io/http-domain": "922683001",
+                    "acme.cert-manager.io/http-token": "1402801932",
+                    "acme.cert-manager.io/http01-solver": "true"
+                },
+                "name": "cm-acme-http-solver-mgcb9",
+                "namespace": "default",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "acme.cert-manager.io/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "Challenge",
+                        "name": "mindmend-tls-1-3645376945-1695481063",
+                        "uid": "ca7ca4a7-dda7-4e40-ab75-5bf6090fa70c"
+                    }
+                ],
+                "resourceVersion": "1760062837786383014",
+                "uid": "5133ef3c-a211-43cc-9aa2-7b6959cf89a9"
+            },
+            "spec": {
+                "rules": [
+                    {
+                        "host": "www.mindmend.xyz",
+                        "http": {
+                            "paths": [
+                                {
+                                    "backend": {
+                                        "service": {
+                                            "name": "cm-acme-http-solver-fcctn",
+                                            "port": {
+                                                "number": 8089
+                                            }
+                                        }
+                                    },
+                                    "path": "/.well-known/acme-challenge/gg6taqxqZSKp96sP-nbsCqQxg-wrUIlIWt69-KCZPkw",
+                                    "pathType": "ImplementationSpecific"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "loadBalancer": {
+                    "ingress": [
+                        {
+                            "ip": "34.49.248.2"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "networking.k8s.io/v1",
+            "kind": "Ingress",
+            "metadata": {
+                "annotations": {
+                    "cert-manager.io/cluster-issuer": "letsencrypt-prod",
+                    "ingress.kubernetes.io/backends": "{\"k8s1-a79c505b-default-nginx-80-0b5ffe18\":\"UNHEALTHY\",\"k8s1-a79c505b-kube-system-default-http-backend-80-493c2d7f\":\"HEALTHY\"}",
+                    "ingress.kubernetes.io/forwarding-rule": "k8s2-fr-gou1vnqi-default-mindmend-ingress-qquti11x",
+                    "ingress.kubernetes.io/target-proxy": "k8s2-tp-gou1vnqi-default-mindmend-ingress-qquti11x",
+                    "ingress.kubernetes.io/url-map": "k8s2-um-gou1vnqi-default-mindmend-ingress-qquti11x",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.k8s.io/v1\",\"kind\":\"Ingress\",\"metadata\":{\"annotations\":{\"cert-manager.io/cluster-issuer\":\"letsencrypt-prod\",\"kubernetes.io/ingress.class\":\"gce\",\"kubernetes.io/ingress.global-static-ip-name\":\"mindmend-ip\"},\"name\":\"mindmend-ingress\",\"namespace\":\"default\"},\"spec\":{\"rules\":[{\"host\":\"mindmend.xyz\",\"http\":{\"paths\":[{\"backend\":{\"service\":{\"name\":\"nginx\",\"port\":{\"number\":80}}},\"path\":\"/*\",\"pathType\":\"ImplementationSpecific\"}]}},{\"host\":\"www.mindmend.xyz\",\"http\":{\"paths\":[{\"backend\":{\"service\":{\"name\":\"nginx\",\"port\":{\"number\":80}}},\"path\":\"/*\",\"pathType\":\"ImplementationSpecific\"}]}}],\"tls\":[{\"hosts\":[\"mindmend.xyz\",\"www.mindmend.xyz\"],\"secretName\":\"mindmend-tls\"}]}}\n",
+                    "kubernetes.io/ingress.class": "gce",
+                    "kubernetes.io/ingress.global-static-ip-name": "mindmend-ip"
+                },
+                "creationTimestamp": "2025-09-22T07:58:25Z",
+                "finalizers": [
+                    "networking.gke.io/ingress-finalizer-V2"
+                ],
+                "generation": 3,
+                "name": "mindmend-ingress",
+                "namespace": "default",
+                "resourceVersion": "1760062568651071011",
+                "uid": "dcf41f2e-e06e-48b1-b30d-e89ada21eb83"
+            },
+            "spec": {
+                "rules": [
+                    {
+                        "host": "mindmend.xyz",
+                        "http": {
+                            "paths": [
+                                {
+                                    "backend": {
+                                        "service": {
+                                            "name": "nginx",
+                                            "port": {
+                                                "number": 80
+                                            }
+                                        }
+                                    },
+                                    "path": "/*",
+                                    "pathType": "ImplementationSpecific"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "host": "www.mindmend.xyz",
+                        "http": {
+                            "paths": [
+                                {
+                                    "backend": {
+                                        "service": {
+                                            "name": "nginx",
+                                            "port": {
+                                                "number": 80
+                                            }
+                                        }
+                                    },
+                                    "path": "/*",
+                                    "pathType": "ImplementationSpecific"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "tls": [
+                    {
+                        "hosts": [
+                            "mindmend.xyz",
+                            "www.mindmend.xyz"
+                        ],
+                        "secretName": "mindmend-tls"
+                    }
+                ]
+            },
+            "status": {
+                "loadBalancer": {
+                    "ingress": [
+                        {
+                            "ip": "34.111.18.218"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "networking.k8s.io/v1",
+            "kind": "Ingress",
+            "metadata": {
+                "annotations": {
+                    "ingress.kubernetes.io/backends": "{\"k8s1-a79c505b-kube-system-default-http-backend-80-493c2d7f\":\"HEALTHY\",\"k8s1-a79c505b-mindmend-cm-acme-http-solver-wvlw2-8089-85f67759\":\"HEALTHY\"}",
+                    "ingress.kubernetes.io/forwarding-rule": "k8s2-fr-gou1vnqi-mindmend-cm-acme-http-solver-m7c26-w4pgh3s7",
+                    "ingress.kubernetes.io/target-proxy": "k8s2-tp-gou1vnqi-mindmend-cm-acme-http-solver-m7c26-w4pgh3s7",
+                    "ingress.kubernetes.io/url-map": "k8s2-um-gou1vnqi-mindmend-cm-acme-http-solver-m7c26-w4pgh3s7",
+                    "kubernetes.io/ingress.class": "gce",
+                    "nginx.ingress.kubernetes.io/whitelist-source-range": "0.0.0.0/0,::/0"
+                },
+                "creationTimestamp": "2025-10-10T02:14:51Z",
+                "finalizers": [
+                    "networking.gke.io/ingress-finalizer-V2"
+                ],
+                "generateName": "cm-acme-http-solver-",
+                "generation": 1,
+                "labels": {
+                    "acme.cert-manager.io/http-domain": "532284646",
+                    "acme.cert-manager.io/http-token": "1033965267",
+                    "acme.cert-manager.io/http01-solver": "true"
+                },
+                "name": "cm-acme-http-solver-m7c26",
+                "namespace": "mindmend",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "acme.cert-manager.io/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "Challenge",
+                        "name": "mindmend-cert-1-3610478478-1340839837",
+                        "uid": "5905c01a-769b-4e9f-844d-0f7a194a0bcb"
+                    }
+                ],
+                "resourceVersion": "1760062705853647008",
+                "uid": "83c09abc-26e8-4a0a-9952-7d120fdb441d"
+            },
+            "spec": {
+                "rules": [
+                    {
+                        "host": "mindmend.xyz",
+                        "http": {
+                            "paths": [
+                                {
+                                    "backend": {
+                                        "service": {
+                                            "name": "cm-acme-http-solver-wvlw2",
+                                            "port": {
+                                                "number": 8089
+                                            }
+                                        }
+                                    },
+                                    "path": "/.well-known/acme-challenge/aZRp7U3KQS4Fj-usxQ_FHerR-bkCXtyjSUtsu02QuTc",
+                                    "pathType": "ImplementationSpecific"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "loadBalancer": {
+                    "ingress": [
+                        {
+                            "ip": "34.102.220.30"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "networking.k8s.io/v1",
+            "kind": "Ingress",
+            "metadata": {
+                "annotations": {
+                    "cert-manager.io/cluster-issuer": "letsencrypt-prod",
+                    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.k8s.io/v1\",\"kind\":\"Ingress\",\"metadata\":{\"annotations\":{\"cert-manager.io/cluster-issuer\":\"letsencrypt-prod\",\"kubernetes.io/ingress.allow-http\":\"false\",\"kubernetes.io/ingress.class\":\"gce\",\"networking.gke.io/frontend-config\":\"mindmend-frontend\"},\"name\":\"mindmend-ingress\",\"namespace\":\"mindmend\"},\"spec\":{\"rules\":[{\"host\":\"mindmend.xyz\",\"http\":{\"paths\":[{\"backend\":{\"service\":{\"name\":\"mindmend-backend-service\",\"port\":{\"number\":80}}},\"path\":\"/\",\"pathType\":\"Prefix\"}]}}],\"tls\":[{\"hosts\":[\"mindmend.xyz\"],\"secretName\":\"mindmend-tls\"}]}}\n",
+                    "kubernetes.io/ingress.allow-http": "false",
+                    "kubernetes.io/ingress.class": "gce",
+                    "networking.gke.io/frontend-config": "mindmend-frontend"
+                },
+                "creationTimestamp": "2025-10-09T11:15:44Z",
+                "finalizers": [
+                    "networking.gke.io/ingress-finalizer-V2"
+                ],
+                "generation": 1,
+                "name": "mindmend-ingress",
+                "namespace": "mindmend",
+                "resourceVersion": "1760008545533167018",
+                "uid": "2a30626c-ee9c-436a-8f0a-40a28114b066"
+            },
+            "spec": {
+                "rules": [
+                    {
+                        "host": "mindmend.xyz",
+                        "http": {
+                            "paths": [
+                                {
+                                    "backend": {
+                                        "service": {
+                                            "name": "mindmend-backend-service",
+                                            "port": {
+                                                "number": 80
+                                            }
+                                        }
+                                    },
+                                    "path": "/",
+                                    "pathType": "Prefix"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "tls": [
+                    {
+                        "hosts": [
+                            "mindmend.xyz"
+                        ],
+                        "secretName": "mindmend-tls"
+                    }
+                ]
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

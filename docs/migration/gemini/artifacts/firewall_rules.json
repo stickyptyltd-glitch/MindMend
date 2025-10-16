@@ -1,0 +1,437 @@
+[
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "8888"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-10-06T04:36:24.855-07:00",
+    "description": "Allow traffic on port 8888 for temporary file download",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "6992931948994631511",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "allow-http-8888",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/allow-http-8888",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "80"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-18T21:24:44.107-07:00",
+    "description": "",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "647070189508191715",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "default-allow-http",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/default-allow-http",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ],
+    "targetTags": [
+      "http-server"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "443"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-18T21:24:44.088-07:00",
+    "description": "",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "3388985570496701923",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "default-allow-https",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/default-allow-https",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ],
+    "targetTags": [
+      "https-server"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "icmp"
+      }
+    ],
+    "creationTimestamp": "2025-09-18T20:50:54.064-07:00",
+    "description": "Allow ICMP from anywhere",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "7290323752382983665",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "default-allow-icmp",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 65534,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/default-allow-icmp",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "0-65535"
+        ]
+      },
+      {
+        "IPProtocol": "udp",
+        "ports": [
+          "0-65535"
+        ]
+      },
+      {
+        "IPProtocol": "icmp"
+      }
+    ],
+    "creationTimestamp": "2025-09-18T20:50:53.834-07:00",
+    "description": "Allow internal traffic on the default network",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "2174014647594741234",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "default-allow-internal",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 65534,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/default-allow-internal",
+    "sourceRanges": [
+      "10.128.0.0/9"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "3389"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-18T20:50:53.988-07:00",
+    "description": "Allow RDP from anywhere",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "1744758032436391410",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "default-allow-rdp",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 65534,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/default-allow-rdp",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "22"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-18T20:50:53.911-07:00",
+    "description": "Allow SSH from anywhere",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "7632408976862309874",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "default-allow-ssh",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 65534,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/default-allow-ssh",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp"
+      },
+      {
+        "IPProtocol": "udp"
+      },
+      {
+        "IPProtocol": "icmp"
+      },
+      {
+        "IPProtocol": "esp"
+      },
+      {
+        "IPProtocol": "ah"
+      },
+      {
+        "IPProtocol": "sctp"
+      }
+    ],
+    "creationTimestamp": "2025-09-19T17:34:28.871-07:00",
+    "description": "",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "6149710266836732027",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "gke-mindmend-cluster-65410496-all",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/gke-mindmend-cluster-65410496-all",
+    "sourceRanges": [
+      "10.28.0.0/14"
+    ],
+    "targetTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ]
+  },
+  {
+    "creationTimestamp": "2025-09-19T17:34:28.846-07:00",
+    "denied": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "10255"
+        ]
+      }
+    ],
+    "description": "",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "3771667964024080507",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "gke-mindmend-cluster-65410496-exkubelet",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/gke-mindmend-cluster-65410496-exkubelet",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ],
+    "targetTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "10255"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-19T17:34:28.845-07:00",
+    "description": "",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "2454325490599610491",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "gke-mindmend-cluster-65410496-inkubelet",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 999,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/gke-mindmend-cluster-65410496-inkubelet",
+    "sourceRanges": [
+      "10.28.0.0/14"
+    ],
+    "sourceTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ],
+    "targetTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "udp",
+        "ports": [
+          "1-65535"
+        ]
+      },
+      {
+        "IPProtocol": "icmp"
+      },
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "1-65535"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-19T17:34:29.245-07:00",
+    "description": "",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "2664057260583438458",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "gke-mindmend-cluster-65410496-vms",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/gke-mindmend-cluster-65410496-vms",
+    "sourceRanges": [
+      "10.128.0.0/9",
+      "10.45.240.0/22"
+    ],
+    "targetTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "10256"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-24T15:03:24.400-07:00",
+    "description": "{\"kubernetes.io/cluster-id\":\"a79c505b89ade47b\"}",
+    "destinationRanges": [
+      "34.143.177.214"
+    ],
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "2094771912574620739",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "k8s-a79c505b89ade47b-node-http-hc",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/k8s-a79c505b89ade47b-node-http-hc",
+    "sourceRanges": [
+      "35.191.0.0/16",
+      "209.85.152.0/22",
+      "209.85.204.0/22",
+      "130.211.0.0/22"
+    ],
+    "targetTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "80"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-24T15:03:17.593-07:00",
+    "description": "{\"kubernetes.io/service-name\":\"default/nginx-service\", \"kubernetes.io/service-ip\":\"34.143.177.214\"}",
+    "destinationRanges": [
+      "34.143.177.214"
+    ],
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "3941805096227689546",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "k8s-fw-a5f6f15ebcd0640dda6c44da6fb28ed0",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/k8s-fw-a5f6f15ebcd0640dda6c44da6fb28ed0",
+    "sourceRanges": [
+      "0.0.0.0/0"
+    ],
+    "targetTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ]
+  },
+  {
+    "allowed": [
+      {
+        "IPProtocol": "tcp",
+        "ports": [
+          "80",
+          "8000",
+          "8080",
+          "8089"
+        ]
+      }
+    ],
+    "creationTimestamp": "2025-09-22T00:58:27.307-07:00",
+    "description": "GCE L7 firewall rule",
+    "direction": "INGRESS",
+    "disabled": false,
+    "id": "4289134338336669516",
+    "kind": "compute#firewall",
+    "logConfig": {
+      "enable": false
+    },
+    "name": "k8s-fw-l7--a79c505b89ade47b",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "priority": 1000,
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/firewalls/k8s-fw-l7--a79c505b89ade47b",
+    "sourceRanges": [
+      "130.211.0.0/22",
+      "35.191.0.0/16"
+    ],
+    "targetTags": [
+      "gke-mindmend-cluster-65410496-node"
+    ]
+  }
+]

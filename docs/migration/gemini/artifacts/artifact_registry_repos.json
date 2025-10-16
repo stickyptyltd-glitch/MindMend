@@ -1,0 +1,29 @@
+[
+  {
+    "createTime": "2025-09-29T17:20:10.895732Z",
+    "description": "MindMend Docker images",
+    "format": "DOCKER",
+    "mode": "STANDARD_REPOSITORY",
+    "name": "projects/mindmend-production/locations/australia-southeast1/repositories/mindmend",
+    "satisfiesPzi": true,
+    "satisfiesPzs": true,
+    "updateTime": "2025-09-29T17:20:10.895732Z",
+    "vulnerabilityScanningConfig": {
+      "enablementState": "SCANNING_DISABLED",
+      "enablementStateReason": "API containerscanning.googleapis.com is not enabled.",
+      "lastEnableTime": "2025-09-29T17:20:01.788804005Z"
+    }
+  },
+  {
+    "createTime": "2025-09-20T03:36:09.557191Z",
+    "format": "DOCKER",
+    "mode": "STANDARD_REPOSITORY",
+    "name": "projects/mindmend-production/locations/us/repositories/gcr.io",
+    "sizeBytes": "21323525865",
+    "updateTime": "2025-10-10T15:31:38.910752Z",
+    "vulnerabilityScanningConfig": {
+      "enablementState": "SCANNING_DISABLED",
+      "enablementStateReason": "API containerscanning.googleapis.com is not enabled."
+    }
+  }
+]

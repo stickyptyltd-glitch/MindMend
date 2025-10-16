@@ -144,6 +144,26 @@ with app.app_context():
     from oauth_system import oauth_bp
     app.register_blueprint(oauth_bp, url_prefix='/oauth')
     app.register_blueprint(media_bp)
+
+    # Crisis Detection System
+    from crisis_integration import crisis_bp
+    app.register_blueprint(crisis_bp)
+
+    # Document Download Routes
+    from download_routes import download_bp
+    app.register_blueprint(download_bp)
+
+    # Phase 4: Professional Onboarding & Clinical Intelligence
+    from professional_management import professional_mgmt_bp
+    from admin_professional_panel import admin_professional_bp
+    from clinical_outcomes_api import clinical_api_bp
+    app.register_blueprint(professional_mgmt_bp)
+    app.register_blueprint(admin_professional_bp)
+    app.register_blueprint(clinical_api_bp)
+    logger.info("Phase 4: Professional onboarding and clinical intelligence integrated")
+    logger.info("Clinical Outcomes API registered at /api/v1")
+
+    logger.info("Crisis detection system integrated")
     
     # Initialize security and mobile integration
     security_manager = SecurityManager(app)
@@ -511,7 +531,8 @@ def home():
         </html>
         """
 
-@app.route("/onboarding")
+@app.route("/onboarding", methods=["GET", "POST"])
+@login_required
 def onboarding():
     """Interactive onboarding tutorial with animated character guide"""
     return render_template("onboarding.html")
@@ -780,13 +801,48 @@ def forgot_password():
     
     return render_template("forgot_password.html")
 
+@app.route("/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    """User profile management page"""
+    if request.method == "POST":
+        try:
+            # Update user profile
+            current_user.name = request.form.get("name", current_user.name)
+            current_user.phone = request.form.get("phone", current_user.phone)
+            current_user.emergency_contact = request.form.get("emergency_contact", current_user.emergency_contact)
+
+            db.session.commit()
+            flash("Profile updated successfully!", "success")
+        except Exception as e:
+            logging.error(f"Profile update error: {e}")
+            flash("Failed to update profile", "error")
+        return redirect(url_for('profile'))
+
+    return render_template("profile.html", user=current_user)
+
+@app.route("/settings", methods=["GET", "POST"])
+@login_required
+def settings():
+    """User settings page"""
+    if request.method == "POST":
+        try:
+            # Update user settings/preferences
+            # This can be expanded based on specific settings needed
+            flash("Settings updated successfully!", "success")
+        except Exception as e:
+            logging.error(f"Settings update error: {e}")
+            flash("Failed to update settings", "error")
+        return redirect(url_for('settings'))
+
+    return render_template("settings.html", user=current_user)
+
 @app.route("/user-dashboard")
+@login_required
 def user_dashboard():
     """User dashboard with personalized widgets"""
-    # For demo purposes, skip authentication check temporarily
-    # if 'user' not in session:
-    #     return redirect(url_for('login'))
-    
+    # Authentication now enforced via @login_required decorator
+
     # Mock data for demonstration (replace with real data from database)
     dashboard_data = {
         'session_count': 12,
@@ -891,11 +947,13 @@ def video_assessment():
     return render_template("video_assessment.html")
 
 @app.route("/video_assess")
+@login_required
 def video_assess():
     """Level 2 AI video assessment with placeholder features"""
     return render_template("video_assess.html")
 
 @app.route("/emotion-tracking")
+@login_required
 def emotion_tracking():
     """Emotion tracking dashboard"""
     return """
@@ -992,6 +1050,7 @@ def emotion_tracking():
     """
 
 @app.route('/api/log-emotion', methods=['POST'])
+@login_required
 def log_emotion():
     """API endpoint for logging emotions"""
     try:
@@ -999,6 +1058,108 @@ def log_emotion():
         return jsonify({"status": "success", "message": "Emotion logged"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/mood-tracker", methods=["GET", "POST"])
+@login_required
+def mood_tracker():
+    """Mood tracking page"""
+    if request.method == "POST":
+        try:
+            mood_level = request.form.get("mood_level")
+            notes = request.form.get("notes", "")
+
+            # Create a session record with mood data
+            session_record = Session(
+                patient_name=current_user.name if current_user.is_authenticated else "Anonymous",
+                session_type="mood_tracking",
+                input_text=notes,
+                ai_response="Mood tracked successfully",
+                mood_before=int(mood_level) if mood_level else 5
+            )
+            db.session.add(session_record)
+            db.session.commit()
+
+            flash("Mood tracked successfully!", "success")
+        except Exception as e:
+            logging.error(f"Mood tracker error: {e}")
+            flash("Failed to track mood", "error")
+        return redirect(url_for('mood_tracker'))
+
+    # Get recent mood entries
+    recent_moods = Session.query.filter_by(
+        session_type="mood_tracking"
+    ).order_by(Session.timestamp.desc()).limit(7).all()
+
+    return render_template("mood_tracker.html", recent_moods=recent_moods)
+
+@app.route("/journaling", methods=["GET", "POST"])
+@login_required
+def journaling():
+    """Journaling page"""
+    if request.method == "POST":
+        try:
+            entry_text = request.form.get("entry_text", "")
+            mood_before = request.form.get("mood_before")
+
+            # Create a journal entry as a session
+            journal_entry = Session(
+                patient_name=current_user.name if current_user.is_authenticated else "Anonymous",
+                session_type="journal",
+                input_text=entry_text,
+                ai_response="Journal entry saved",
+                mood_before=int(mood_before) if mood_before else None
+            )
+            db.session.add(journal_entry)
+            db.session.commit()
+
+            flash("Journal entry saved!", "success")
+        except Exception as e:
+            logging.error(f"Journaling error: {e}")
+            flash("Failed to save journal entry", "error")
+        return redirect(url_for('journaling'))
+
+    # Get recent journal entries
+    journal_entries = Session.query.filter_by(
+        session_type="journal"
+    ).order_by(Session.timestamp.desc()).limit(10).all()
+
+    return render_template("journaling.html", entries=journal_entries)
+
+@app.route("/progress")
+@login_required
+def progress():
+    """Progress tracking dashboard"""
+    try:
+        # Calculate progress metrics using existing functions
+        avg_mood = calculate_average_mood()
+        weekly_mood = calculate_weekly_average_mood()
+        streak = calculate_streak_days()
+        improvement = calculate_improvement_percentage()
+
+        # Get session history
+        session_history = Session.query.order_by(
+            Session.timestamp.desc()
+        ).limit(30).all()
+
+        # Get completed exercises
+        completed_exercises = Exercise.query.filter_by(
+            completion_status='completed'
+        ).count()
+
+        progress_data = {
+            'avg_mood': avg_mood,
+            'weekly_mood': weekly_mood,
+            'streak_days': streak,
+            'improvement_percentage': improvement,
+            'total_sessions': Session.query.count(),
+            'completed_exercises': completed_exercises,
+            'session_history': session_history
+        }
+
+        return render_template("progress.html", progress=progress_data)
+    except Exception as e:
+        logging.error(f"Progress page error: {e}")
+        return render_template("progress.html", progress={}, error="Failed to load progress data")
 
 @app.route("/crisis-support")
 def crisis_support():
@@ -1080,11 +1241,13 @@ def counselor_signup():
     return render_template("counselor_signup.html")
 
 @app.route("/premium_session")
+@login_required
 def premium_session():
     """Placeholder for premium human counselor sessions"""
     return render_template("premium_session.html")
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
     """Patient dashboard with progress tracking"""
     try:
@@ -1129,11 +1292,13 @@ def premium():
     return render_template("premium.html")
 
 @app.route("/subscribe")
+@login_required
 def subscribe():
     """Stripe subscription page"""
     return render_template("subscribe.html", stripe_publishable_key=STRIPE_PUBLISHABLE_KEY)
 
 @app.route("/api/session", methods=["POST"])
+@login_required
 def api_session():
     """GPT therapy session endpoint for MVP"""
     try:
@@ -1327,6 +1492,7 @@ def api_couples_session():
         return jsonify({'error': 'Failed to process message'}), 500
 
 @app.route('/api/couples_exercise', methods=['POST'])
+@login_required
 def api_couples_exercise():
     exercises = [
         "Active Listening Exercise: Take turns speaking for 2 minutes about your feelings while the other partner listens without interrupting. Then the listener summarizes what they heard.",
@@ -1342,6 +1508,7 @@ def api_couples_exercise():
     return jsonify({'exercise': exercise})
 
 @app.route('/api/couples_summary', methods=['GET'])
+@login_required
 def api_couples_summary():
     # In a real implementation, this would analyze the session
     summary = "Today's session focused on improving communication and understanding each other's perspectives. Key themes included expressing feelings constructively and listening actively. Continue practicing the exercises we discussed."
@@ -1349,6 +1516,7 @@ def api_couples_summary():
     return jsonify({'summary': summary})
 
 @app.route('/api/conversation_starter', methods=['POST'])
+@login_required
 def api_conversation_starter():
     """Get AI-powered conversation starter for couples"""
     try:
@@ -1372,11 +1540,13 @@ def api_conversation_starter():
 
 # Activities Routes
 @app.route('/activities')
+@login_required
 def activities():
     """Display therapeutic activities page"""
     return render_template('activities.html')
 
 @app.route('/api/start_activity', methods=['POST'])
+@login_required
 def api_start_activity():
     """Start a specific therapeutic activity"""
     try:
@@ -1404,6 +1574,7 @@ def api_start_activity():
         return jsonify({'error': 'Failed to start activity'}), 500
 
 @app.route('/api/personalized_activities')
+@login_required
 def api_personalized_activities():
     """Get personalized activity recommendations"""
     try:
@@ -1518,6 +1689,7 @@ def stripe_webhook():
         return jsonify(error=str(e)), 400
 
 @app.route("/session", methods=["GET", "POST"])
+@login_required
 def therapy_session():
     """Legacy session endpoint - maintained for compatibility"""
     if request.method == "POST":
@@ -1580,6 +1752,7 @@ def therapy_session():
     return render_template("session.html")
 
 @app.route("/api/sessions")
+@login_required
 def api_sessions():
     """API endpoint for session data"""
     try:
@@ -1601,6 +1774,7 @@ def api_sessions():
         return jsonify({"error": "Failed to retrieve sessions"}), 500
 
 @app.route("/api/therapy-session", methods=["POST"])
+@login_required
 def api_therapy_session():
     """Main therapy session endpoint for AI interactions"""
     try:
@@ -1614,7 +1788,26 @@ def api_therapy_session():
         
         if not message:
             return jsonify({"error": "No message provided"}), 400
-        
+
+        # Crisis Detection - Check all messages for crisis indicators
+        from crisis_integration import check_message_for_crisis
+        crisis_result = check_message_for_crisis(message)
+
+        if crisis_result and crisis_result.severity.value in ['critical', 'high']:
+            # Log critical crisis for immediate attention
+            logger.critical(f"CRISIS DETECTED - User: {current_user.id}, Severity: {crisis_result.severity.value}")
+
+            # Include crisis information in response
+            crisis_info = {
+                'crisis_detected': True,
+                'severity': crisis_result.severity.value,
+                'confidence': crisis_result.confidence,
+                'recommended_actions': crisis_result.recommended_actions,
+                'crisis_resources': True
+            }
+        else:
+            crisis_info = None
+
         # Prepare session data for enhanced AI response
         session_data = {
             'session_id': session_id or f"temp_{datetime.utcnow().timestamp()}",
@@ -1647,7 +1840,8 @@ def api_therapy_session():
             'models_used': enhanced_response.get('models_used', ['fallback']),
             'recommendations': [activity['name'] for activity in enhanced_response.get('recommended_activities', [])],
             'activities': enhanced_response.get('recommended_activities', []),
-            'research_insights': enhanced_response.get('research_insights', [])
+            'research_insights': enhanced_response.get('research_insights', []),
+            'crisis_info': crisis_info  # Add crisis detection results
         }
         
         # Store session data
@@ -1689,6 +1883,7 @@ def api_therapy_session():
         }), 500
 
 @app.route("/api/ai-models/status")
+@login_required
 def api_ai_models_status():
     """Get status of available AI models"""
     try:
@@ -1708,6 +1903,7 @@ def api_ai_models_status():
         }), 500
 
 @app.route("/api/ai-models/diagnose", methods=["POST"])
+@login_required
 def api_ai_diagnose():
     """Perform AI-powered diagnosis using ensemble models"""
     try:
@@ -1760,6 +1956,7 @@ def api_ai_diagnose():
         }), 500
 
 @app.route("/api/analyze-text", methods=["POST"])
+@login_required
 def analyze_text():
     """API endpoint for real-time text analysis"""
     try:
@@ -1800,6 +1997,7 @@ def analyze_text():
         return jsonify({"error": "Failed to analyze text"}), 500
 
 @app.route("/api/biometric-data", methods=["POST"])
+@login_required
 def receive_biometric_data():
     """API endpoint for receiving biometric data from wearables"""
     try:
@@ -1835,6 +2033,7 @@ def receive_biometric_data():
         return jsonify({"error": "Failed to process biometric data"}), 500
 
 @app.route("/api/video-analysis", methods=["POST"])
+@login_required
 def video_analysis():
     """API endpoint for video frame analysis"""
     try:
@@ -1967,6 +2166,7 @@ def handle_biometric_update(data):
         emit('error', {'message': 'Error processing biometric data'})
 
 @app.route("/api/dashboard-stats")
+@login_required
 def dashboard_stats():
     """API endpoint for dashboard statistics"""
     try:
@@ -2117,6 +2317,7 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 @app.route("/api/dashboard/ai-insights")
+@login_required
 def dashboard_ai_insights():
     """Get AI-generated mental health insights for dashboard"""
     try:
@@ -2153,6 +2354,7 @@ def dashboard_ai_insights():
 
 # AI therapy endpoints
 @app.route("/ai/individual", methods=["POST"])
+@login_required
 def ai_individual_therapy():
     """AI endpoint for individual therapy responses"""
     try:
@@ -2181,6 +2383,7 @@ def ai_individual_therapy():
         }), 500
 
 @app.route("/ai/couples", methods=["POST"])
+@login_required
 def ai_couples_therapy():
     """AI endpoint for couples therapy responses"""
     try:
@@ -2211,6 +2414,7 @@ def ai_couples_therapy():
         }), 500
 
 @app.route("/ai/group", methods=["POST"])
+@login_required
 def ai_group_therapy():
     """AI endpoint for group therapy responses"""
     try:

@@ -1,0 +1,1128 @@
+[
+  {
+    "createTime": "2025-09-22T09:38:54.039892009Z",
+    "finishTime": "2025-09-22T09:40:47.497846Z",
+    "id": "ab7cd995-d43e-4d1e-9225-6c0c74728f25",
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/ab7cd995-d43e-4d1e-9225-6c0c74728f25?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/ab7cd995-d43e-4d1e-9225-6c0c74728f25",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:ddf47c46bfe9f6fae114ccfc34555ed72808b4c833fa92c19bfe741ec919aba6",
+        "sha256:c6b115259483d6cfc5b4bb05eedff0224fac8ca69874d0cdeade0dad7101213a",
+        "sha256:c6b115259483d6cfc5b4bb05eedff0224fac8ca69874d0cdeade0dad7101213a"
+      ],
+      "buildStepOutputs": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758533932610119",
+        "object": "source/1758533924.422647-a9292520c72f4a3ba9eafcd43581f092.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758533924.422647-a9292520c72f4a3ba9eafcd43581f092.tgz#1758533932610119": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "Ay8Q1myGtZ_2BpTEqqqw0w=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758533932610119",
+        "object": "source/1758533924.422647-a9292520c72f4a3ba9eafcd43581f092.tgz"
+      }
+    },
+    "startTime": "2025-09-22T09:38:54.965044609Z",
+    "status": "SUCCESS",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend:latest",
+          "."
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:38:59.219598961Z",
+          "startTime": "2025-09-22T09:38:59.214357797Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:39:52.006710349Z",
+          "startTime": "2025-09-22T09:38:59.214357797Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:39:52.008073768Z",
+          "startTime": "2025-09-22T09:39:52.006805675Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:40:17.682203915Z",
+          "startTime": "2025-09-22T09:39:52.006805675Z"
+        }
+      },
+      {
+        "args": [
+          "container",
+          "clusters",
+          "get-credentials",
+          "mindmend-cluster",
+          "--zone=asia-southeast1-a"
+        ],
+        "name": "gcr.io/cloud-builders/gcloud",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:40:17.689088605Z",
+          "startTime": "2025-09-22T09:40:17.682284697Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:40:22.927991411Z",
+          "startTime": "2025-09-22T09:40:17.682284697Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "config.yaml"
+        ],
+        "env": [
+          "CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "name": "gcr.io/cloud-builders/kubectl",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:40:22.934516582Z",
+          "startTime": "2025-09-22T09:40:22.928086251Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:40:36.065491020Z",
+          "startTime": "2025-09-22T09:40:22.928086251Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "deployment.yaml"
+        ],
+        "env": [
+          "CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "name": "gcr.io/cloud-builders/kubectl",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:40:36.067230811Z",
+          "startTime": "2025-09-22T09:40:36.065596077Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:40:46.921030264Z",
+          "startTime": "2025-09-22T09:40:36.065596077Z"
+        }
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-22T09:40:46.921085592Z",
+        "startTime": "2025-09-22T09:38:58.636137810Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-22T09:38:58.636051530Z",
+        "startTime": "2025-09-22T09:38:55.475357143Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-22T09:38:58.636051530Z",
+        "startTime": "2025-09-22T09:38:55.475357143Z"
+      }
+    }
+  },
+  {
+    "createTime": "2025-09-22T09:22:39.902115093Z",
+    "failureInfo": {
+      "detail": "Build step failure: build step 3 \"gcr.io/cloud-builders/kubectl\" failed: step exited with non-zero status: 1",
+      "type": "USER_BUILD_STEP"
+    },
+    "finishTime": "2025-09-22T09:24:21.226016190Z",
+    "id": "409ee2a0-db79-4c5a-9ef8-f52ca97ecb7b",
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/409ee2a0-db79-4c5a-9ef8-f52ca97ecb7b?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/409ee2a0-db79-4c5a-9ef8-f52ca97ecb7b",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:ddf47c46bfe9f6fae114ccfc34555ed72808b4c833fa92c19bfe741ec919aba6",
+        "sha256:c6b115259483d6cfc5b4bb05eedff0224fac8ca69874d0cdeade0dad7101213a",
+        ""
+      ],
+      "buildStepOutputs": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532959516838",
+        "object": "source/1758532952.014478-ec90f48f127a49aba2407944f840293d.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758532952.014478-ec90f48f127a49aba2407944f840293d.tgz#1758532959516838": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "OIdod70SNlEWQ0CEhTQW-Q=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532959516838",
+        "object": "source/1758532952.014478-ec90f48f127a49aba2407944f840293d.tgz"
+      }
+    },
+    "startTime": "2025-09-22T09:22:40.862926880Z",
+    "status": "FAILURE",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend:latest",
+          "."
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:22:45.169286762Z",
+          "startTime": "2025-09-22T09:22:45.162742252Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:23:36.399246222Z",
+          "startTime": "2025-09-22T09:22:45.162742252Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:23:36.400804853Z",
+          "startTime": "2025-09-22T09:23:36.399339725Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:24:01.601700278Z",
+          "startTime": "2025-09-22T09:23:36.399339725Z"
+        }
+      },
+      {
+        "args": [
+          "container",
+          "clusters",
+          "get-credentials",
+          "mindmend-cluster",
+          "--zone=asia-southeast1-a"
+        ],
+        "name": "gcr.io/cloud-builders/gcloud",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:24:01.608667933Z",
+          "startTime": "2025-09-22T09:24:01.601850444Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:24:06.954516929Z",
+          "startTime": "2025-09-22T09:24:01.601850444Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "config.yaml"
+        ],
+        "env": [
+          "CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "exitCode": 1,
+        "name": "gcr.io/cloud-builders/kubectl",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:24:06.960636728Z",
+          "startTime": "2025-09-22T09:24:06.954625300Z"
+        },
+        "status": "FAILURE",
+        "timing": {
+          "endTime": "2025-09-22T09:24:20.375691755Z",
+          "startTime": "2025-09-22T09:24:06.954625300Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "deployment.yaml"
+        ],
+        "env": [
+          "CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "name": "gcr.io/cloud-builders/kubectl",
+        "status": "QUEUED"
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-22T09:24:20.375840837Z",
+        "startTime": "2025-09-22T09:22:44.575252798Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-22T09:22:44.575169439Z",
+        "startTime": "2025-09-22T09:22:41.362180707Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-22T09:22:44.575169439Z",
+        "startTime": "2025-09-22T09:22:41.362180707Z"
+      }
+    }
+  },
+  {
+    "createTime": "2025-09-22T09:20:12.366281404Z",
+    "failureInfo": {
+      "detail": "Build step failure: build step 3 \"gcr.io/cloud-builders/kubectl\" failed: step exited with non-zero status: 1",
+      "type": "USER_BUILD_STEP"
+    },
+    "finishTime": "2025-09-22T09:21:56.680993982Z",
+    "id": "d294ad5f-d010-4e5f-99ff-04f1d885f12f",
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/d294ad5f-d010-4e5f-99ff-04f1d885f12f?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/d294ad5f-d010-4e5f-99ff-04f1d885f12f",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:ddf47c46bfe9f6fae114ccfc34555ed72808b4c833fa92c19bfe741ec919aba6",
+        "sha256:c6b115259483d6cfc5b4bb05eedff0224fac8ca69874d0cdeade0dad7101213a",
+        ""
+      ],
+      "buildStepOutputs": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532810946011",
+        "object": "source/1758532802.04467-867ac51ea98845e4a8f52fd8e328d505.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758532802.04467-867ac51ea98845e4a8f52fd8e328d505.tgz#1758532810946011": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "Sz0NdN7iOvy-Gjead8D_Yg=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532810946011",
+        "object": "source/1758532802.04467-867ac51ea98845e4a8f52fd8e328d505.tgz"
+      }
+    },
+    "startTime": "2025-09-22T09:20:16.835981702Z",
+    "status": "FAILURE",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend:latest",
+          "."
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:20:21.760864094Z",
+          "startTime": "2025-09-22T09:20:21.753999698Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:21:16.497585657Z",
+          "startTime": "2025-09-22T09:20:21.753999698Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:21:16.507060257Z",
+          "startTime": "2025-09-22T09:21:16.497680384Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:21:42.347253379Z",
+          "startTime": "2025-09-22T09:21:16.497680384Z"
+        }
+      },
+      {
+        "args": [
+          "container",
+          "clusters",
+          "get-credentials",
+          "mindmend-cluster",
+          "--zone=asia-southeast1-a"
+        ],
+        "name": "gcr.io/cloud-builders/gcloud",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:21:42.353612611Z",
+          "startTime": "2025-09-22T09:21:42.347356233Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:21:48.728893829Z",
+          "startTime": "2025-09-22T09:21:42.347356233Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "config.yaml"
+        ],
+        "exitCode": 1,
+        "name": "gcr.io/cloud-builders/kubectl",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:21:48.734641290Z",
+          "startTime": "2025-09-22T09:21:48.729009701Z"
+        },
+        "status": "FAILURE",
+        "timing": {
+          "endTime": "2025-09-22T09:21:56.090874883Z",
+          "startTime": "2025-09-22T09:21:48.729009701Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "deployment.yaml"
+        ],
+        "name": "gcr.io/cloud-builders/kubectl",
+        "status": "QUEUED"
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-22T09:21:56.090945963Z",
+        "startTime": "2025-09-22T09:20:21.121252636Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-22T09:20:21.121158655Z",
+        "startTime": "2025-09-22T09:20:17.477168894Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-22T09:20:21.121158655Z",
+        "startTime": "2025-09-22T09:20:17.477168894Z"
+      }
+    }
+  },
+  {
+    "createTime": "2025-09-22T09:18:02.850232383Z",
+    "failureInfo": {
+      "detail": "Build step failure: build step 2 \"gcr.io/cloud-builders/kubectl\" failed: step exited with non-zero status: 1",
+      "type": "USER_BUILD_STEP"
+    },
+    "finishTime": "2025-09-22T09:19:15.679842142Z",
+    "id": "1a821289-746d-4974-b616-726bd6b5927a",
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/1a821289-746d-4974-b616-726bd6b5927a?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/1a821289-746d-4974-b616-726bd6b5927a",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:c6b115259483d6cfc5b4bb05eedff0224fac8ca69874d0cdeade0dad7101213a",
+        ""
+      ],
+      "buildStepOutputs": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532682443589",
+        "object": "source/1758532674.33298-45eeeb8558074df2a27fdd59029e0d33.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758532674.33298-45eeeb8558074df2a27fdd59029e0d33.tgz#1758532682443589": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "D1H1EzciYDXOjzK4H66pBw=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532682443589",
+        "object": "source/1758532674.33298-45eeeb8558074df2a27fdd59029e0d33.tgz"
+      }
+    },
+    "startTime": "2025-09-22T09:18:08.059258631Z",
+    "status": "FAILURE",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend:latest",
+          "."
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:18:11.359817444Z",
+          "startTime": "2025-09-22T09:18:11.352941774Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:18:51.483185140Z",
+          "startTime": "2025-09-22T09:18:11.352941774Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:18:51.484316518Z",
+          "startTime": "2025-09-22T09:18:51.483265387Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:19:09.027415067Z",
+          "startTime": "2025-09-22T09:18:51.483265387Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "exitCode": 1,
+        "name": "gcr.io/cloud-builders/kubectl",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:19:09.035181871Z",
+          "startTime": "2025-09-22T09:19:09.027479632Z"
+        },
+        "status": "FAILURE",
+        "timing": {
+          "endTime": "2025-09-22T09:19:15.241871416Z",
+          "startTime": "2025-09-22T09:19:09.027479632Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "deployment.yaml"
+        ],
+        "env": [
+          "CLOUDSDK_COMPUTE_ZONE=australia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "name": "gcr.io/cloud-builders/kubectl",
+        "status": "QUEUED"
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-22T09:19:15.241933661Z",
+        "startTime": "2025-09-22T09:18:10.858253745Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-22T09:18:10.858194130Z",
+        "startTime": "2025-09-22T09:18:08.463039962Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-22T09:18:10.858194130Z",
+        "startTime": "2025-09-22T09:18:08.463039962Z"
+      }
+    }
+  },
+  {
+    "createTime": "2025-09-22T09:14:56.872130385Z",
+    "failureInfo": {
+      "detail": "Build step failure: build step 2 \"gcr.io/cloud-builders/kubectl\" failed: step exited with non-zero status: 1",
+      "type": "USER_BUILD_STEP"
+    },
+    "finishTime": "2025-09-22T09:16:40.766634407Z",
+    "id": "6b62b34b-839e-423d-bd5d-a6c0df399493",
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/6b62b34b-839e-423d-bd5d-a6c0df399493?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/6b62b34b-839e-423d-bd5d-a6c0df399493",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:c6b115259483d6cfc5b4bb05eedff0224fac8ca69874d0cdeade0dad7101213a",
+        ""
+      ],
+      "buildStepOutputs": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532495402430",
+        "object": "source/1758532487.15952-b53f41b3274142c09934a1e0c4cf0f38.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758532487.15952-b53f41b3274142c09934a1e0c4cf0f38.tgz#1758532495402430": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "FmNt47ja3gSsyhdpVbl0Nw=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758532495402430",
+        "object": "source/1758532487.15952-b53f41b3274142c09934a1e0c4cf0f38.tgz"
+      }
+    },
+    "startTime": "2025-09-22T09:15:01.933789142Z",
+    "status": "FAILURE",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend:latest",
+          "."
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:15:06.274340679Z",
+          "startTime": "2025-09-22T09:15:06.267647218Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:16:02.003652045Z",
+          "startTime": "2025-09-22T09:15:06.267647218Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:16:02.005306122Z",
+          "startTime": "2025-09-22T09:16:02.003735235Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-22T09:16:30.868751965Z",
+          "startTime": "2025-09-22T09:16:02.003735235Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "config.yaml"
+        ],
+        "env": [
+          "CLOUDSDK_COMPUTE_ZONE=australia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "exitCode": 1,
+        "name": "gcr.io/cloud-builders/kubectl",
+        "pullTiming": {
+          "endTime": "2025-09-22T09:16:30.879649089Z",
+          "startTime": "2025-09-22T09:16:30.868835803Z"
+        },
+        "status": "FAILURE",
+        "timing": {
+          "endTime": "2025-09-22T09:16:40.239297876Z",
+          "startTime": "2025-09-22T09:16:30.868835803Z"
+        }
+      },
+      {
+        "args": [
+          "apply",
+          "-f",
+          "deployment.yaml"
+        ],
+        "env": [
+          "CLOUDSDK_COMPUTE_ZONE=australia-southeast1-a",
+          "CLOUDSDK_CONTAINER_CLUSTER=mindmend-cluster"
+        ],
+        "name": "gcr.io/cloud-builders/kubectl",
+        "status": "QUEUED"
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-22T09:16:40.239353775Z",
+        "startTime": "2025-09-22T09:15:05.653694148Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-22T09:15:05.653631638Z",
+        "startTime": "2025-09-22T09:15:02.468290576Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-22T09:15:05.653631638Z",
+        "startTime": "2025-09-22T09:15:02.468290576Z"
+      }
+    }
+  },
+  {
+    "artifacts": {
+      "images": [
+        "gcr.io/mindmend-production/mindmend-app:latest"
+      ]
+    },
+    "createTime": "2025-09-20T03:32:49.839907960Z",
+    "finishTime": "2025-09-20T03:37:36.187090Z",
+    "id": "5373535f-ed82-4865-8c03-2e794051745a",
+    "images": [
+      "gcr.io/mindmend-production/mindmend-app:latest"
+    ],
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/5373535f-ed82-4865-8c03-2e794051745a?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/5373535f-ed82-4865-8c03-2e794051745a",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79"
+      ],
+      "buildStepOutputs": [
+        "",
+        ""
+      ],
+      "images": [
+        {
+          "digest": "sha256:4f3155cf2eba54c9d134a4f5a6aadd19fe609e0093a043f1170c3d5210967087",
+          "name": "gcr.io/mindmend-production/mindmend-app",
+          "pushTiming": {
+            "endTime": "2025-09-20T03:37:35.651589035Z",
+            "startTime": "2025-09-20T03:37:34.332519404Z"
+          }
+        },
+        {
+          "digest": "sha256:4f3155cf2eba54c9d134a4f5a6aadd19fe609e0093a043f1170c3d5210967087",
+          "name": "gcr.io/mindmend-production/mindmend-app:latest",
+          "pushTiming": {
+            "endTime": "2025-09-20T03:37:35.651589035Z",
+            "startTime": "2025-09-20T03:37:34.332519404Z"
+          }
+        }
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758339169473354",
+        "object": "source/1758339161.519083-af66723216c64f9a99844d19115feace.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758339161.519083-af66723216c64f9a99844d19115feace.tgz#1758339169473354": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "zjyNhPqJMNkj5eok3XKVZQ=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758339169473354",
+        "object": "source/1758339161.519083-af66723216c64f9a99844d19115feace.tgz"
+      }
+    },
+    "startTime": "2025-09-20T03:32:50.618303147Z",
+    "status": "SUCCESS",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend-app:latest",
+          "."
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-20T03:32:55.041138263Z",
+          "startTime": "2025-09-20T03:32:55.035256990Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-20T03:35:54.738717526Z",
+          "startTime": "2025-09-20T03:32:55.035256990Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend-app:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-20T03:35:54.740443950Z",
+          "startTime": "2025-09-20T03:35:54.738797054Z"
+        },
+        "status": "SUCCESS",
+        "timing": {
+          "endTime": "2025-09-20T03:37:34.302437349Z",
+          "startTime": "2025-09-20T03:35:54.738797054Z"
+        }
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-20T03:37:34.332464034Z",
+        "startTime": "2025-09-20T03:32:54.451068818Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-20T03:32:54.451000234Z",
+        "startTime": "2025-09-20T03:32:51.066188980Z"
+      },
+      "PUSH": {
+        "endTime": "2025-09-20T03:37:35.651628388Z",
+        "startTime": "2025-09-20T03:37:34.332518097Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-20T03:32:54.451000234Z",
+        "startTime": "2025-09-20T03:32:51.066188980Z"
+      }
+    }
+  },
+  {
+    "artifacts": {
+      "images": [
+        "gcr.io/mindmend-production/mindmend-app:latest"
+      ]
+    },
+    "createTime": "2025-09-20T03:30:31.155760932Z",
+    "failureInfo": {
+      "detail": "Build step failure: build step 0 \"gcr.io/cloud-builders/docker\" failed: step exited with non-zero status: 1",
+      "type": "USER_BUILD_STEP"
+    },
+    "finishTime": "2025-09-20T03:32:37.333682644Z",
+    "id": "25cb433b-bf3e-408b-bad5-5bd1ffddc24b",
+    "images": [
+      "gcr.io/mindmend-production/mindmend-app:latest"
+    ],
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/25cb433b-bf3e-408b-bad5-5bd1ffddc24b?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/25cb433b-bf3e-408b-bad5-5bd1ffddc24b",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        ""
+      ],
+      "buildStepOutputs": [
+        "",
+        ""
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758339029734284",
+        "object": "source/1758339022.420281-bd49bea247e94c90a029c96ab239ce19.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758339022.420281-bd49bea247e94c90a029c96ab239ce19.tgz#1758339029734284": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "ZVQeAhiXYXVEVRlZJhEURw=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758339029734284",
+        "object": "source/1758339022.420281-bd49bea247e94c90a029c96ab239ce19.tgz"
+      }
+    },
+    "startTime": "2025-09-20T03:30:32.051719343Z",
+    "status": "FAILURE",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend-app:latest",
+          "."
+        ],
+        "exitCode": 1,
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-20T03:30:37.337429917Z",
+          "startTime": "2025-09-20T03:30:37.331083036Z"
+        },
+        "status": "FAILURE",
+        "timing": {
+          "endTime": "2025-09-20T03:32:36.744701522Z",
+          "startTime": "2025-09-20T03:30:37.331083036Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend-app:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "status": "QUEUED"
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-20T03:32:36.744763305Z",
+        "startTime": "2025-09-20T03:30:36.708387127Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-20T03:30:36.708307752Z",
+        "startTime": "2025-09-20T03:30:33.176792011Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-20T03:30:36.708307752Z",
+        "startTime": "2025-09-20T03:30:33.176792011Z"
+      }
+    }
+  },
+  {
+    "artifacts": {
+      "images": [
+        "gcr.io/mindmend-production/mindmend-app:latest"
+      ]
+    },
+    "createTime": "2025-09-20T03:30:26.391298097Z",
+    "failureInfo": {
+      "detail": "Build step failure: build step 0 \"gcr.io/cloud-builders/docker\" failed: step exited with non-zero status: 1",
+      "type": "USER_BUILD_STEP"
+    },
+    "finishTime": "2025-09-20T03:32:10.542276332Z",
+    "id": "700edae8-2361-4648-9fe9-e9671d4b3cde",
+    "images": [
+      "gcr.io/mindmend-production/mindmend-app:latest"
+    ],
+    "logUrl": "https://console.cloud.google.com/cloud-build/builds/700edae8-2361-4648-9fe9-e9671d4b3cde?project=840448055519",
+    "logsBucket": "gs://840448055519.cloudbuild-logs.googleusercontent.com",
+    "name": "projects/840448055519/locations/global/builds/700edae8-2361-4648-9fe9-e9671d4b3cde",
+    "options": {
+      "logging": "LEGACY",
+      "pool": {}
+    },
+    "projectId": "mindmend-production",
+    "queueTtl": "3600s",
+    "results": {
+      "buildStepImages": [
+        "sha256:9e32617864993265ca367e6e0269064d21ef57680c4b38f9c5ddf210d58d8e79",
+        ""
+      ],
+      "buildStepOutputs": [
+        "",
+        ""
+      ]
+    },
+    "serviceAccount": "projects/mindmend-production/serviceAccounts/840448055519-compute@developer.gserviceaccount.com",
+    "source": {
+      "storageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758339025954276",
+        "object": "source/1758339016.964682-976cfb07d668441683317ac6186d2584.tgz"
+      }
+    },
+    "sourceProvenance": {
+      "fileHashes": {
+        "gs://mindmend-production_cloudbuild/source/1758339016.964682-976cfb07d668441683317ac6186d2584.tgz#1758339025954276": {
+          "fileHash": [
+            {
+              "type": "MD5",
+              "value": "FNfOyQ6eekfXnbJ51SbPXA=="
+            }
+          ]
+        }
+      },
+      "resolvedStorageSource": {
+        "bucket": "mindmend-production_cloudbuild",
+        "generation": "1758339025954276",
+        "object": "source/1758339016.964682-976cfb07d668441683317ac6186d2584.tgz"
+      }
+    },
+    "startTime": "2025-09-20T03:30:29.708715178Z",
+    "status": "FAILURE",
+    "steps": [
+      {
+        "args": [
+          "build",
+          "-t",
+          "gcr.io/mindmend-production/mindmend-app:latest",
+          "."
+        ],
+        "exitCode": 1,
+        "name": "gcr.io/cloud-builders/docker",
+        "pullTiming": {
+          "endTime": "2025-09-20T03:30:33.663371835Z",
+          "startTime": "2025-09-20T03:30:33.652262075Z"
+        },
+        "status": "FAILURE",
+        "timing": {
+          "endTime": "2025-09-20T03:32:10.057080964Z",
+          "startTime": "2025-09-20T03:30:33.652262075Z"
+        }
+      },
+      {
+        "args": [
+          "push",
+          "gcr.io/mindmend-production/mindmend-app:latest"
+        ],
+        "name": "gcr.io/cloud-builders/docker",
+        "status": "QUEUED"
+      }
+    ],
+    "timeout": "3600s",
+    "timing": {
+      "BUILD": {
+        "endTime": "2025-09-20T03:32:10.057133555Z",
+        "startTime": "2025-09-20T03:30:33.119492745Z"
+      },
+      "FETCHSOURCE": {
+        "endTime": "2025-09-20T03:30:33.119411028Z",
+        "startTime": "2025-09-20T03:30:30.425420508Z"
+      },
+      "STORAGE_SOURCE": {
+        "endTime": "2025-09-20T03:30:33.119411028Z",
+        "startTime": "2025-09-20T03:30:30.425420508Z"
+      }
+    }
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "address": "10.5.0.0",
+    "addressType": "INTERNAL",
+    "creationTimestamp": "2025-09-19T18:58:34.267-07:00",
+    "description": "",
+    "id": "8546930328770688165",
+    "kind": "compute#address",
+    "labelFingerprint": "42WmSpB8rSM=",
+    "name": "google-services-range",
+    "network": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/networks/default",
+    "networkTier": "PREMIUM",
+    "prefixLength": 16,
+    "purpose": "VPC_PEERING",
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/addresses/google-services-range",
+    "status": "RESERVED"
+  },
+  {
+    "address": "34.111.18.218",
+    "addressType": "EXTERNAL",
+    "creationTimestamp": "2025-09-22T00:58:14.139-07:00",
+    "description": "",
+    "id": "525465260039913337",
+    "ipVersion": "IPV4",
+    "kind": "compute#address",
+    "labelFingerprint": "42WmSpB8rSM=",
+    "name": "mindmend-ip",
+    "networkTier": "PREMIUM",
+    "selfLink": "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/addresses/mindmend-ip",
+    "status": "IN_USE",
+    "users": [
+      "https://www.googleapis.com/compute/v1/projects/mindmend-production/global/forwardingRules/k8s2-fr-gou1vnqi-default-mindmend-ingress-qquti11x"
+    ]
+  }
+]
