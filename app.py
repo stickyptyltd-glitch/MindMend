@@ -175,15 +175,18 @@ with app.app_context():
     with app.app_context():
         from models.database import AdminUser
         from werkzeug.security import generate_password_hash
-        email = "stickyptyltd@gmail.com"
-        password = "Iloveya1992!"
-        existing_user = AdminUser.query.filter_by(email=email).first()
-        if not existing_user:
-            user = AdminUser(email=email, name="Default Admin", role="super_admin")
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
-            print(f"Admin user {email} created successfully.")
+        # Create default admin user only in development
+        if not is_production:
+            email = os.environ.get("DEFAULT_ADMIN_EMAIL", "admin@mindmend.xyz")
+            password = os.environ.get("DEFAULT_ADMIN_PASSWORD")
+            if password:  # Only create if password is explicitly set
+                existing_user = AdminUser.query.filter_by(email=email).first()
+                if not existing_user:
+                    user = AdminUser(email=email, name="Default Admin", role="super_admin")
+                    user.set_password(password)
+                    db.session.add(user)
+                    db.session.commit()
+                    logger.info(f"Development admin user {email} created successfully.")
 
 
 
